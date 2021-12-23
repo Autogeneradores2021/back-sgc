@@ -1,0 +1,58 @@
+version: '3'
+services:
+
+  #PHP Service
+  back-sgc:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    image: digitalocean.com/php
+    container_name: back-sgc
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: back-sgc
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+
+  #ORACLE Service
+  db:
+    image: oracleinanutshell/oracle-xe-11g
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - dbdata:/var/lib/oracle/
+    ports:
+      - 1521:1521
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
