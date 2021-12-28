@@ -16,7 +16,7 @@ class CreateUpgradePlansTable extends Migration
         Schema::create('upgrade_plans', function (Blueprint $table) {
             $table->id();
             $table->string('upgrade_plan_type');
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
             $table->string('title', 255);
             $table->string('person_assigned', 100);
             $table->datetime('init_date');

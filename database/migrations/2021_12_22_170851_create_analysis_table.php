@@ -15,7 +15,7 @@ class CreateAnalysisTable extends Migration
     {
         Schema::create('analysis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
             $table->string('cause', 255);
             $table->string('root', 100)->nullable();
             $table->longText('analysis_result');

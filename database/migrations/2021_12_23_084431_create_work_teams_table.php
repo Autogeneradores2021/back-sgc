@@ -16,7 +16,7 @@ class CreateWorkTeamsTable extends Migration
         Schema::create('work_teams', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lead_id')->constrained('work_team_users')->cascadeOnDelete();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
             $table->timestamps();
         });
     }

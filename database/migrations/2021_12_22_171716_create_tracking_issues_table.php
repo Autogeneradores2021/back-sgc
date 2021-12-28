@@ -15,7 +15,7 @@ class CreateTrackingIssuesTable extends Migration
     {
         Schema::create('tracking_issues', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
             $table->string('title', 100);
             $table->longText('description')->nullable();
             $table->string('icon', 50)->nullable();

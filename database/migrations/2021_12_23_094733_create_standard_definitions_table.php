@@ -15,7 +15,7 @@ class CreateStandardDefinitionsTable extends Migration
     {
         Schema::create('standard_definitions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
             $table->boolean('indicator')->default(false);
             $table->boolean('event')->default(false);
             $table->boolean('time')->default(false);
