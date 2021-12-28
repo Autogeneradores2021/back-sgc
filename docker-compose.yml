@@ -47,6 +47,22 @@ services:
     networks:
       - app-network
 
+  mysql:
+    image: mysql:5.7
+    restart: unless-stopped
+    tty: true
+    environment:
+      MYSQL_DATABASE: 'dev'
+      MYSQL_USER: 'dev'
+      MYSQL_PASSWORD: 'dev'
+      MYSQL_ROOT_PASSWORD: 'dev'
+    ports:
+      - '3306:3306'
+    volumes:
+      - dbmysql:/var/lib/mysql
+    networks:
+      - app-network
+
 #Docker Networks
 networks:
   app-network:
@@ -54,5 +70,7 @@ networks:
 
 #Volumes
 volumes:
+  dbmysql:
+    driver: local
   dbdata:
     driver: local
