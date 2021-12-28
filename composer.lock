@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36e8321a88518ff36acf653b11153f3e",
+    "content-hash": "4245243ad54f6b5e7205ee0838f328ef",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6316,6 +6316,57 @@
             "time": "2020-07-09T08:09:16+00:00"
         },
         {
+            "name": "laracademy/generators",
+            "version": "3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laracademy/generators.git",
+                "reference": "9f275573cb50669937d1ce2cb2dd450d1f49c98c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laracademy/generators/zipball/9f275573cb50669937d1ce2cb2dd450d1f49c98c",
+                "reference": "9f275573cb50669937d1ce2cb2dd450d1f49c98c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laracademy\\Generators\\GeneratorsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laracademy\\Generators\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael McMullen",
+                    "email": "michael@laracademy.co"
+                }
+            ],
+            "description": "This package will generate a Laravel Model based on your database table itself, filling in the required fields automatically.",
+            "keywords": [
+                "generators",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/laracademy/generators/issues",
+                "source": "https://github.com/laracademy/generators/tree/3.4"
+            },
+            "time": "2021-10-21T00:44:27+00:00"
+        },
+        {
             "name": "laravel/sail",
             "version": "v1.12.4",
             "source": {
@@ -8375,5 +8426,5 @@
         "php": "^7.3|^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }
