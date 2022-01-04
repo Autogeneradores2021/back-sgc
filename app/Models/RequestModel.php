@@ -25,28 +25,25 @@ class RequestModel extends Model
 {
 
     /**
-     * The database table used by the model.
+     * validation
      *
      * @var string
      */
     public $rules = [
-        "init_date" => "required",
+        "init_date" => "required|date",
         "init_date" => "required",
         "detected_date" => "required",
         "detected_in" => "required",
-        "detected_for_id" => "required",
+        "detected_for_id" => "required|exists:users,id",
         "unfulfilled_requirement" => "required",
-        "process_lead_id" => "required",
+        "process_lead_id" => "required|exists:users,id",
         "process_affected" => "required",
         "how_detected" => "required",
         "action_type" => "required",
         "request_code" => "required",
-        "evidence_description" => "required",
+        "evidence_description" => "required|min:30",
         "request_description" => "required",
-        "evidence_file_path" => "required",
-        "status" => "required",
-        "created_at" => "required",
-        "updated_at" => "required"
+        "evidence_file_path" => "required"
     ];
 
     /**

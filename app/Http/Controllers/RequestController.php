@@ -15,7 +15,7 @@ class RequestController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request, $module) {
-        $requestData = $request->validate(['request']);
+        $requestData = request(['request'])['request'];
         $requestRecord = new RequestModel($requestData);
         $requestRecord->request_type = $module;
         $requestRecord->status = "open";
