@@ -21,8 +21,34 @@ use Illuminate\Database\Eloquent\Model;
  * @property int      $created_at
  * @property int      $updated_at
  */
-class Request extends Model
+class RequestModel extends Model
 {
+
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    public $rules = [
+        "init_date" => "required",
+        "init_date" => "required",
+        "detected_date" => "required",
+        "detected_in" => "required",
+        "detected_for_id" => "required",
+        "unfulfilled_requirement" => "required",
+        "process_lead_id" => "required",
+        "process_affected" => "required",
+        "how_detected" => "required",
+        "action_type" => "required",
+        "request_code" => "required",
+        "evidence_description" => "required",
+        "request_description" => "required",
+        "evidence_file_path" => "required",
+        "status" => "required",
+        "created_at" => "required",
+        "updated_at" => "required"
+    ];
+
     /**
      * The database table used by the model.
      *
@@ -43,7 +69,8 @@ class Request extends Model
      * @var array
      */
     protected $fillable = [
-        'request_type', 'init_date', 'detected_date', 'detected_in', 'detected_for_id', 'unfulfilled_requirement', 'process_lead_id', 'process_affected', 'how_detected', 'action_type', 'request_code', 'evidence_description', 'request_description', 'evidence_file_path', 'status', 'created_at', 'updated_at'
+        'request_type',
+        'init_date', 'detected_date', 'detected_in', 'detected_for_id', 'unfulfilled_requirement', 'process_lead_id', 'process_affected', 'how_detected', 'action_type', 'request_code', 'evidence_description', 'request_description', 'evidence_file_path', 'status', 'created_at', 'updated_at => "required"'
     ];
 
     /**

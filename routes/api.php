@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WizardController;
+use App\Http\Controllers\RequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +26,7 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
-
+    # auth
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
@@ -32,3 +34,28 @@ Route::group([
 
 });
 
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'request'
+
+], function ($router) {
+    # request
+    Route::post('{module}/create', [RequestController::class, 'create']);
+    Route::get('{module}', [RequestController::class, 'index']);
+
+});
+
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'tracking'
+
+], function ($router) {
+    # tracking
+    Route::post('{module}', [WizardController::class, 'index']);
+    Route::post('{module}/complete/{step}', [WizardController::class, 'complete']);
+    Route::post('{module}/show/{step}', [WizardController::class, 'show']);
+
+});
