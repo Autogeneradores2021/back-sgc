@@ -13,6 +13,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Analysis extends Model
 {
+
+    /**
+     * validation
+     *
+     * @var string
+     */
+    public $rules = [
+        "root" => "required"
+    ];
+
     /**
      * The database table used by the model.
      *

@@ -18,6 +18,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class StandardDefinition extends Model
 {
+
+    /**
+     * validation
+     *
+     * @var string
+     */
+    public $rules = [
+        "name" => "required"
+    ];
+
     /**
      * The database table used by the model.
      *

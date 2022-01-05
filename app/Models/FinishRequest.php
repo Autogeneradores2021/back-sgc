@@ -22,6 +22,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class FinishRequest extends Model
 {
+
+    /**
+     * validation
+     *
+     * @var string
+     */
+    public $rules = [
+        "request_id" => "required"
+    ];
+
     /**
      * The database table used by the model.
      *

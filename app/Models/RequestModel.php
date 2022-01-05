@@ -41,7 +41,7 @@ class RequestModel extends Model
         "how_detected" => "required",
         "action_type" => "required",
         "request_code" => "required",
-        "evidence_description" => "required|min:30",
+        "evidence_description" => "required",
         "request_description" => "required",
         "evidence_file_path" => "required"
     ];
