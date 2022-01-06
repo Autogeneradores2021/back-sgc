@@ -17,7 +17,8 @@ class WorkTeams extends Model
      * @var string
      */
     public $rules = [
-        "name" => "required"
+        "lead_id" => "required|exists:work_team_users,id",
+        "tracking_id" => "required|exists:trackings,id"
     ];
 
     /**

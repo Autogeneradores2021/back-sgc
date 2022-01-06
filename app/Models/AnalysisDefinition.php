@@ -20,7 +20,10 @@ class AnalysisDefinition extends Model
      * @var string
      */
     public $rules = [
-        "request_id" => "required"
+        "tracking_id" => "required|exists:trackings,id",
+        "problem_understand" => "required",
+        "local_revision" => "required",
+        "viability_test" => "required"
     ];
 
 

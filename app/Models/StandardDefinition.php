@@ -25,7 +25,15 @@ class StandardDefinition extends Model
      * @var string
      */
     public $rules = [
-        "name" => "required"
+        "tracking_id" => "required|exists:trackings,id",
+        "indicator" => "required|boolean:false",
+        "event" => "required|boolean:false",
+        "time" => "required|boolean:false",
+        "what_indicator" => "required",
+        "what_event" => "required",
+        "what_time_init" => "required|date",
+        "what_time_end" => "required|date",
+        "description" => "description"
     ];
 
     /**

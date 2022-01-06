@@ -19,7 +19,8 @@ class Action extends Model
      * @var string
      */
     public $rules = [
-        "name" => "required"
+        "name" => "required|max:50",
+        "code" => "required|unique:posts|max:10"
     ];
 
     /**

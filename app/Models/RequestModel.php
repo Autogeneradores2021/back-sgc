@@ -30,20 +30,22 @@ class RequestModel extends Model
      * @var string
      */
     public $rules = [
+        "request_type"=>"required|max:3"
         "init_date" => "required|date",
         "init_date" => "required",
-        "detected_date" => "required",
-        "detected_in" => "required",
+        "detected_date" => "required|date", 
+        "detected_in" => "required|date|max:50",
         "detected_for_id" => "required|exists:users,id",
-        "unfulfilled_requirement" => "required",
+        "unfulfilled_requirement" => "required|max:100",
         "process_lead_id" => "required|exists:users,id",
-        "process_affected" => "required",
-        "how_detected" => "required",
-        "action_type" => "required",
-        "request_code" => "required",
+        "process_affected" => "required|max:50",
+        "how_detected" => "required|max:50",
+        "action_type" => "required|max:10",
+        "request_code" => "required|max:30",
         "evidence_description" => "required",
         "request_description" => "required",
-        "evidence_file_path" => "required"
+        "evidence_file_path" => "required",
+        "status"=> "required|max:10"
     ];
 
     /**

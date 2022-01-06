@@ -17,8 +17,9 @@ class RoleForm extends Model
      * @var string
      */
     public $rules = [
-        "name" => "required"
-    ];
+        "role_id" => "required|exists:roles,id",
+        "form_id" => "required|exists:forms,id"
+    ]; 
 
     /**
      * The database table used by the model.

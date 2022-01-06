@@ -20,7 +20,10 @@ class Analysis extends Model
      * @var string
      */
     public $rules = [
-        "root" => "required"
+        "tracking_id" => "required|exists:trackings,id",
+        "root" => "required|nullable|max:100",
+        "cause" => "required|nmax:255",
+        "analysis_result" => "required"
     ];
 
     /**

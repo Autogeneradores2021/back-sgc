@@ -21,7 +21,12 @@ class Standard extends Model
      * @var string
      */
     public $rules = [
-        "name" => "required"
+        "standard_type" => "required",
+        "description" => "required",
+        "user_id" => "required|exists:users,id",
+        "follow" => "required",
+        "percentage" => "required"
+
     ];
 
     /**

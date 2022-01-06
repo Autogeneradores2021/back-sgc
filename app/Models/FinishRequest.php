@@ -29,7 +29,23 @@ class FinishRequest extends Model
      * @var string
      */
     public $rules = [
-        "request_id" => "required"
+        "request_id" => "required",
+        "tracking_id" => "required|exists:trackings,id",
+        "user_tracking_id" => "required|exists:users,id",
+        "tracking_date" => "required|date",
+        "tracking_date_period_init" => "required|date",
+        "tracking_date_period_end" => "required|date",
+        "result" => "required|nullable|max:30",
+        "result_analysis" => "required|nullable|max:150",
+        "user_granted_id" => "required|nullable|exists:users,id",
+        "descriptions" => "required",
+        "objective" => "required|nullable"
+        "total_review" => "required|nullable",
+        "total_agree" => "required|nullable",
+        "total_disagre" => "required|nullable",
+        "percentage" => "required|nullable",
+        "agree" => "required|nullable|max:50"
+
     ];
 
     /**

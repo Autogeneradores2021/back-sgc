@@ -13,14 +13,17 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TrackingIssue extends Model
 {
-
+ 
     /**
      * validation
-     *
+     * 
      * @var string
      */
     public $rules = [
-        "name" => "required"
+        "tracking_id" => "required|exists:trackings,id",
+        "title" => "required|max:100",
+        "description" => "required|nullable",
+        "icon" => "required|nullable|max:50"
     ];
 
     /**
