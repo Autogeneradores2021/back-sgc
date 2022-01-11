@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WizardController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\TrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +54,17 @@ Route::group([
     'prefix' => 'tracking'
 
 ], function ($router) {
-    # tracking
+    Route::get('', [TrackingController::class, 'index']);
+    Route::post('create', [TrackingController::class, 'create']);
+
+});
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'wizard'
+
+], function ($router) {
     Route::post('{module}', [WizardController::class, 'index']);
     Route::post('{module}/complete/{step}', [WizardController::class, 'complete']);
     Route::post('{module}/show/{step}', [WizardController::class, 'show']);

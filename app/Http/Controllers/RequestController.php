@@ -26,7 +26,7 @@ class RequestController extends Controller
                     "message" => "Error de validacion",
                     "data" => $validator->errors()
                 ],
-                400
+                406
             );
         }
         $requestRecord->save();
