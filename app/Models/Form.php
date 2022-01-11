@@ -18,7 +18,7 @@ class Form extends Model
      *
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "name" => "required|max:50",
         "code" => "required|unique:posts|max:10"
     ];

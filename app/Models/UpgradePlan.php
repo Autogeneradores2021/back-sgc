@@ -28,7 +28,7 @@ class UpgradePlan extends Model
      *
      * @var string 
      */
-    public $rules = [
+    public static $rules = [
         "tracking_id" => "required|exists:trackings,id",
         "upgrade_plan_type" => "required",
         "title" => "required|max:255",

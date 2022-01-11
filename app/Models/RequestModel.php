@@ -29,7 +29,7 @@ class RequestModel extends Model
      *
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "request_type"=>"required|max:3"
         "init_date" => "required|date",
         "init_date" => "required",

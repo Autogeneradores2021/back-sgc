@@ -18,7 +18,7 @@ class WorkTeamUser extends Model
      *
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "user_id" => "required|exists:users,id",
         "area" => "required",
         "position" => "required"

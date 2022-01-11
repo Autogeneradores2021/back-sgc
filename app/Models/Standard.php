@@ -20,7 +20,7 @@ class Standard extends Model
      *
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "standard_type" => "required",
         "description" => "required",
         "user_id" => "required|exists:users,id",

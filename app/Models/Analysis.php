@@ -19,10 +19,10 @@ class Analysis extends Model
      *
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "tracking_id" => "required|exists:trackings,id",
         "root" => "required|nullable|max:100",
-        "cause" => "required|nmax:255",
+        "cause" => "required|max:255",
         "analysis_result" => "required"
     ];
 

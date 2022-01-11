@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $created_at
  * @property int $updated_at
  */
-class WorkTeams extends Model
+class WorkTeam extends Model
 {
 
     /**
@@ -16,7 +16,7 @@ class WorkTeams extends Model
      *
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "lead_id" => "required|exists:work_team_users,id",
         "tracking_id" => "required|exists:trackings,id"
     ];
@@ -41,7 +41,7 @@ class WorkTeams extends Model
      * @var array
      */
     protected $fillable = [
-        'lead_id', 'request_id', 'created_at', 'updated_at'
+        'lead_id', 'tracking_id', 'created_at', 'updated_at'
     ];
 
     /**

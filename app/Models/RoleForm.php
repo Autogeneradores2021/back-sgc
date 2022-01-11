@@ -16,7 +16,7 @@ class RoleForm extends Model
      *
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "role_id" => "required|exists:roles,id",
         "form_id" => "required|exists:forms,id"
     ]; 

@@ -28,7 +28,7 @@ class FinishRequest extends Model
      *
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "request_id" => "required",
         "tracking_id" => "required|exists:trackings,id",
         "user_tracking_id" => "required|exists:users,id",
@@ -39,7 +39,7 @@ class FinishRequest extends Model
         "result_analysis" => "required|nullable|max:150",
         "user_granted_id" => "required|nullable|exists:users,id",
         "descriptions" => "required",
-        "objective" => "required|nullable"
+        "objective" => "required|nullable",
         "total_review" => "required|nullable",
         "total_agree" => "required|nullable",
         "total_disagre" => "required|nullable",

@@ -19,7 +19,7 @@ class TrackingIssue extends Model
      * 
      * @var string
      */
-    public $rules = [
+    public static $rules = [
         "tracking_id" => "required|exists:trackings,id",
         "title" => "required|max:100",
         "description" => "required|nullable",
