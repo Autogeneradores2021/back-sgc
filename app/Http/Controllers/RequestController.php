@@ -19,7 +19,7 @@ class RequestController extends Controller
         $requestRecord = new RequestModel($requestData);
         $requestRecord->request_type = $module;
         $requestRecord->status = "open";
-        $validator = Validator::make($requestData, $requestRecord->rules);
+        $validator = Validator::make($requestData, RequestModel::$rules);
         if ($validator->fails()) {
             return response()->json(
                 [
