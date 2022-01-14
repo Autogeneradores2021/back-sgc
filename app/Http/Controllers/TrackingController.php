@@ -63,7 +63,7 @@ class TrackingController extends Controller
     }
 
     /**
-     * Display all tracking by request_id
+     * validate param request_id
      * 
      * @return \Illuminate\Http\Response
      */

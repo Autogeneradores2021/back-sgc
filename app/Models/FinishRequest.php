@@ -45,7 +45,6 @@ class FinishRequest extends Model
         "total_disagre" => "required|nullable",
         "percentage" => "required|nullable",
         "agree" => "required|nullable|max:50"
-
     ];
 
     /**

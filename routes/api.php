@@ -42,8 +42,8 @@ Route::group([
 
 ], function ($router) {
     # request
-    Route::post('{module}/create', [RequestController::class, 'create']);
-    Route::get('{module}', [RequestController::class, 'index']);
+    Route::post('/create', [RequestController::class, 'create']);
+    Route::get('', [RequestController::class, 'index']);
 
 });
 
