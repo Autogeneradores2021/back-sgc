@@ -25,10 +25,10 @@ class CreateRequestsTable extends Migration
             $table->string('process_affected', 50);
             $table->string('how_detected', 50);
             $table->string('action_type', 10);
-            $table->string('request_code', 30);
+            $table->string('request_code', 30)->nullable();
             $table->longText('evidence_description');
             $table->longText('request_description');
-            $table->string('evidence_file_path')->nullable();
+            $table->longText('evidence_file')->nullable();
             $table->string('status', 10);
             $table->timestamps();
         });

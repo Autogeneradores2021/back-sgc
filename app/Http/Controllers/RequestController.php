@@ -19,8 +19,8 @@ class RequestController extends Controller
      */
     public function create() {
         $requestData = request(['request'])['request'];
+        $requestData['status'] = 'open';
         $requestRecord = new RequestModel($requestData);
-        $requestRecord->status = "open";
         $validator = Validator::make($requestData, RequestModel::$rules);
         if ($validator->fails()) {
             return response()->json(
@@ -56,7 +56,7 @@ class RequestController extends Controller
         foreach ($queryParams as $key => $value) {
            $params[$key] = $value;
         }
-        $query = RequestModel::query()->simplepaginate(
+        $query = RequestModel::query()->paginate(
             $params["per_page"],
             $params["columns"],
             $params["pageName"],

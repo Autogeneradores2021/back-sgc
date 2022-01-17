@@ -34,19 +34,29 @@ class RequestModel extends Model
         "init_date" => "required|date",
         "init_date" => "required",
         "detected_date" => "required|date", 
-        "detected_in" => "required|date|max:50",
+        "detected_in" => "required|max:50",
         "detected_for_id" => "required|exists:users,id",
         "unfulfilled_requirement" => "required|max:100",
         "process_lead_id" => "required|exists:users,id",
         "process_affected" => "required|max:50",
         "how_detected" => "required|max:50",
         "action_type" => "required|max:10",
-        "request_code" => "required|max:30",
+        // "request_code" => "required|max:30",
         "evidence_description" => "required",
         "request_description" => "required",
-        "evidence_file_path" => "required",
+        "evidence_file" => "required",
         "status"=> "required|max:10"
     ];
+
+
+    protected $appends = ['process_lead_name'];
+
+    public function getProcessLeadNameAttribute($value) {
+        if ($this->process_lead) {
+            return $this->process_lead->name;
+        }
+        return null;
+    }
 
     /**
      * The database table used by the model.
@@ -69,7 +79,7 @@ class RequestModel extends Model
      */
     protected $fillable = [
         'request_type',
-        'init_date', 'detected_date', 'detected_in', 'detected_for_id', 'unfulfilled_requirement', 'process_lead_id', 'process_affected', 'how_detected', 'action_type', 'request_code', 'evidence_description', 'request_description', 'evidence_file_path', 'status', 'created_at', 'updated_at => "required"'
+        'init_date', 'detected_date', 'detected_in', 'detected_for_id', 'unfulfilled_requirement', 'process_lead_id', 'process_affected', 'how_detected', 'action_type', 'request_code', 'evidence_description', 'request_description', 'evidence_file', 'status', 'created_at', 'updated_at => "required"'
     ];
 
     /**
@@ -78,7 +88,7 @@ class RequestModel extends Model
      * @var array
      */
     protected $hidden = [
-        
+        'process_lead'
     ];
 
     /**
@@ -87,7 +97,7 @@ class RequestModel extends Model
      * @var array
      */
     protected $casts = [
-        'request_type' => 'string', 'init_date' => 'datetime', 'detected_date' => 'datetime', 'detected_in' => 'string', 'unfulfilled_requirement' => 'string', 'process_affected' => 'string', 'how_detected' => 'string', 'action_type' => 'string', 'request_code' => 'string', 'evidence_description' => 'string', 'request_description' => 'string', 'evidence_file_path' => 'string', 'status' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'request_type' => 'string', 'init_date' => 'datetime', 'detected_date' => 'datetime', 'detected_in' => 'string', 'unfulfilled_requirement' => 'string', 'process_affected' => 'string', 'how_detected' => 'string', 'action_type' => 'string', 'request_code' => 'string', 'evidence_description' => 'string', 'request_description' => 'string', 'evidence_file' => 'string', 'status' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
@@ -111,4 +121,9 @@ class RequestModel extends Model
     // Functions ...
 
     // Relations ...
+
+    public function process_lead()
+    {
+        return $this->belongsTo('App\Models\User', 'process_lead_id', 'id');
+    }
 }
