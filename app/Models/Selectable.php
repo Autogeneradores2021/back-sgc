@@ -3,12 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Parent_;
 
-/**
- * @property int $created_at
- * @property int $updated_at
- */
-class WorkTeam extends Model
+class Selectable extends Model
 {
 
     /**
@@ -17,23 +14,30 @@ class WorkTeam extends Model
      * @var string
      */
     public static $rules = [
-        "lead_id" => "required|exists:work_team_users,id",
-        "tracking_id" => "required|exists:trackings,id"
+        "code" => "required|max:10",
+        "description" => "required|max:80",
     ];
+
+    public function __construct(array $attributes = [], $table){
+        parent::__construct($attributes);
+        $this->table = $table;
+    }
 
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'work_teams';
+    public $table = '';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'code';
+
+    public $incrementing = false;
 
     /**
      * Attributes that should be mass-assignable.
@@ -41,7 +45,7 @@ class WorkTeam extends Model
      * @var array
      */
     protected $fillable = [
-        'lead_id', 'tracking_id', 'created_at', 'updated_at'
+        'code', 'description'
     ];
 
     /**
@@ -59,7 +63,7 @@ class WorkTeam extends Model
      * @var array
      */
     protected $casts = [
-        'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'description' => 'string', 'code' => 'string'
     ];
 
     /**

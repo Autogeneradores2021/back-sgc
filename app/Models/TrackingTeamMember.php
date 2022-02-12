@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int    $created_at
  * @property int    $updated_at
  */
-class WorkTeamUser extends Model
+class TrackingTeamMember extends Model
 {
 
     /**
@@ -19,9 +19,11 @@ class WorkTeamUser extends Model
      * @var string
      */
     public static $rules = [
-        "user_id" => "required|exists:users,id",
+        "tracking_id" => "required|exists:trackings,id",
+        "user_id" => "exists:users,id",
         "area" => "required",
-        "position" => "required"
+        "position" => "required",
+        "name" => "required"
     ];
 
     /**
@@ -29,7 +31,7 @@ class WorkTeamUser extends Model
      *
      * @var string
      */
-    protected $table = 'work_team_users';
+    protected $table = 'tracking_team_members';
 
     /**
      * The primary key for the model.
@@ -44,7 +46,7 @@ class WorkTeamUser extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'area', 'position', 'created_at', 'updated_at'
+        'user_id', 'area', 'position', 'created_at', 'updated_at', 'name', "tracking_id", 'is_lead'
     ];
 
     /**
@@ -62,7 +64,7 @@ class WorkTeamUser extends Model
      * @var array
      */
     protected $casts = [
-        'area' => 'string', 'position' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'is_lead' => 'boolean', 'name' => 'string', 'area' => 'string', 'position' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
@@ -79,7 +81,7 @@ class WorkTeamUser extends Model
      *
      * @var boolean
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Scopes...
 

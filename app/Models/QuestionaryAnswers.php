@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string $standard_type
- * @property string $description
- * @property string $follow
- * @property int    $percentage
+ * @property string $name
+ * @property string $code
  * @property int    $created_at
  * @property int    $updated_at
  */
-class Standard extends Model
+class QuestionaryAnswers extends Model
 {
 
     /**
@@ -21,12 +19,9 @@ class Standard extends Model
      * @var string
      */
     public static $rules = [
-        "standard_type" => "required",
-        "description" => "required",
-        "user_id" => "required|exists:users,id",
-        "follow" => "required",
-        "percentage" => "required"
-
+        "tracking_id" => "required|exists:trackings,id",
+        "question" => "required",
+        "answer"=>"required"
     ];
 
     /**
@@ -34,7 +29,7 @@ class Standard extends Model
      *
      * @var string
      */
-    protected $table = 'standards';
+    protected $table = 'questionary_answers';
 
     /**
      * The primary key for the model.
@@ -49,7 +44,7 @@ class Standard extends Model
      * @var array
      */
     protected $fillable = [
-        'standard_type', 'description', 'user_id', 'follow', 'percentage', 'created_at', 'updated_at'
+        'question', 'answer', 'is_root', 'tracking_id', 'created_at', 'updated_at'
     ];
 
     /**
@@ -67,7 +62,7 @@ class Standard extends Model
      * @var array
      */
     protected $casts = [
-        'standard_type' => 'string', 'description' => 'string', 'follow' => 'string', 'percentage' => 'int', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'question' => 'string', 'answer' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
@@ -84,7 +79,7 @@ class Standard extends Model
      *
      * @var boolean
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Scopes...
 

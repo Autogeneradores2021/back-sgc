@@ -46,7 +46,7 @@ class Analysis extends Model
      * @var array
      */
     protected $fillable = [
-        'request_id', 'cause', 'root', 'analysis_result', 'created_at', 'updated_at'
+        'tracking_id', 'cause_1', 'cause_2', 'cause_3', 'cause_4', 'cause_5', 'root', 'analysis_result', 'created_at', 'updated_at'
     ];
 
     /**
@@ -64,7 +64,7 @@ class Analysis extends Model
      * @var array
      */
     protected $casts = [
-        'cause' => 'string', 'root' => 'string', 'analysis_result' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'cause_1' => 'string', 'cause_2' => 'string', 'cause_3' => 'string', 'cause_4' => 'string', 'cause_5' => 'string', 'root' => 'string', 'analysis_result' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**

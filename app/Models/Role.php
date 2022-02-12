@@ -35,7 +35,9 @@ class Role extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'code';
+
+    public $incrementing = false;
 
     /**
      * Attributes that should be mass-assignable.

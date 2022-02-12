@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkTeamUsersTable extends Migration
+class CreateQuestionaryAnswersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateWorkTeamUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('work_team_users', function (Blueprint $table) {
+        Schema::create('questionary_answers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('area');
-            $table->string('position');
+            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
+            $table->string('question');
+            $table->string('answer');
+            $table->boolean('is_root')->default(false);
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateWorkTeamUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('work_team_users');
+        Schema::dropIfExists('questionary_answers');
     }
 }

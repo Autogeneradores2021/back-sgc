@@ -30,18 +30,15 @@ class UpgradePlan extends Model
      */
     public static $rules = [
         "tracking_id" => "required|exists:trackings,id",
-        "upgrade_plan_type" => "required",
-        "title" => "required|max:255",
+        "upgrade_plan_type_code" => "required",
         "person_assigned" => "required|max:100",
         "init_date" => "required|date",
         "end_date" => "required|date",
         "unit_measurement" => "required|nullable",
         "goal_description" => "required|nullable",
         "follow_process_description" => "required",
-        "finish_date" => "required|date",
         "evidence_file" => "required|nullable",
-        "percentage" => "required|nullable",
-        "status" => "required|max:10"
+        "percentage" => "required|nullable"
 
     ];
 
@@ -65,7 +62,7 @@ class UpgradePlan extends Model
      * @var array 
      */
     protected $fillable = [
-        'upgrade_plan_type', 'request_id', 'title', 'person_assigned', 'init_date', 'end_date', 'unit_measurement', 'goal_description', 'follow_process_description', 'finish_date', 'evidence_file', 'percentage', 'status', 'created_at', 'updated_at'
+        'upgrade_plan_type_code', 'tracking_id', 'title', 'person_assigned', 'init_date', 'end_date', 'unit_measurement', 'goal_description', 'follow_process_description', 'finish_date', 'evidence_file', 'percentage', 'status', 'created_at', 'updated_at'
     ];
 
     /**

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnRoleIdInUsersTable extends Migration
+class AddPositionAndAreaToUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,10 @@ class AddColumnRoleIdInUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role_code', 10)->nullable();
-            $table->foreign('role_code')->on('roles')->references('code')->cascadeOnDelete();
+            $table->string('position_code', 10)->nullable();
+            $table->foreign('position_code')->on('positions')->references('code')->cascadeOnDelete();
+            $table->string('area_code', 10)->nullable();
+            $table->foreign('area_code')->on('areas')->references('code')->cascadeOnDelete();
         });
     }
 

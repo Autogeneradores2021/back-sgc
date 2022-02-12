@@ -18,7 +18,8 @@ class CreateTrackingIssuesTable extends Migration
             $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
             $table->string('title', 100);
             $table->longText('description')->nullable();
-            $table->string('icon', 50)->nullable();
+            $table->string('icon_code', 10);
+            $table->foreign('icon_code')->on('icons')->references('code')->cascadeOnDelete();
             $table->timestamps();
         });
     }

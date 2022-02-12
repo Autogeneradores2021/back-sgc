@@ -6,10 +6,10 @@ use App\Models\Analysis;
 use App\Models\AnalysisDefinition;
 use App\Models\UpgradePlan;
 use App\Models\FinishRequest;
-use App\Models\Standard;
-use App\Models\StandardDefinition;
-use App\Models\WorkTeam;
-use App\Models\WorkTeamUser;
+use App\Models\QuestionaryAnswers;
+use App\Models\RequestModel;
+use App\Models\Tracking;
+use App\Models\TrackingTeamMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +21,14 @@ class WizardController extends Controller
         "data" => [],
         "status" => 200,
         "message" => ""
+    ];
+
+    public $dictionary = [
+        "sgc1" => 'tracking_team_members',
+        "sgc2" => 'upgrade_plans',
+        "sgc3" => 'questionary_answers',
+        "sgc4" => 'upgrade_plans',
+        "sgc5" => 'finish_requests',
     ];
 
     /**
@@ -46,6 +54,21 @@ class WizardController extends Controller
             $this->body["message"] = "Este paso todavia no esta disponible";
             $this->body["data"] = $e;
         }
+        return response()->json(["message" => $this->body["message"], "data" => $this->body["data"]], $this->body["status"]);
+    }
+
+    /**
+     * Complete a step
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function retrive(Request $request, $module, $step) {
+        $params = request()->query();
+        $data = DB::table($this->dictionary[$module.$step])->where($params)->get();
+        if ($module.$step == 'sgc5') { $data = FinishRequest::query()->where($params)->get(); }
+        $this->body["status"] = 200;
+        $this->body["data"] = $data;
+        $this->body["message"] = "ok";
         return response()->json(["message" => $this->body["message"], "data" => $this->body["data"]], $this->body["status"]);
     }
 
@@ -78,7 +101,7 @@ class WizardController extends Controller
             if ($validator->fails()) {  
                 $this->body["message"] = "Error validando el analisis";
                 array_push( $this->body["data"], $validator->errors() );
-                $this->body["status"] = 406;
+                $this->body["status"] = 400;
             } else {
                 $record = Analysis::create($a);
             }
@@ -111,7 +134,7 @@ class WizardController extends Controller
             if ($validator->fails()) {
                 $this->body["message"] = "Error validando el analisis";
                 array_push( $this->body["data"], $validator->errors() );
-                $this->body["status"] = 406;
+                $this->body["status"] = 400;
             } else {
                 UpgradePlan::create($a);
             }
@@ -138,7 +161,7 @@ class WizardController extends Controller
         if ($validator->fails()) {
             $this->body["message"] = "Error de validacion";
             $this->body["data"] = $validator->errors();
-            $this->body["status"] = 406;
+            $this->body["status"] = 400;
         } else {
             $record = FinishRequest::create($data);
             $this->body["status"] = 201;
@@ -151,7 +174,7 @@ class WizardController extends Controller
         $this->body["data"] = [];
         $this->body["message"] = [];
         $this->body["status"] = 201;
-        $keys = ['work_team', 'tracking_id'];
+        $keys = ['tracking_team_memebers', 'tracking_id'];
         $request = request($keys);
         if (!$request) {
             $this->body["message"] = "Seguimiento vacio";
@@ -160,33 +183,26 @@ class WizardController extends Controller
         }
         $tracking_id = (int)$request[$keys[1]];
         $data = $request[$keys[0]];
-        $workTeam = null;
+        $first = true;
         DB::beginTransaction();
         foreach ($data as $a) {
-            $validator = Validator::make($a, WorkTeamUser::$rules);
+            if ($first) {
+                $a['is_lead'] = true;
+                $first = false;
+                TrackingTeamMember::query()->where('tracking_id', '=', $tracking_id)->delete();
+            }
+            $a['tracking_id'] = $tracking_id;
+            $validator = Validator::make($a, TrackingTeamMember::$rules);
             if ($validator->fails()) {
                 $this->body["message"] = "Error validando equipo de trabajo";
                 array_push( $this->body["data"], $validator->errors() );
-                $this->body["status"] = 406;
+                $this->body["status"] = 400;
             } else {
-                $record = WorkTeamUser::create($a);
-                if (!$workTeam) {
-                    $workTeam = [
-                        "lead_id" => $record->id,
-                        "tracking_id" => $tracking_id
-                    ];
-                    $validator = Validator::make($workTeam, WorkTeam::$rules);
-                    if ($validator->fails()) {
-                        $this->body["message"] = "Error validando el equipo de trabajo";
-                        array_push( $this->body["data"], $validator->errors() );
-                        $this->body["status"] = 406;
-                    } else {
-                        $workTeam = WorkTeam::create($workTeam);
-                    }
-                }
+                $record = TrackingTeamMember::create($a);
             }
         }
         if ($this->body["status"] == 201) {
+            Tracking::updateStep($tracking_id, 1);
             DB::commit();
             $this->body["message"] = "El equipo se creo correctamente";
         } else {
@@ -208,19 +224,26 @@ class WizardController extends Controller
         }
         $tracking_id = (int)$request[$keys[1]];
         $data = $request[$keys[0]];
+        $first = true;
         DB::beginTransaction();
         foreach ($data as $a) {
-            $a["upgrade_plan_type"] = "I";
+            if ($first) {
+                $first = false;
+                UpgradePlan::query()->where('tracking_id', '=', $tracking_id)->where('upgrade_plan_type_code', '=', 'INM    ')->delete();
+            }
+            $a["upgrade_plan_type_code"] = "INM";
+            $a['tracking_id'] = $tracking_id;
             $validator = Validator::make($a, UpgradePlan::$rules);
             if ($validator->fails()) {
                 $this->body["message"] = "Error validando el analisis";
                 array_push( $this->body["data"], $validator->errors() );
-                $this->body["status"] = 406;
+                $this->body["status"] = 400;
             } else {
                 $a = UpgradePlan::create($a);
             }
         }
         if ($this->body["status"] == 201) {
+            Tracking::updateStep($tracking_id, 2);
             DB::commit();
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
@@ -229,43 +252,37 @@ class WizardController extends Controller
     }
 
     private function sgcS3() {
-        $this->body["data"] = [
-            "analysis_definitions" => [],
-            "analysis" => []
-        ];
+        $this->body["data"] = [];
         $this->body["message"] = [];
         $this->body["status"] = 201;
-        $keys = ['analysis', 'analysis_definitions', 'tracking_id'];
+        $keys = ['answers', 'tracking_id'];
         $request = request($keys);
         if (!$request) {
             $this->body["message"] = "Seguimiento vacio";
             $this->body["status"] = 400;
             return;
         }
-        $collection = $request[$keys[0]];
-        $definition = $request[$keys[1]];
-        $tracking_id = (int)$request[$keys[2]];
-        $validator = Validator::make($definition, AnalysisDefinition::$rules);
-        if ($validator->fails()) {
-            $this->body["message"] = "Error validando la definicion del analisis";
-            $this->body["data"]["analysis_definitions"] = $validator->errors();
-            $this->body["status"] = 406;
-        } else {
-            $definition = AnalysisDefinition::create($definition);
-        }
         DB::beginTransaction();
+        $collection = $request[$keys[0]];
+        $tracking_id = (int)$request[$keys[1]];
+        $first = true;
         foreach ($collection as $a) {
-            $a[$keys[2]] = $tracking_id;
-            $validator = Validator::make($a, Analysis::$rules);
+            if ($first) {
+                $first = false;
+                QuestionaryAnswers::query()->where('tracking_id', '=', $tracking_id)->delete();
+            }
+            $a[$keys[1]] = $tracking_id;
+            $validator = Validator::make($a, QuestionaryAnswers::$rules);
             if ($validator->fails()) {
                 $this->body["message"] = "Error validando el analisis";
-                array_push( $this->body["data"]["analysis"], $validator->errors() );
-                $this->body["status"] = 406;
+                array_push( $this->body["data"]["answers"], $validator->errors() );
+                $this->body["status"] = 400;
             } else {
-                $a = Analysis::create($a);
+                $a = QuestionaryAnswers::create($a);
             }
         }
         if ($this->body["status"] == 201) {
+            Tracking::updateStep($tracking_id, 3);
             DB::commit();
             $this->body["message"] = "El paso 3 se completo correctamente";
         } else {
@@ -286,19 +303,26 @@ class WizardController extends Controller
         }
         $tracking_id = (int)$request[$keys[1]];
         $data = $request[$keys[0]];
+        $first = true;
         DB::beginTransaction();
         foreach ($data as $a) {
-            $a["upgrade_plan_type"] = "D";
+            if ($first) {
+                $first = false;
+                UpgradePlan::query()->where('tracking_id', '=', $tracking_id)->where('upgrade_plan_type_code', '=', 'DEF')->delete();
+            }
+            $a["upgrade_plan_type_code"] = "DEF";
+            $a['tracking_id'] = $tracking_id;
             $validator = Validator::make($a, UpgradePlan::$rules);
             if ($validator->fails()) {
                 $this->body["message"] = "Error validando el analisis";
                 array_push( $this->body["data"], $validator->errors() );
-                $this->body["status"] = 406;
+                $this->body["status"] = 400;
             } else {
                 $a = UpgradePlan::create($a);
             }
         }
         if ($this->body["status"] == 201) {
+            Tracking::updateStep($tracking_id, 4);
             DB::commit();
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
@@ -307,66 +331,6 @@ class WizardController extends Controller
     }
 
     private function sgcS5() {
-        $this->body["data"] = [
-            "standard_definitions" => [],
-            "standard_activities" => [],
-            "comunication_activities" => []
-        ];
-        $this->body["message"] = [];
-        $this->body["status"] = 201;
-        $keys = ['standard_activities', 'comunication_activities', 'standard_definitions', 'tracking_id'];
-        $request = request($keys);
-        if (!$request) {
-            $this->body["message"] = "Seguimiento vacio";
-            $this->body["status"] = 400;
-            return;
-        }
-        $standardCollection = $request[$keys[0]];
-        $actvitieCollection = $request[$keys[1]];
-        $definition = $request[$keys[2]];
-        $tracking_id = (int)$request[$keys[3]];
-        $validator = Validator::make($definition, StandardDefinition::$rules);
-        if ($validator->fails()) {
-            $this->body["message"] = "Error validando la definicion del analisis";
-            $this->body["data"]["standard_definitions"] = $validator->errors();
-            $this->body["status"] = 406;
-        } else {
-            $definition = StandardDefinition::create($definition);
-        }
-        DB::beginTransaction();
-        foreach ($standardCollection as $a) {
-            $a[$keys[2]] = $tracking_id;
-            $a["standard_type"] = "E";
-            $validator = Validator::make($a, Standard::$rules);
-            if ($validator->fails()) {
-                $this->body["message"] = "Error validando el analisis";
-                array_push( $this->body["data"]["standard_activities"], $validator->errors() );
-                $this->body["status"] = 406;
-            } else {
-                $a = Analysis::create($a);
-            }
-        }
-        foreach ($actvitieCollection as $a) {
-            $a[$keys[2]] = $tracking_id;
-            $a["standard_type"] = "C";
-            $validator = Validator::make($a, Standard::$rules);
-            if ($validator->fails()) {
-                $this->body["message"] = "Error validando el analisis";
-                array_push( $this->body["data"]["comunication_activities"], $validator->errors() );
-                $this->body["status"] = 406;
-            } else {
-                $a = Analysis::create($a);
-            }
-        }
-        if ($this->body["status"] == 201) {
-            DB::commit();
-            $this->body["message"] = "El paso 3 se completo correctamente";
-        } else {
-            DB::rollback();
-        }
-    }
-
-    private function sgcS6() {
         $keys = ['finish_request', 'tracking_id'];
         $request = request($keys);
         if (!$request) {
@@ -376,16 +340,24 @@ class WizardController extends Controller
         }
         $tracking_id = (int)$request[$keys[1]];
         $data = $request[$keys[0]];
+        $data['tracking_id'] = $tracking_id;
         $validator = Validator::make($data, FinishRequest::$rules);
+        FinishRequest::query()->where('tracking_id', '=', $tracking_id)->delete();
         if ($validator->fails()) {
             $this->body["message"] = "Error de validacion";
             $this->body["data"] = $validator->errors();
-            $this->body["status"] = 406;
+            $this->body["status"] = 400;
         } else {
             $record = FinishRequest::create($data);
+            if ($record->result_code == 'OK') {
+                RequestModel::updateStatus($tracking_id, 'CLOSE');
+            }
+            Tracking::updateStatus($tracking_id, 'CLOSE');
+            Tracking::updateStep($tracking_id, 5);
             $this->body["status"] = 201;
             $this->body["data"] = $record;
             $this->body["message"] = "El plan de mejora se creo correctamente";
         }
     }
+
 }

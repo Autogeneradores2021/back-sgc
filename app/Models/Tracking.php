@@ -23,8 +23,22 @@ class Tracking extends Model
         "request_id" => "required|exists:requests,id",
         "step_count" => "required",
         "last_step_complete" => "required",
-        "status" => "required"
+        "status_code" => "required"
     ];
+
+    public static function updateStep($id, $step) {
+        $record = Tracking::query()->where('id', '=', $id)->get()->first();
+        $record->last_step_complete = $step;
+        $record->save();
+        return $record;
+    }
+
+    public static function updateStatus($id, $status) {
+        $record = Tracking::query()->where('id', '=', $id)->get()->first();
+        $record->status_code = $status;
+        $record->save();
+        return $record;
+    }
 
     /**
      * The database table used by the model.
@@ -46,7 +60,7 @@ class Tracking extends Model
      * @var array
      */
     protected $fillable = [
-        'request_id', 'step_count', 'last_step_complete', 'status', 'created_at', 'updated_at'
+        'request_id', 'step_count', 'last_step_complete', 'status_code', 'created_at', 'updated_at'
     ];
 
     /**

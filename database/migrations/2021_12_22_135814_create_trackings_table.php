@@ -18,7 +18,8 @@ class CreateTrackingsTable extends Migration
             $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
             $table->integer('step_count');
             $table->integer('last_step_complete');
-            $table->string('status', 10);
+            $table->string('status_code', 10);
+            $table->foreign('status_code')->on('status')->references('code')->cascadeOnDelete();
             $table->timestamps();
         });
     }

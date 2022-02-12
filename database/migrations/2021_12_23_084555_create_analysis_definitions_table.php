@@ -16,9 +16,10 @@ class CreateAnalysisDefinitionsTable extends Migration
         Schema::create('analysis_definitions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
-            $table->string('problem_understand');
-            $table->string('local_revision');
-            $table->string('viability_test');
+            $table->string('problem_understand', 3);
+            $table->string('local_revision', 3);
+            $table->string('data_review', 3);
+            $table->string('viability_test', 3);
             $table->timestamps();
         });
     }

@@ -30,22 +30,21 @@ class RequestModel extends Model
      * @var string
      */
     public static $rules = [
-        "request_type"=>"required|max:3",
+        "request_type_code"=>"required|exists:request_types,code",
         "init_date" => "required|date",
-        "init_date" => "required",
+        "init_date" => "required|date",
         "detected_date" => "required|date", 
-        "detected_in" => "required|max:50",
+        "detected_in_code" => "required|exists:detected_places,code",
         "detected_for_id" => "required|exists:users,id",
-        "unfulfilled_requirement" => "required|max:100",
+        "unfulfilled_requirement_code" => "required|exists:unfulfilled_requirements,code",
         "process_lead_id" => "required|exists:users,id",
-        "process_affected" => "required|max:50",
-        "how_detected" => "required|max:50",
-        "action_type" => "required|max:10",
-        // "request_code" => "required|max:30",
+        "affected_process_code" => "required|exists:affected_processes,code",
+        "how_detected_code" => "required|exists:detection_types,code",
+        "action_type_code" => "required|exists:action_types,code",
         "evidence_description" => "required",
         "request_description" => "required",
         "evidence_file" => "required",
-        "status"=> "required|max:10"
+        "status_code"=> "required|max:10"
     ];
 
 
@@ -56,6 +55,16 @@ class RequestModel extends Model
             return $this->process_lead->name;
         }
         return null;
+    }
+
+
+
+    public static function updateStatus($id, $status) {
+        $record = Tracking::query()->where('id', '=', $id)->get('request_id')->first();
+        $record = RequestModel::query()->where('id', '=', $record->request_id)->get('status_code')->first();
+        $record->status_code = $status;
+        $record->save();
+        return $record;
     }
 
     /**
@@ -78,8 +87,23 @@ class RequestModel extends Model
      * @var array
      */
     protected $fillable = [
-        'request_type',
-        'init_date', 'detected_date', 'detected_in', 'detected_for_id', 'unfulfilled_requirement', 'process_lead_id', 'process_affected', 'how_detected', 'action_type', 'request_code', 'evidence_description', 'request_description', 'evidence_file', 'status', 'created_at', 'updated_at => "required"'
+        'request_type_code',
+        'init_date',
+        'detected_date',
+        'detected_in_code',
+        'detected_for_id',
+        'unfulfilled_requirement_code',
+        'process_lead_id',
+        'affected_process_code',
+        'how_detected_code',
+        'action_type_code',
+        'request_code',
+        'evidence_description',
+        'request_description',
+        'evidence_file',
+        'status_code',
+        'created_at',
+        'updated_at => "required"'
     ];
 
     /**
@@ -114,7 +138,7 @@ class RequestModel extends Model
      *
      * @var boolean
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Scopes...
 

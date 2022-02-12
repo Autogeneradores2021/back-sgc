@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WizardController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\SelectableController;
 use App\Http\Controllers\TrackingController;
 
 /*
@@ -19,8 +20,18 @@ use App\Http\Controllers\TrackingController;
 |
 */
 
-Route::post('users/create', [UserController::class, 'create']);
 
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'user'
+
+], function ($router) {
+    Route::get('me', [UserController::class, 'retrive']);
+    Route::post('create', [UserController::class, 'create']);
+    Route::get('', [UserController::class, 'index']);
+
+});
 Route::group([
 
     'middleware' => 'api',
@@ -47,6 +58,19 @@ Route::group([
 
 });
 
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'selectable'
+
+], function ($router) {
+    # request
+    Route::delete('/{table}/delete/{code}', [SelectableController::class, 'delete']);
+    Route::post('/{table}/create', [SelectableController::class, 'create']);
+    Route::get('/{table}', [SelectableController::class, 'index']);
+
+});
+
 
 Route::group([
 
@@ -67,6 +91,7 @@ Route::group([
 ], function ($router) {
     Route::post('{module}', [WizardController::class, 'index']);
     Route::post('{module}/complete/{step}', [WizardController::class, 'complete']);
+    Route::get('{module}/retrive/{step}', [WizardController::class, 'retrive']);
     Route::post('{module}/show/{step}', [WizardController::class, 'show']);
 
 });

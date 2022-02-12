@@ -19,7 +19,7 @@ class RequestController extends Controller
      */
     public function create() {
         $requestData = request(['request'])['request'];
-        $requestData['status'] = 'open';
+        $requestData['status_code'] = 'OPEN';
         $requestRecord = new RequestModel($requestData);
         $validator = Validator::make($requestData, RequestModel::$rules);
         if ($validator->fails()) {
@@ -50,13 +50,19 @@ class RequestController extends Controller
             "per_page" => 10,
             "columns" => ['*'],
             "pageName" => 'page',
-            "page" => 1
+            "page" => 1,
+            "request_type" => 'SGC',
+            "request_status" => ['OPEN', 'CLOSE', 'R_TO_CLOSE'],
+            "search" => ""
         ];
         $queryParams = $request->query();
         foreach ($queryParams as $key => $value) {
            $params[$key] = $value;
         }
-        $query = RequestModel::query()->paginate(
+        $query = RequestModel::query()->where('request_type_code', '=', $params['request_type'])
+        ->whereIn('status_code', $params['request_status'])
+        ->orderBy('id')
+        ->paginate(
             $params["per_page"],
             $params["columns"],
             $params["pageName"],

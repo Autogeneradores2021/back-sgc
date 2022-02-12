@@ -46,7 +46,7 @@ class TrackingController extends Controller
             400);
         }
         $data = $request[$keys[0]];
-        $data['status'] = "open";
+        $data['status_code'] = "OPEN";
         $validator = Validator::make($data, Tracking::$rules);
         if ($validator->fails()) {
             return response()->json([

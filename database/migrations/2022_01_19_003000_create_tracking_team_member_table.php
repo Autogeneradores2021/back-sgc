@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkTeamsTable extends Migration
+class CreateTrackingTeamMemberTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,14 @@ class CreateWorkTeamsTable extends Migration
      */
     public function up()
     {
-        Schema::create('work_teams', function (Blueprint $table) {
+        Schema::create('tracking_team_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lead_id')->constrained('work_team_users')->cascadeOnDelete();
             $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->nullable();
+            $table->string('name');
+            $table->string('area');
+            $table->string('position');
+            $table->boolean('is_lead')->default(false);
             $table->timestamps();
         });
     }
@@ -28,6 +32,6 @@ class CreateWorkTeamsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('work_teams');
+        Schema::dropIfExists('tracking_team_members');
     }
 }

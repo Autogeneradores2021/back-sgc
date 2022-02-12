@@ -23,7 +23,8 @@ class AnalysisDefinition extends Model
         "tracking_id" => "required|exists:trackings,id",
         "problem_understand" => "required",
         "local_revision" => "required",
-        "viability_test" => "required"
+        "viability_test" => "required",
+        "data_review" => "required"
     ];
 
 
@@ -47,7 +48,7 @@ class AnalysisDefinition extends Model
      * @var array
      */
     protected $fillable = [
-        'request_id', 'problem_understand', 'local_revision', 'viability_test', 'created_at', 'updated_at'
+        'tracking_id', 'request_id', 'data_review', 'problem_understand', 'local_revision', 'viability_test', 'created_at', 'updated_at'
     ];
 
     /**
@@ -65,7 +66,7 @@ class AnalysisDefinition extends Model
      * @var array
      */
     protected $casts = [
-        'problem_understand' => 'string', 'local_revision' => 'string', 'viability_test' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'data_review' => 'string', 'problem_understand' => 'string', 'local_revision' => 'string', 'viability_test' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
