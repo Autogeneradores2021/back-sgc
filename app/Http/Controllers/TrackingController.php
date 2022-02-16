@@ -65,12 +65,12 @@ class TrackingController extends Controller
 
     /**
      * validate param request_id
-     * 
+     *  
      * @return \Illuminate\Http\Response
      */
     public function query_validate($query) 
     {
-        return array_key_exists("request_id", $query);
+        return array_key_exists("upgrade_plan_id", $query);
     }
 
 

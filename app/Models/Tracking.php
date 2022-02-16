@@ -20,10 +20,10 @@ class Tracking extends Model
      * @var string
      */
     public static $rules = [
-        "request_id" => "required|exists:requests,id",
-        "step_count" => "required",
-        "last_step_complete" => "required",
-        "status_code" => "required"
+        "upgrade_plan_id" => "required|exists:upgrade_plans,id",
+        "follow_process_description" => "required",
+        "percentage" => "required",
+        "goal_description" => "required"
     ];
 
     public static function updateStep($id, $step) {
@@ -60,7 +60,7 @@ class Tracking extends Model
      * @var array
      */
     protected $fillable = [
-        'request_id', 'step_count', 'last_step_complete', 'status_code', 'created_at', 'updated_at'
+        'upgrade_plan_id', 'follow_process_description', 'percentage', 'goal_description', 'created_at', 'updated_at'
     ];
 
     /**
@@ -78,7 +78,7 @@ class Tracking extends Model
      * @var array
      */
     protected $casts = [
-        'title' => 'string', 'description' => 'string', 'icon' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'follow_process_description' => 'string', 'goal_description' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
@@ -95,7 +95,7 @@ class Tracking extends Model
      *
      * @var boolean
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Scopes...
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateQuestionaryAnswersTable extends Migration
+class CreateTrackingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateQuestionaryAnswersTable extends Migration
      */
     public function up()
     {
-        Schema::create('questionary_answers', function (Blueprint $table) {
+        Schema::create('trackings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
-            $table->string('question');
-            $table->string('answer');
-            $table->boolean('is_root')->default(false);
+            $table->foreignId('upgrade_plan_id')->constrained('upgrade_plans')->cascadeOnDelete();
+            $table->integer('percentage');
+            $table->longText('follow_process_description');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateQuestionaryAnswersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questionary_answers');
+        Schema::dropIfExists('trackings');
     }
 }

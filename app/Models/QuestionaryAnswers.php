@@ -19,7 +19,7 @@ class QuestionaryAnswers extends Model
      * @var string
      */
     public static $rules = [
-        "tracking_id" => "required|exists:trackings,id",
+        "request_id" => "required|exists:requests,id",
         "question" => "required",
         "answer"=>"required"
     ];
@@ -44,7 +44,7 @@ class QuestionaryAnswers extends Model
      * @var array
      */
     protected $fillable = [
-        'question', 'answer', 'is_root', 'tracking_id', 'created_at', 'updated_at'
+        'question', 'answer', 'is_root', 'request_id', 'created_at', 'updated_at'
     ];
 
     /**

@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string $problem_understand
- * @property string $local_revision
- * @property string $viability_test
+ * @property string $area
+ * @property string $position
  * @property int    $created_at
  * @property int    $updated_at
  */
-class AnalysisDefinition extends Model
+class TeamMember extends Model
 {
 
     /**
@@ -20,20 +19,19 @@ class AnalysisDefinition extends Model
      * @var string
      */
     public static $rules = [
-        "tracking_id" => "required|exists:trackings,id",
-        "problem_understand" => "required",
-        "local_revision" => "required",
-        "viability_test" => "required",
-        "data_review" => "required"
+        "request_id" => "required|exists:requests,id",
+        "user_id" => "exists:users,id",
+        "area" => "required",
+        "position" => "required",
+        "name" => "required"
     ];
-
 
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'analysis_definitions';
+    protected $table = 'team_members';
 
     /**
      * The primary key for the model.
@@ -48,7 +46,7 @@ class AnalysisDefinition extends Model
      * @var array
      */
     protected $fillable = [
-        'tracking_id', 'request_id', 'data_review', 'problem_understand', 'local_revision', 'viability_test', 'created_at', 'updated_at'
+        'user_id', 'area', 'position', 'created_at', 'updated_at', 'name', "request_id", 'is_lead'
     ];
 
     /**
@@ -66,7 +64,7 @@ class AnalysisDefinition extends Model
      * @var array
      */
     protected $casts = [
-        'data_review' => 'string', 'problem_understand' => 'string', 'local_revision' => 'string', 'viability_test' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'is_lead' => 'boolean', 'name' => 'string', 'area' => 'string', 'position' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
@@ -83,7 +81,7 @@ class AnalysisDefinition extends Model
      *
      * @var boolean
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Scopes...
 

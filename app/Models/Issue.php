@@ -5,25 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string $area
- * @property string $position
+ * @property string $title
+ * @property string $description
+ * @property string $icon
  * @property int    $created_at
  * @property int    $updated_at
  */
-class TrackingTeamMember extends Model
+class TrackingIssue extends Model
 {
-
+ 
     /**
      * validation
-     *
+     * 
      * @var string
      */
     public static $rules = [
-        "tracking_id" => "required|exists:trackings,id",
-        "user_id" => "exists:users,id",
-        "area" => "required",
-        "position" => "required",
-        "name" => "required"
+        "request_id" => "required|exists:requests,id",
+        "title" => "required|max:100",
+        "description" => "required|nullable",
+        "icon" => "required|nullable|max:50"
     ];
 
     /**
@@ -31,7 +31,7 @@ class TrackingTeamMember extends Model
      *
      * @var string
      */
-    protected $table = 'tracking_team_members';
+    protected $table = 'issues';
 
     /**
      * The primary key for the model.
@@ -46,7 +46,7 @@ class TrackingTeamMember extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'area', 'position', 'created_at', 'updated_at', 'name', "tracking_id", 'is_lead'
+        'request_id', 'title', 'description', 'icon', 'created_at', 'updated_at'
     ];
 
     /**
@@ -64,7 +64,7 @@ class TrackingTeamMember extends Model
      * @var array
      */
     protected $casts = [
-        'is_lead' => 'boolean', 'name' => 'string', 'area' => 'string', 'position' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'title' => 'string', 'description' => 'string', 'icon' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
@@ -81,7 +81,7 @@ class TrackingTeamMember extends Model
      *
      * @var boolean
      */
-    public $timestamps = true;
+    public $timestamps = false;
 
     // Scopes...
 

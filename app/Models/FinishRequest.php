@@ -30,7 +30,7 @@ class FinishRequest extends Model
      * @var string
      */
     public static $rules = [
-        "tracking_id" => "required|exists:trackings,id",
+        "request_id" => "required|exists:requests,id",
         "user_tracking_id" => "required|exists:users,id",
         "user_granted_id" => "required",
         "tracking_date" => "required|date",
@@ -65,7 +65,7 @@ class FinishRequest extends Model
      */
     protected $fillable = [
         
-        "tracking_id",
+        "request_id",
         "user_tracking_id",
         "user_granted_id",
         "tracking_date",
@@ -126,7 +126,7 @@ class FinishRequest extends Model
 
     public function getUserGrantedNameAttribute($_) {
         if ($this->user_granted_id) {
-            return User::query()->where('id', '=', $this->user_tracking_id)->first(['name'])->name;
+            return User::query()->where('id', '=', $this->user_granted_id)->first(['name'])->name;
         }
         return null;
     }

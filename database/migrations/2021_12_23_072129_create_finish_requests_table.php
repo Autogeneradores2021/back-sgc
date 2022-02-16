@@ -15,7 +15,7 @@ class CreateFinishRequestsTable extends Migration
     {
         Schema::create('finish_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
+            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
             $table->datetime('tracking_date');
             $table->datetime('tracking_date_period_init')->nullable();
             $table->datetime('tracking_date_period_end')->nullable();

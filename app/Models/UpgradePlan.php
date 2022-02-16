@@ -29,7 +29,7 @@ class UpgradePlan extends Model
      * @var string 
      */
     public static $rules = [
-        "tracking_id" => "required|exists:trackings,id",
+        "request_id" => "required|exists:requests,id",
         "upgrade_plan_type_code" => "required",
         "person_assigned" => "required|max:100",
         "init_date" => "required|date",
@@ -62,7 +62,7 @@ class UpgradePlan extends Model
      * @var array 
      */
     protected $fillable = [
-        'upgrade_plan_type_code', 'tracking_id', 'title', 'person_assigned', 'init_date', 'end_date', 'unit_measurement', 'goal_description', 'follow_process_description', 'finish_date', 'evidence_file', 'percentage', 'status', 'created_at', 'updated_at'
+        'upgrade_plan_type_code', 'request_id', 'title', 'person_assigned', 'init_date', 'end_date', 'unit_measurement', 'goal_description', 'follow_process_description', 'finish_date', 'evidence_file', 'percentage', 'status', 'created_at', 'updated_at'
     ];
 
     /**

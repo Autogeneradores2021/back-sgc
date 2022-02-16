@@ -24,7 +24,8 @@ class CreateAllSelectableTables extends Migration
         'result_types',
         # users
         'areas',
-        'positions'
+        'positions',
+        'identification_types'
     ];
 
     /**

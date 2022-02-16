@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int      $created_at
  * @property int      $updated_at
  */
-class RequestModel extends Model
+class Request extends Model
 {
 
     /**
@@ -49,10 +49,10 @@ class RequestModel extends Model
 
 
     protected $appends = ['process_lead_name'];
-
-    public function getProcessLeadNameAttribute($value) {
-        if ($this->process_lead) {
-            return $this->process_lead->name;
+    
+    public function getProcessLeadNameAttribute() {
+        if ($this->process_lead_id) {
+            return User::query()->where('id', '=', $this->process_lead_id)->get('name')->first()->name;
         }
         return null;
     }
@@ -61,7 +61,7 @@ class RequestModel extends Model
 
     public static function updateStatus($id, $status) {
         $record = Tracking::query()->where('id', '=', $id)->get('request_id')->first();
-        $record = RequestModel::query()->where('id', '=', $record->request_id)->get('status_code')->first();
+        $record = Request::query()->where('id', '=', $record->request_id)->get('status_code')->first();
         $record->status_code = $status;
         $record->save();
         return $record;
@@ -103,7 +103,6 @@ class RequestModel extends Model
         'evidence_file',
         'status_code',
         'created_at',
-        'updated_at => "required"'
     ];
 
     /**
@@ -112,7 +111,6 @@ class RequestModel extends Model
      * @var array
      */
     protected $hidden = [
-        'process_lead'
     ];
 
     /**
@@ -145,9 +143,4 @@ class RequestModel extends Model
     // Functions ...
 
     // Relations ...
-
-    public function process_lead()
-    {
-        return $this->belongsTo('App\Models\User', 'process_lead_id', 'id');
-    }
 }

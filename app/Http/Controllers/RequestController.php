@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Action;
 use Illuminate\Http\Request;
-use App\Models\RequestModel;
+use App\Models\Request as ModelsRequest;
 use Illuminate\Support\Facades\Validator;
 
 use function GuzzleHttp\Promise\all;
@@ -19,9 +19,9 @@ class RequestController extends Controller
      */
     public function create() {
         $requestData = request(['request'])['request'];
-        $requestData['status_code'] = 'OPEN';
-        $requestRecord = new RequestModel($requestData);
-        $validator = Validator::make($requestData, RequestModel::$rules);
+        $requestData['status_code'] = 'PENDING';
+        $requestRecord = new ModelsRequest($requestData);
+        $validator = Validator::make($requestData, ModelsRequest::$rules);
         if ($validator->fails()) {
             return response()->json(
                 [
@@ -52,22 +52,30 @@ class RequestController extends Controller
             "pageName" => 'page',
             "page" => 1,
             "request_type" => 'SGC',
-            "request_status" => ['OPEN', 'CLOSE', 'R_TO_CLOSE'],
-            "search" => ""
+            "request_status" => ['OPEN', 'CLOSE', 'R_TO_CLOSE', 'PENDING'],
+            "search" => "",
+            "id" => null
         ];
         $queryParams = $request->query();
         foreach ($queryParams as $key => $value) {
            $params[$key] = $value;
         }
-        $query = RequestModel::query()->where('request_type_code', '=', $params['request_type'])
-        ->whereIn('status_code', $params['request_status'])
-        ->orderBy('id')
-        ->paginate(
-            $params["per_page"],
-            $params["columns"],
-            $params["pageName"],
-            $params["page"],
-        );
+        if ($params['id']) {
+            $query = [];
+            $query['data'] = ModelsRequest::query()->where('id', '=', $params['id'])
+            ->where('request_type_code', '=', $params['request_type'])
+            ->get();
+        } else {
+            $query = ModelsRequest::query()->where('request_type_code', '=', $params['request_type'])
+            ->whereIn('status_code', $params['request_status'])
+            ->orderBy('id')
+            ->paginate(
+                $params["per_page"],
+                $params["columns"],
+                $params["pageName"],
+                $params["page"],
+            );
+        }
         return response()->json($query);
     }
 
