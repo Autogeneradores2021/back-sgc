@@ -55,9 +55,11 @@ class TrackingController extends Controller
             ],
             406);
         } else {
+            $record = Tracking::create($data);
+            Tracking::verify($record->upgrade_plan_id);
             return response()->json([
                 "message" => "ok",
-                "data" => Tracking::create($data)
+                "data" => $record
             ],
             201);
         }

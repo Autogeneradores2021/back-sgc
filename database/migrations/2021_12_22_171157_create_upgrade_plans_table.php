@@ -18,7 +18,7 @@ class CreateUpgradePlansTable extends Migration
             $table->string('upgrade_plan_type_code', 10);
             $table->foreign('upgrade_plan_type_code')->on('upgrade_plan_types')->references('code')->cascadeOnDelete();
             $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
-            $table->string('person_assigned', 100);
+            $table->foreignId('person_assigned_id')->constrained('users')->cascadeOnDelete();;
             $table->datetime('init_date');
             $table->datetime('end_date');
             $table->string('unit_measurement')->nullable();
@@ -26,7 +26,6 @@ class CreateUpgradePlansTable extends Migration
             $table->longText('follow_process_description');
             $table->datetime('finish_date')->nullable();
             $table->longText('evidence_file')->nullable();
-            $table->integer('percentage')->nullable();
             $table->timestamps();
         });
     }

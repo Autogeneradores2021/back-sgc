@@ -31,16 +31,25 @@ class UpgradePlan extends Model
     public static $rules = [
         "request_id" => "required|exists:requests,id",
         "upgrade_plan_type_code" => "required",
-        "person_assigned" => "required|max:100",
+        "person_assigned_id" => "required|max:100",
         "init_date" => "required|date",
         "end_date" => "required|date",
         "unit_measurement" => "required|nullable",
         "goal_description" => "required|nullable",
         "follow_process_description" => "required",
-        "evidence_file" => "required|nullable",
-        "percentage" => "required|nullable"
+        "evidence_file" => "required|nullable"
 
     ];
+
+    protected $appends = ['person_assigned_name'];
+
+    public function getPersonAssignedNameAttribute() {
+        if ($this->person_assigned_id) {
+            return User::query()->where('id', '=', $this->person_assigned_id)->get('name')->first()->name;
+        }
+        return null;
+    }
+
 
     /**
      * The database table used by the model.
@@ -62,7 +71,7 @@ class UpgradePlan extends Model
      * @var array 
      */
     protected $fillable = [
-        'upgrade_plan_type_code', 'request_id', 'title', 'person_assigned', 'init_date', 'end_date', 'unit_measurement', 'goal_description', 'follow_process_description', 'finish_date', 'evidence_file', 'percentage', 'status', 'created_at', 'updated_at'
+        'upgrade_plan_type_code', 'request_id', 'title', 'person_assigned_id', 'init_date', 'end_date', 'unit_measurement', 'goal_description', 'follow_process_description', 'finish_date', 'evidence_file', 'status', 'created_at', 'updated_at'
     ];
 
     /**
@@ -80,7 +89,7 @@ class UpgradePlan extends Model
      * @var array
      */
     protected $casts = [
-        'upgrade_plan_type' => 'string', 'title' => 'string', 'person_assigned' => 'string', 'init_date' => 'datetime', 'end_date' => 'datetime', 'unit_measurement' => 'string', 'goal_description' => 'string', 'follow_process_description' => 'string', 'finish_date' => 'datetime', 'evidence_file' => 'string', 'percentage' => 'int', 'status' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'upgrade_plan_type' => 'string', 'title' => 'string', 'person_assigned' => 'string', 'init_date' => 'datetime', 'end_date' => 'datetime', 'unit_measurement' => 'string', 'goal_description' => 'string', 'follow_process_description' => 'string', 'finish_date' => 'datetime', 'evidence_file' => 'string', 'status' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**

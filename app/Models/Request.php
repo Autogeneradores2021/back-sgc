@@ -48,7 +48,7 @@ class Request extends Model
     ];
 
 
-    protected $appends = ['process_lead_name'];
+    protected $appends = ['process_lead_name', 'detected_for_name'];
     
     public function getProcessLeadNameAttribute() {
         if ($this->process_lead_id) {
@@ -57,14 +57,17 @@ class Request extends Model
         return null;
     }
 
+    public function getDetectedForNameAttribute() {
+        if ($this->detected_for_id) {
+            return User::query()->where('id', '=', $this->detected_for_id)->get('name')->first()->name;
+        }
+        return null;
+    }
+
 
 
     public static function updateStatus($id, $status) {
-        $record = Tracking::query()->where('id', '=', $id)->get('request_id')->first();
-        $record = Request::query()->where('id', '=', $record->request_id)->get('status_code')->first();
-        $record->status_code = $status;
-        $record->save();
-        return $record;
+        return Request::query()->where('id', '=', $id)->update(['status_code' => $status]);
     }
 
     /**

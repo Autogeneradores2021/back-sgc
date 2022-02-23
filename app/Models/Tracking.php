@@ -26,18 +26,20 @@ class Tracking extends Model
         "goal_description" => "required"
     ];
 
-    public static function updateStep($id, $step) {
-        $record = Tracking::query()->where('id', '=', $id)->get()->first();
-        $record->last_step_complete = $step;
-        $record->save();
-        return $record;
-    }
-
-    public static function updateStatus($id, $status) {
-        $record = Tracking::query()->where('id', '=', $id)->get()->first();
-        $record->status_code = $status;
-        $record->save();
-        return $record;
+    public static function verify($id) {
+        $request_id = UpgradePlan::query()->where('id', '=', $id)->get('request_id')->first()->request_id;
+        $collection = UpgradePlan::query()->where('request_id', '=', $request_id)->where('upgrade_plan_type_code', '=', 'DEF')->get();
+        $valid = true;
+        foreach ($collection as $value) {
+            $record = Tracking::query()->where('upgrade_plan_id', '=', $value->id)->orderBy('id', 'desc')->get('percentage')->first();
+            if ($record['percentage'] < 100) {
+                $valid = false;
+            }
+        }
+        if ($valid) {
+            Request::updateStatus($request_id, 'R_TO_CLOSE');
+        }
+        return null;
     }
 
     /**

@@ -64,8 +64,10 @@ class WizardController extends Controller
      */
     public function retrive(Request $request, $module, $step) {
         $params = request()->query();
-        $data = DB::table($this->dictionary[$module.$step])->where($params)->get();
+        $data = DB::table($this->dictionary[$module.$step])->where($params)->orderBy('id')->get();
         if ($module.$step == 'sgc5') { $data = FinishRequest::query()->where($params)->get(); }
+        if ($module.$step == 'sgc2') { $data = UpgradePlan::query()->where($params)->get(); }
+        if ($module.$step == 'sgc4') { $data = UpgradePlan::query()->where($params)->get(); }
         $this->body["status"] = 200;
         $this->body["data"] = $data;
         $this->body["message"] = "ok";
@@ -200,7 +202,6 @@ class WizardController extends Controller
             }
         }
         if ($this->body["status"] == 201) {
-            // Tracking::updateStep($request_id, 1);
             DB::commit();
             $this->body["message"] = "El equipo se creo correctamente";
         } else {
@@ -239,7 +240,6 @@ class WizardController extends Controller
             }
         }
         if ($this->body["status"] == 201) {
-            // Tracking::updateStep($request_id, 2);
             DB::commit();
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
@@ -276,7 +276,6 @@ class WizardController extends Controller
             }
         }
         if ($this->body["status"] == 201) {
-            // Tracking::updateStep($a['request_id'], 3);
             DB::commit();
             $this->body["message"] = "El paso 3 se completo correctamente";
         } else {
@@ -314,7 +313,7 @@ class WizardController extends Controller
             }
         }
         if ($this->body["status"] == 201) {
-            // Tracking::updateStep($a['request_id'], 4);
+            ModelsRequest::updateStatus($a['request_id'], 'OPEN');
             DB::commit();
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
@@ -340,10 +339,10 @@ class WizardController extends Controller
         } else {
             $record = FinishRequest::create($data);
             if ($record->result_code == 'OK') {
-                // ModelsRequest::updateStatus($request_id, 'CLOSE');
+                ModelsRequest::updateStatus($data['request_id'], 'CLOSE');
+            } else {
+                ModelsRequest::updateStatus($data['request_id'], 'PENDING');
             }
-            // Tracking::updateStatus($request_id, 'CLOSE');
-            // Tracking::updateStep($request_id, 5);
             $this->body["status"] = 201;
             $this->body["data"] = $record;
             $this->body["message"] = "El plan de mejora se creo correctamente";
