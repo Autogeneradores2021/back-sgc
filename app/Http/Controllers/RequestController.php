@@ -2,31 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Action;
 use Illuminate\Http\Request;
-use App\Models\RequestModel;
+use App\Models\Request as ModelsRequest;
 use Illuminate\Support\Facades\Validator;
+
+use function GuzzleHttp\Promise\all;
 
 class RequestController extends Controller
 {
 
     /**
      * create new request
-     *
+     *  
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request, $module) {
+    public function create() {
         $requestData = request(['request'])['request'];
-        $requestRecord = new RequestModel($requestData);
-        $requestRecord->request_type = $module;
-        $requestRecord->status = "open";
-        $validator = Validator::make($requestData, $requestRecord->rules);
+        $requestData['status_code'] = 'PENDING';
+        $requestRecord = new ModelsRequest($requestData);
+        $validator = Validator::make($requestData, ModelsRequest::$rules);
         if ($validator->fails()) {
             return response()->json(
                 [
                     "message" => "Error de validacion",
-                    "data" => $validator->errors()
+                    "data" => $validator->errors(),
                 ],
-                400
+                406
             );
         }
         $requestRecord->save();
@@ -37,4 +39,44 @@ class RequestController extends Controller
             ]
         );
     }
+
+    /**
+     * list paginate request
+     *  
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request) {
+        $params = [
+            "per_page" => 10,
+            "columns" => ['*'],
+            "pageName" => 'page',
+            "page" => 1,
+            "request_type" => 'SGC',
+            "request_status" => ['OPEN', 'CLOSE', 'R_TO_CLOSE', 'PENDING'],
+            "search" => "",
+            "id" => null
+        ];
+        $queryParams = $request->query();
+        foreach ($queryParams as $key => $value) {
+           $params[$key] = $value;
+        }
+        if ($params['id']) {
+            $query = [];
+            $query['data'] = ModelsRequest::query()->where('id', '=', $params['id'])
+            ->where('request_type_code', '=', $params['request_type'])
+            ->get();
+        } else {
+            $query = ModelsRequest::query()->where('request_type_code', '=', $params['request_type'])
+            ->whereIn('status_code', $params['request_status'])
+            ->orderBy('id')
+            ->paginate(
+                $params["per_page"],
+                $params["columns"],
+                $params["pageName"],
+                $params["page"],
+            );
+        }
+        return response()->json($query);
+    }
+
 }

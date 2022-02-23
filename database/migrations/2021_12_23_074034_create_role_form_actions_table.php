@@ -16,7 +16,8 @@ class CreateRoleFormActionsTable extends Migration
         Schema::create('role_form_actions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('role_form_id')->constrained('role_forms')->cascadeOnDelete();
-            $table->foreignId('action_id')->constrained('actions')->cascadeOnDelete();
+            $table->string('action_code', 10)->nullable();
+            $table->foreign('action_code')->on('actions')->references('code')->cascadeOnDelete();
             $table->timestamps();
         });
     }

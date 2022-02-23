@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrackingIssuesTable extends Migration
+class CreateTrackingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateTrackingIssuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tracking_issues', function (Blueprint $table) {
+        Schema::create('trackings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
-            $table->string('title', 100);
-            $table->longText('description')->nullable();
-            $table->string('icon', 50)->nullable();
+            $table->foreignId('upgrade_plan_id')->constrained('upgrade_plans')->cascadeOnDelete();
+            $table->integer('percentage');
+            $table->longText('follow_process_description');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateTrackingIssuesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tracking_issues');
+        Schema::dropIfExists('trackings');
     }
 }

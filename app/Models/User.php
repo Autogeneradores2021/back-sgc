@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -32,6 +33,9 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
+        'updated_at',
+        'email_verified_at'
     ];
 
     /**
@@ -61,5 +65,21 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    protected $appends = ['area_description', 'position_description'];
+
+    public function getAreaDescriptionAttribute($_) {
+        if ($this->area_code) {
+            return DB::table('areas')->where('code', '=', $this->area_code)->first(['description'])->description;
+        }
+        return null;
+    }
+
+    public function getPositionDescriptionAttribute($_) {
+        if ($this->position_code) {
+            return DB::table('positions')->where('code', '=', $this->position_code)->first(['description'])->description;
+        }
+        return null;
     }
 }
