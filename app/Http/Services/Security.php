@@ -9,7 +9,7 @@ class Security {
 
     public static function login($data) {
         $data['user'] = $data['email'];
-        $response = Http::withHeaders([
+        $response = Http::timeout(3)->withHeaders([
             'key' => env('SECURITY_PRIVATE_KEY', '---any-key-jet---'),
         ])->post(env('SECURITY_URL', '---any-url-yet---').'auth/login-user', $data);
         if ($response->status() != 200) { return null; }
