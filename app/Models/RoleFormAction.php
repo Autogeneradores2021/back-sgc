@@ -10,6 +10,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RoleFormAction extends Model
 {
+
+    /**
+     * validation
+     *
+     * @var string
+     */
+    public static $rules = [
+        "role_form_id" => "required|exists:role_forms,id",
+        "action_id" => "required|exists:actions,id"
+
+    ];
+
     /**
      * The database table used by the model.
      *

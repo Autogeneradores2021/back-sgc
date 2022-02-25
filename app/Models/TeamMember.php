@@ -5,17 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property int $created_at
- * @property int $updated_at
+ * @property string $area
+ * @property string $position
+ * @property int    $created_at
+ * @property int    $updated_at
  */
-class WorkTeams extends Model
+class TeamMember extends Model
 {
+
+    /**
+     * validation
+     *
+     * @var string
+     */
+    public static $rules = [
+        "request_id" => "required|exists:requests,id",
+        "user_id" => "exists:users,id",
+        "area" => "required",
+        "position" => "required",
+        "name" => "required"
+    ];
+
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'work_teams';
+    protected $table = 'team_members';
 
     /**
      * The primary key for the model.
@@ -30,7 +46,7 @@ class WorkTeams extends Model
      * @var array
      */
     protected $fillable = [
-        'lead_id', 'request_id', 'created_at', 'updated_at'
+        'user_id', 'area', 'position', 'created_at', 'updated_at', 'name', "request_id", 'is_lead'
     ];
 
     /**
@@ -48,7 +64,7 @@ class WorkTeams extends Model
      * @var array
      */
     protected $casts = [
-        'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'is_lead' => 'boolean', 'name' => 'string', 'area' => 'string', 'position' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
@@ -65,7 +81,7 @@ class WorkTeams extends Model
      *
      * @var boolean
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Scopes...
 

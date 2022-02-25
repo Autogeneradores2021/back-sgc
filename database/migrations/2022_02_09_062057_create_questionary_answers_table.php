@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAnalysisDefinitionsTable extends Migration
+class CreateQuestionaryAnswersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateAnalysisDefinitionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('analysis_definitions', function (Blueprint $table) {
+        Schema::create('questionary_answers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
-            $table->string('problem_understand');
-            $table->string('local_revision');
-            $table->string('viability_test');
+            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->string('question');
+            $table->string('answer');
+            $table->boolean('is_root')->default(false);
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateAnalysisDefinitionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('analysis_definitions');
+        Schema::dropIfExists('questionary_answers');
     }
 }

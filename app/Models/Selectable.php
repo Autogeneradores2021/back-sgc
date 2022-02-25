@@ -3,29 +3,41 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Parent_;
 
-/**
- * @property string $title
- * @property string $description
- * @property string $icon
- * @property int    $created_at
- * @property int    $updated_at
- */
-class TrackingIssue extends Model
+class Selectable extends Model
 {
+
+    /**
+     * validation
+     *
+     * @var string
+     */
+    public static $rules = [
+        "code" => "required|max:10",
+        "description" => "required|max:80",
+    ];
+
+    public function __construct(array $attributes = [], $table){
+        parent::__construct($attributes);
+        $this->table = $table;
+    }
+
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'tracking_issues';
+    public $table = '';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'code';
+
+    public $incrementing = false;
 
     /**
      * Attributes that should be mass-assignable.
@@ -33,7 +45,7 @@ class TrackingIssue extends Model
      * @var array
      */
     protected $fillable = [
-        'request_id', 'title', 'description', 'icon', 'created_at', 'updated_at'
+        'code', 'description'
     ];
 
     /**
@@ -51,7 +63,7 @@ class TrackingIssue extends Model
      * @var array
      */
     protected $casts = [
-        'title' => 'string', 'description' => 'string', 'icon' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'description' => 'string', 'code' => 'string'
     ];
 
     /**

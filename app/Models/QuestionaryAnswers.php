@@ -5,19 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string $area
- * @property string $position
+ * @property string $name
+ * @property string $code
  * @property int    $created_at
  * @property int    $updated_at
  */
-class WorkTeamUser extends Model
+class QuestionaryAnswers extends Model
 {
+
+    /**
+     * validation
+     *
+     * @var string
+     */
+    public static $rules = [
+        "request_id" => "required|exists:requests,id",
+        "question" => "required",
+        "answer"=>"required"
+    ];
+
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'work_team_users';
+    protected $table = 'questionary_answers';
 
     /**
      * The primary key for the model.
@@ -32,7 +44,7 @@ class WorkTeamUser extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'area', 'position', 'created_at', 'updated_at'
+        'question', 'answer', 'is_root', 'request_id', 'created_at', 'updated_at'
     ];
 
     /**
@@ -50,7 +62,7 @@ class WorkTeamUser extends Model
      * @var array
      */
     protected $casts = [
-        'area' => 'string', 'position' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'question' => 'string', 'answer' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**
@@ -67,7 +79,7 @@ class WorkTeamUser extends Model
      *
      * @var boolean
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Scopes...
 

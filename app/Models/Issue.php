@@ -5,20 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string $problem_understand
- * @property string $local_revision
- * @property string $viability_test
+ * @property string $title
+ * @property string $description
+ * @property string $icon
  * @property int    $created_at
  * @property int    $updated_at
  */
-class AnalysisDefinition extends Model
+class TrackingIssue extends Model
 {
+ 
+    /**
+     * validation
+     * 
+     * @var string
+     */
+    public static $rules = [
+        "request_id" => "required|exists:requests,id",
+        "title" => "required|max:100",
+        "description" => "required|nullable",
+        "icon" => "required|nullable|max:50"
+    ];
+
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'analysis_definitions';
+    protected $table = 'issues';
 
     /**
      * The primary key for the model.
@@ -33,7 +46,7 @@ class AnalysisDefinition extends Model
      * @var array
      */
     protected $fillable = [
-        'request_id', 'problem_understand', 'local_revision', 'viability_test', 'created_at', 'updated_at'
+        'request_id', 'title', 'description', 'icon', 'created_at', 'updated_at'
     ];
 
     /**
@@ -51,7 +64,7 @@ class AnalysisDefinition extends Model
      * @var array
      */
     protected $casts = [
-        'problem_understand' => 'string', 'local_revision' => 'string', 'viability_test' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'title' => 'string', 'description' => 'string', 'icon' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
     ];
 
     /**

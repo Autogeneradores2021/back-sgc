@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAnalysisTable extends Migration
+class CreateIssuesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateAnalysisTable extends Migration
      */
     public function up()
     {
-        Schema::create('analysis', function (Blueprint $table) {
+        Schema::create('issues', function (Blueprint $table) {
             $table->id();
             $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
-            $table->string('cause', 255);
-            $table->string('root', 100)->nullable();
-            $table->longText('analysis_result');
+            $table->string('title', 100);
+            $table->longText('description')->nullable();
+            $table->string('icon_code', 10);
+            $table->foreign('icon_code')->on('icons')->references('code')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateAnalysisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('analysis');
+        Schema::dropIfExists('issues');
     }
 }

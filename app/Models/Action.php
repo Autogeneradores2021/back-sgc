@@ -12,6 +12,17 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Action extends Model
 {
+
+    /**
+     * validation
+     *
+     * @var string
+     */
+    public static $rules = [
+        "name" => "required|max:50",
+        "code" => "required|unique:posts|max:10"
+    ];
+
     /**
      * The database table used by the model.
      *
@@ -24,7 +35,9 @@ class Action extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'code';
+
+    public $incrementing = false;
 
     /**
      * Attributes that should be mass-assignable.

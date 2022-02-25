@@ -15,19 +15,17 @@ class CreateUpgradePlansTable extends Migration
     {
         Schema::create('upgrade_plans', function (Blueprint $table) {
             $table->id();
-            $table->string('upgrade_plan_type');
-            $table->foreignId('tracking_id')->constrained('trackings')->cascadeOnDelete();
-            $table->string('title', 255);
-            $table->string('person_assigned', 100);
+            $table->string('upgrade_plan_type_code', 10);
+            $table->foreign('upgrade_plan_type_code')->on('upgrade_plan_types')->references('code')->cascadeOnDelete();
+            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('person_assigned_id')->constrained('users')->cascadeOnDelete();;
             $table->datetime('init_date');
             $table->datetime('end_date');
             $table->string('unit_measurement')->nullable();
-            $table->longText('goal_description')->nullable();
+            $table->string('goal_description')->nullable();
             $table->longText('follow_process_description');
-            $table->datetime('finish_date');
-            $table->string('evidence_file')->nullable();
-            $table->integer('percentage')->nullable();
-            $table->string('status', 10);
+            $table->datetime('finish_date')->nullable();
+            $table->longText('evidence_file')->nullable();
             $table->timestamps();
         });
     }

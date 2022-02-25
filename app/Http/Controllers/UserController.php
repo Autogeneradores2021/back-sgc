@@ -25,4 +25,22 @@ class UserController extends Controller
             'user' => $user
         ], 200);
     }
+
+    public function index(Request $request)
+    {
+        $search = $request->query('search');
+        if (!$search) { $search = ''; }
+        $query = User::query()->where('name', 'like', '%'.$search.'%')->orderBy('name')->get();
+        return response()->json([
+            'message' => 'ok',
+            'data' => $query
+        ]);
+    }
+
+    public function retrive(Request $request) {
+        return response()->json([
+            'message' => 'ok',
+            'data' => $request->user()
+        ]);
+    }
 }

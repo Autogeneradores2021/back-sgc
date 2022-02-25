@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnRoleIdInUsersTable extends Migration
+class AddPhoneAndIdentificationToUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,10 @@ class AddColumnRoleIdInUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role_code', 10)->nullable();
-            $table->foreign('role_code')->on('roles')->references('code')->cascadeOnDelete();
+            $table->string('identification_type', 10)->nullable();
+            $table->foreign('identification_type')->on('identification_types')->references('code')->cascadeOnDelete();
+            $table->string('identification_number', 30)->nullable();
+            $table->string('phone_number', 30)->nullable();
         });
     }
 
