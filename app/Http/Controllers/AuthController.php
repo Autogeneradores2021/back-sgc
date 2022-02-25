@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Services\Security;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -26,11 +29,35 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
+        $payload = Security::login($credentials);
+
+        if ($payload) {
+            $person = $payload->person;
+            $colection = User::query()->where(['email' => $person->email])->get();
+            if (count($colection) != 0) {
+                $user = $colection[0];
+                $user->phone_number = $person->cellphone | $person->telephone;
+                $user->save();
+            } else {
+                $user = new User([
+                    'name' => $person->contractor_company,
+                    'email' => $person->email,
+                    'phone_number' => $person->cellphone | $person->telephone,
+                    'identification_type' => $person->document_type->code,
+                    'identification_number' => $person->document_number,
+                    'role_code' => 'USER',
+                ]);
+                $user->password = Hash::make($credentials['password']);
+                $user->save();
+            }
+        }
+
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+
+        return $this->respondWithToken($token, $payload ? 'Online': 'Offline');
     }
 
     /**
@@ -72,12 +99,13 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token, $state)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'eh_state' =>  $state
         ]);
     }
 }
