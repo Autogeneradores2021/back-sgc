@@ -36,13 +36,13 @@ class AuthController extends Controller
             $colection = User::query()->where(['email' => $person->email])->get();
             if (count($colection) != 0) {
                 $user = $colection[0];
-                $user->phone_number = $person->cellphone | $person->telephone;
+                $user->phone_number = $person->cellphone ? $person->cellphone : $person->telephone;
                 $user->save();
             } else {
                 $user = new User([
-                    'name' => $person->contractor_company,
+                    'name' => $person->contractor_company ? $person->contractor_company : $person->first_name.' '.$person->second_name.' '.$person->first_lastname.' '.$person->second_lastname,
                     'email' => $person->email,
-                    'phone_number' => $person->cellphone | $person->telephone,
+                    'phone_number' => $person->cellphone ? $person->cellphone : $person->telephone,
                     'identification_type' => $person->document_type->code,
                     'identification_number' => $person->document_number,
                     'role_code' => 'USER',
