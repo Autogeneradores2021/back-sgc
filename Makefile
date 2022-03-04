@@ -9,7 +9,7 @@ reset:
 	@make clean-volumes
 	@make build
 stop:
-	docker-compose stop
+	docker-compose stop && docker system prune
 down:
 	docker-compose down --remove-orphans
 restart:
