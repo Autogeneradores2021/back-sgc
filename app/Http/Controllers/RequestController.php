@@ -30,7 +30,8 @@ class RequestController extends Controller
                         ->whereNotNull('request_code')
                         ->orderByRaw('TO_NUMBER(request_code) desc')
                         ->limit(1)
-                        ->get('request_code')->first()['request_code'];
+                        ->get('request_code');
+            if (count($lastCode) != 0 ) { $lastCode=$lastCode->first()['request_code']; } else { $lastCode = 0; }
             $requestRecord->request_code = $lastCode + 1;
             Log::info('SE CALCULO UN NUEVO CODIGO');
             Log::info($lastCode);
