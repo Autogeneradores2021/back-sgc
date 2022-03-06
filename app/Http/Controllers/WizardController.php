@@ -338,11 +338,7 @@ class WizardController extends Controller
             $this->body["status"] = 400;
         } else {
             $record = FinishRequest::create($data);
-            if ($record->result_code == 'OK') {
-                ModelsRequest::updateStatus($data['request_id'], 'CLOSE');
-            } else {
-                ModelsRequest::updateStatus($data['request_id'], 'PENDING');
-            }
+            ModelsRequest::updateStatus($data['request_id'], $record->result_code);
             $this->body["status"] = 201;
             $this->body["data"] = $record;
             $this->body["message"] = "El plan de mejora se creo correctamente";

@@ -48,7 +48,14 @@ class Request extends Model
     ];
 
 
-    protected $appends = ['process_lead_name', 'detected_for_name'];
+    protected $appends = ['process_lead_name', 'detected_for_name', 'stack'];
+
+    public function getStackAttribute() {
+        if ($this->parent_id) {
+            return Request::query()->where('id', '=', $this->parent_id)->count() + 1;
+        }
+        return 0;
+    }
     
     public function getProcessLeadNameAttribute() {
         if ($this->process_lead_id) {
@@ -67,7 +74,32 @@ class Request extends Model
 
 
     public static function updateStatus($id, $status) {
+        if ($status == 'TO_FIX') {
+            Request::createChild($id);
+        }
         return Request::query()->where('id', '=', $id)->update(['status_code' => $status]);
+    }
+
+    public static function createChild($id) {
+        $old_request = Request::query()->where('id', '=', $id)->get()->first();
+        return Request::create([
+            "request_type_code" => $old_request->request_type_code,
+            "init_date" => $old_request->init_date,
+            "detected_date" => $old_request->detected_date, 
+            "detected_in_code" => $old_request->detected_in_code,
+            "detected_for_id" => $old_request->detected_for_id,
+            "unfulfilled_requirement_code" => $old_request->unfulfilled_requirement_code,
+            "process_lead_id" => $old_request->process_lead_id,
+            "affected_process_code" => $old_request->affected_process_code,
+            "how_detected_code" => $old_request->how_detected_code,
+            "action_type_code" => $old_request->action_type_code,
+            "evidence_description" => $old_request->evidence_description,
+            "request_description" => $old_request->request_description,
+            "evidence_file" => $old_request->evidence_file,
+            "status_code"=> 'PENDING',
+            "parent_id" => $old_request->id,
+            "request_code" => $old_request->request_code,
+        ]);
     }
 
     /**
@@ -106,6 +138,7 @@ class Request extends Model
         'evidence_file',
         'status_code',
         'created_at',
+        'parent_id',
     ];
 
     /**

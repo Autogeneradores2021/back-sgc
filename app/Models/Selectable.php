@@ -45,7 +45,7 @@ class Selectable extends Model
      * @var array
      */
     protected $fillable = [
-        'code', 'description'
+        'code', 'description', 'own_system'
     ];
 
     /**
@@ -80,7 +80,7 @@ class Selectable extends Model
      *
      * @var boolean
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Scopes...
 

@@ -43,6 +43,7 @@ class SelectableController extends Controller
         } else {
             $query = DB::table($table)->where('code', '=', $data['code']);
             $model = new Selectable($data, $table);
+            $model->own_system = false;
             if (!$query->get()->isEmpty()) {
                 $query->update($data);
             } else {
