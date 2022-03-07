@@ -49,13 +49,27 @@ class Request extends Model
     ];
 
 
-    protected $appends = ['process_lead_name', 'detected_for_name', 'stack'];
+    protected $appends = ['process_lead_name', 'detected_for_name', 'stack', 'affected_process_name', 'action_type_name'];
 
     public function getStackAttribute() {
         if ($this->parent_id) {
             return Request::query()->where('id', '=', $this->parent_id)->count() + 1;
         }
         return 0;
+    }
+
+    public function getAffectedProcessNameAttribute() {
+        if ($this->affected_process_code) {
+            return DB::table('affected_processes')->where('code', $this->affected_process_code)->first()->description   ;
+        }
+        return null;
+    }
+
+    public function getActionTypeNameAttribute() {
+        if ($this->action_type_code) {
+            return DB::table('action_types')->where('code', $this->action_type_code)->first()->description   ;
+        }
+        return null;
     }
     
     public function getProcessLeadNameAttribute() {

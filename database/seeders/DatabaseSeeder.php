@@ -97,12 +97,8 @@ class DatabaseSeeder extends Seeder
     {
         foreach ($this->selectables as $table => $list) {
             foreach ($list as $value) {
-                try {
-                    $model = new Selectable($value, $table);
-                    $model->save();
-                } catch (QueryException $th) {
-                    print('Error');
-                }
+                $model = new Selectable($value, $table);
+                $model->save();
             }
         }
         Role::create([

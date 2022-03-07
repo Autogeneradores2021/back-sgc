@@ -6,6 +6,7 @@ use App\Models\Analysis;
 use App\Models\AnalysisDefinition;
 use App\Models\UpgradePlan;
 use App\Models\FinishRequest;
+use App\Models\Issue;
 use App\Models\QuestionaryAnswers;
 use App\Models\Request as ModelsRequest;
 use App\Models\Tracking;
@@ -47,6 +48,7 @@ class WizardController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function complete(Request $request, $module, $step) {
+        $this->request = $request;
         try {
             eval('$this->'.$module."S".$step.'();');
         } catch (\BadMethodCallException $e) {
@@ -185,6 +187,8 @@ class WizardController extends Controller
         }
         $data = $request[$keys[0]];
         $first = true;
+        $request_id = null;
+        if (count($data) != 0) {  $request_id = $data[0]['request_id']; }
         DB::beginTransaction();
         foreach ($data as $a) {
             if ($first) {
@@ -203,6 +207,11 @@ class WizardController extends Controller
         }
         if ($this->body["status"] == 201) {
             DB::commit();
+            Issue::createWorkTeam(
+                $this->request->user(),
+                ModelsRequest::query()->where('id', $request_id)->first(),
+                $data
+            );
             $this->body["message"] = "El equipo se creo correctamente";
         } else {
             DB::rollback();
@@ -222,6 +231,8 @@ class WizardController extends Controller
             return;
         }
         $data = $request[$keys[0]];
+        $request_id = null;
+        if (count($data) != 0) {  $request_id = $data[0]['request_id']; }
         $first = true;
         DB::beginTransaction();
         foreach ($data as $a) {
@@ -241,6 +252,12 @@ class WizardController extends Controller
         }
         if ($this->body["status"] == 201) {
             DB::commit();
+            Issue::createUPlan(
+                $this->request->user(),
+                ModelsRequest::query()->where('id', $request_id)->first(),
+                $data,
+                'acciones de correccion inmediatas'
+            );
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
             DB::rollback();
@@ -260,6 +277,8 @@ class WizardController extends Controller
         }
         DB::beginTransaction();
         $collection = $request[$keys[0]];
+        $request_id = null;
+        if (count($collection) != 0) { $request_id = $collection[0]['request_id']; }
         $first = true;
         foreach ($collection as $a) {
             if ($first) {
@@ -277,6 +296,11 @@ class WizardController extends Controller
         }
         if ($this->body["status"] == 201) {
             DB::commit();
+            Issue::createAnalysis(
+                $this->request->user(),
+                ModelsRequest::query()->where('id', $request_id)->first(),
+                $collection,
+            );
             $this->body["message"] = "El paso 3 se completo correctamente";
         } else {
             DB::rollback();
@@ -295,6 +319,8 @@ class WizardController extends Controller
             return;
         }
         $data = $request[$keys[0]];
+        $request_id = null;
+        if (count($data) != 0) {  $request_id = $data[0]['request_id']; }
         $first = true;
         DB::beginTransaction();
         foreach ($data as $a) {
@@ -315,6 +341,12 @@ class WizardController extends Controller
         if ($this->body["status"] == 201) {
             ModelsRequest::updateStatus($a['request_id'], 'OPEN');
             DB::commit();
+            Issue::createUPlan(
+                $this->request->user(),
+                ModelsRequest::query()->where('id', $request_id)->first(),
+                $data,
+                'acciones correctivas definitivas'
+            );
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
             DB::rollback();
@@ -339,9 +371,14 @@ class WizardController extends Controller
         } else {
             $record = FinishRequest::create($data);
             ModelsRequest::updateStatus($data['request_id'], $record->result_code);
+            Issue::createFinishRequest(
+                $this->request->user(),
+                ModelsRequest::query()->where('id', $data['request_id'])->first(),
+                $record,
+            );
             $this->body["status"] = 201;
             $this->body["data"] = $record;
-            $this->body["message"] = "El plan de mejora se creo correctamente";
+            $this->body["message"] = "La solicitud se cerro correctamente";
         }
     }
 

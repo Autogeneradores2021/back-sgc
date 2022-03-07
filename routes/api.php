@@ -9,6 +9,7 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\SelectableController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\IssuesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,3 +108,14 @@ Route::group([
     Route::get('dashboard', [ReportController::class, 'dashboard']);
 
 });
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'issue'
+
+], function ($router) {
+    Route::get('by-request/{id}', [IssuesController::class, 'byRequestId']);
+
+});
+

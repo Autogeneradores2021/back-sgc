@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Action;
+use App\Models\Issue;
 use Illuminate\Http\Request;
 use App\Models\Request as ModelsRequest;
-use Error;
-use Exception;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +18,7 @@ class RequestController extends Controller
      *  
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create() {
+    public function create(Request $request) {
         $requestData = request(['request'])['request'];
         $requestData['status_code'] = 'PENDING';
         $requestRecord = new ModelsRequest($requestData);
@@ -47,6 +45,10 @@ class RequestController extends Controller
             );
         }
         $requestRecord->save();
+        Issue::createRequest(
+            $request->user(),
+            ModelsRequest::query()->where('id', $requestRecord->id)->first()
+        );
         return response()->json(
             [
                 "message" => "Solicitud creada con exito",

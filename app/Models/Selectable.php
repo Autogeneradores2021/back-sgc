@@ -22,7 +22,7 @@ class Selectable extends Model
         parent::__construct($attributes);
         $this->table = $table;
     }
-
+    
     /**
      * The database table used by the model.
      *
@@ -80,7 +80,7 @@ class Selectable extends Model
      *
      * @var boolean
      */
-    public $timestamps = true;
+    public $timestamps = false;
 
     // Scopes...
 
