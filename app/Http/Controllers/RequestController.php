@@ -79,12 +79,11 @@ class RequestController extends Controller
         }
         if ($params['id']) {
             $query = [];
-            $query['data'] = ModelsRequest::query()->where('id', '=', $params['id'])
-            ->get();
+            $query['data'] = ModelsRequest::query()->where('id', '=', $params['id'])->get();
         } else {
             $query = ModelsRequest::query()->where('request_type_code', '=', $params['request_type'])
             ->where('request_code', 'like', '%' . $params['search'] . '%')
-            ->whereIn('status_code', $params['status_code'])
+                ->whereIn('status_code', $params['status_code'])
             ->orderByRaw('TO_NUMBER(request_code) desc')
             ->paginate(
                 $params["per_page"],

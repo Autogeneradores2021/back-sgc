@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property string   $request_type
@@ -71,7 +72,25 @@ class Request extends Model
         return null;
     }
 
+    public static function countByUserAndStatus($type, $user_id, $status) {
+        return Request::query()->where('request_type_code', '=', $type)->where('process_lead_id', '=', $user_id)->where('status_code', '=', $status)->count();
+    }
 
+    public static function countByPeriod($type, $days = 7) {
+        return DB::select(
+        'SELECT count(r.DETECTED_DATE) as "count", r.DETECTED_DATE  as "date" '.
+        'FROM REQUESTS r '.
+        'WHERE r.DETECTED_DATE >= sysdate - ? AND r.REQUEST_TYPE_CODE = ? '.
+        'GROUP BY r.DETECTED_DATE', [$days, $type]);
+    }
+
+    public static function countByTypeAndStatus($type, $status) {
+        if ($status) {
+            return Request::query()->where('request_type_code', '=', $type)->whereIn('status_code', $status)->count();
+        } else {
+            return Request::query()->where('request_type_code', '=', $type)->count();
+        }
+    }
 
     public static function updateStatus($id, $status) {
         if ($status == 'TO_FIX') {

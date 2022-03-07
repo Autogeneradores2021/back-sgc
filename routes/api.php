@@ -8,6 +8,7 @@ use App\Http\Controllers\WizardController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\SelectableController;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,5 +94,16 @@ Route::group([
     Route::post('{module}/complete/{step}', [WizardController::class, 'complete']);
     Route::get('{module}/retrive/{step}', [WizardController::class, 'retrive']);
     Route::post('{module}/show/{step}', [WizardController::class, 'show']);
+
+});
+
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'report'
+
+], function ($router) {
+    Route::get('dashboard', [ReportController::class, 'dashboard']);
 
 });
