@@ -55,7 +55,13 @@ class DatabaseSeeder extends Seeder
         ],
         # Tracking Isuss
         'icons' => [
-            [ 'code' => 'INFO', 'description' => 'heroicons_outline:information-circlead', 'own_system' => false ],
+            [ 'code' => 'INFO', 'description' => 'heroicons_outline:information-circle', 'own_system' => false ],
+            [ 'code' => 'NEW', 'description' => 'heroicons_outline:document-text', 'own_system' => false ],
+            [ 'code' => 'WTEAM', 'description' => 'heroicons_outline:user-add', 'own_system' => false ],
+            [ 'code' => 'UPLAN', 'description' => 'heroicons_outline:trending-up', 'own_system' => false ],
+            [ 'code' => 'ANALYSIS', 'description' => 'heroicons_outline:search', 'own_system' => false ],
+            [ 'code' => 'TRACKING', 'description' => 'heroicons_outline:tag', 'own_system' => false ],
+            [ 'code' => 'FREQUEST', 'description' => 'heroicons_outline:check', 'own_system' => false ],
         ],
         # Finish request
         'result_types' => [
