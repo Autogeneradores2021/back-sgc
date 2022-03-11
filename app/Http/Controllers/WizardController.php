@@ -13,6 +13,7 @@ use App\Models\Tracking;
 use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class WizardController extends Controller
@@ -223,41 +224,44 @@ class WizardController extends Controller
         $this->body["data"] = [];
         $this->body["message"] = [];
         $this->body["status"] = 201;
-        $keys = ['upgrade_plan'];
-        $request = request($keys);
-        if (!$request) {
-            $this->body["message"] = "Seguimiento vacio";
-            $this->body["status"] = 400;
-            return;
-        }
-        $data = $request[$keys[0]];
-        $request_id = null;
-        if (count($data) != 0) {  $request_id = $data[0]['request_id']; }
-        $first = true;
+        $data = $this->request->all();
+        $request_id = $data['request_id'];
         DB::beginTransaction();
-        foreach ($data as $a) {
-            if ($first) {
-                $first = false;
-                UpgradePlan::query()->where('request_id', '=', $a['request_id'])->where('upgrade_plan_type_code', '=', 'INM    ')->delete();
+        if ($data['index'] == '0') {
+            UpgradePlan::query()->where('request_id', '=', $data['request_id'])->where('upgrade_plan_type_code', '=', 'INM    ')->delete();
+        }
+        $data["upgrade_plan_type_code"] = "INM";
+        $validator = Validator::make($data, UpgradePlan::$rules);
+        if ($validator->fails()) {
+            $this->body["message"] = "Error validando el analisis";
+            array_push( $this->body["data"], $validator->errors() );
+            $this->body["status"] = 400;
+        } else {
+            $count = 0;
+            $data['evidence_file'] = '';
+            while ($this->request->hasfile('evidence_file_'.$count)) {
+                $file = $this->request->file('evidence_file_'.$count);
+                $extention = $file->getClientOriginalExtension();
+                $filename = time().$this->generateRandomString(15).'.'.$extention;
+                $file->move('uplani/'.$request_id.'/', $filename);
+                $dir = 'uplani/'.$request_id.'/'.$filename.';';
+                $data['evidence_file'] .= $dir;
+                Log::info('SE RECIBIO UN ARCHIVO Y SE GUARDO');
+                Log::info($dir);
+                $count++;
             }
-            $a["upgrade_plan_type_code"] = "INM";
-            $validator = Validator::make($a, UpgradePlan::$rules);
-            if ($validator->fails()) {
-                $this->body["message"] = "Error validando el analisis";
-                array_push( $this->body["data"], $validator->errors() );
-                $this->body["status"] = 400;
-            } else {
-                $a = UpgradePlan::create($a);
-            }
+            $data = UpgradePlan::create($data);
         }
         if ($this->body["status"] == 201) {
             DB::commit();
-            Issue::createUPlan(
-                $this->request->user(),
-                ModelsRequest::query()->where('id', $request_id)->first(),
-                $data,
-                'acciones de correccion inmediatas'
-            );
+            if ($data == 'last') {
+                Issue::createUPlan(
+                    $this->request->user(),
+                    ModelsRequest::query()->where('id', $request_id)->first(),
+                    UpgradePlan::query()->where('request_id', '=', $data['request_id'])->where('upgrade_plan_type_code', '=', 'INM    ')->get(),
+                    'acciones de correccion inmediatas'
+                );
+            }
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
             DB::rollback();
@@ -311,42 +315,44 @@ class WizardController extends Controller
         $this->body["data"] = [];
         $this->body["message"] = [];
         $this->body["status"] = 201;
-        $keys = ['upgrade_plan'];
-        $request = request($keys);
-        if (!$request) {
-            $this->body["message"] = "Seguimiento vacio";
-            $this->body["status"] = 400;
-            return;
-        }
-        $data = $request[$keys[0]];
-        $request_id = null;
-        if (count($data) != 0) {  $request_id = $data[0]['request_id']; }
-        $first = true;
+        $data = $this->request->all();
+        $request_id = $data['request_id'];
         DB::beginTransaction();
-        foreach ($data as $a) {
-            if ($first) {
-                $first = false;
-                UpgradePlan::query()->where('request_id', '=', $a['request_id'])->where('upgrade_plan_type_code', '=', 'DEF')->delete();
+        if ($data['index'] == '0') {
+            UpgradePlan::query()->where('request_id', '=', $data['request_id'])->where('upgrade_plan_type_code', '=', 'DEF    ')->delete();
+        }
+        $data["upgrade_plan_type_code"] = "DEF";
+        $validator = Validator::make($data, UpgradePlan::$rules);
+        if ($validator->fails()) {
+            $this->body["message"] = "Error validando el analisis";
+            array_push( $this->body["data"], $validator->errors() );
+            $this->body["status"] = 400;
+        } else {
+            $count = 0;
+            $data['evidence_file'] = '';
+            while ($this->request->hasfile('evidence_file_'.$count)) {
+                $file = $this->request->file('evidence_file_'.$count);
+                $extention = $file->getClientOriginalExtension();
+                $filename = time().$this->generateRandomString(15).'.'.$extention;
+                $file->move('upland/'.$request_id.'/', $filename);
+                $dir = 'upland/'.$request_id.'/'.$filename.';';
+                $data['evidence_file'] .= $dir;
+                Log::info('SE RECIBIO UN ARCHIVO Y SE GUARDO');
+                Log::info($dir);
+                $count++;
             }
-            $a["upgrade_plan_type_code"] = "DEF";
-            $validator = Validator::make($a, UpgradePlan::$rules);
-            if ($validator->fails()) {
-                $this->body["message"] = "Error validando el analisis";
-                array_push( $this->body["data"], $validator->errors() );
-                $this->body["status"] = 400;
-            } else {
-                $a = UpgradePlan::create($a);
-            }
+            $data = UpgradePlan::create($data);
         }
         if ($this->body["status"] == 201) {
-            ModelsRequest::updateStatus($a['request_id'], 'OPEN');
             DB::commit();
-            Issue::createUPlan(
-                $this->request->user(),
-                ModelsRequest::query()->where('id', $request_id)->first(),
-                $data,
-                'acciones correctivas definitivas'
-            );
+            if ($data == 'last') {
+                Issue::createUPlan(
+                    $this->request->user(),
+                    ModelsRequest::query()->where('id', $request_id)->first(),
+                    UpgradePlan::query()->where('request_id', '=', $data['request_id'])->where('upgrade_plan_type_code', '=', 'DEF    ')->get(),
+                    'acciones de correccion inmediatas'
+                );
+            }
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
             DB::rollback();
@@ -380,6 +386,16 @@ class WizardController extends Controller
             $this->body["data"] = $record;
             $this->body["message"] = "La solicitud se cerro correctamente";
         }
+    }
+    
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
 }

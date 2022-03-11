@@ -25,7 +25,8 @@ class CreateAllSelectableTables extends Migration
         # users
         'areas',
         'positions',
-        'identification_types'
+        'identification_types',
+        'states'
     ];
 
     /**
@@ -37,7 +38,7 @@ class CreateAllSelectableTables extends Migration
     {
         foreach ($this->toCreate as $tableName) {
             Schema::create($tableName, function (Blueprint $table) {
-                $table->string('code', 10)->primary();
+                $table->string('code', 50)->primary();
                 $table->string('description', 80);
             });
         }

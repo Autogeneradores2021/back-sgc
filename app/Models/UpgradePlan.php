@@ -34,10 +34,9 @@ class UpgradePlan extends Model
         "person_assigned_id" => "required|max:100",
         "init_date" => "required|date",
         "end_date" => "required|date",
-        "unit_measurement" => "required|nullable",
-        "goal_description" => "required|nullable",
+        "unit_measurement" => "required",
+        "goal_description" => "required",
         "follow_process_description" => "required",
-        "evidence_file" => "required|nullable"
 
     ];
 

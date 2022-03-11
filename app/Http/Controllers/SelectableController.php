@@ -13,7 +13,7 @@ class SelectableController extends Controller
         try {
             $search = $request->query('search');
             if (!$search) { $search = ''; }
-            $query = DB::table($table)->where('description', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%')->get();
+            $query = DB::table($table)->where('description', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%')->limit(10)->get();
             return response()->json([
                 'message' => 'ok',
                 'data' => $query

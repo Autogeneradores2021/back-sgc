@@ -18,7 +18,7 @@ class CreateIssuesTable extends Migration
             $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
             $table->string('title', 100);
             $table->longText('description')->nullable();
-            $table->string('icon_code', 10);
+            $table->string('icon_code', 50);
             $table->foreign('icon_code')->on('icons')->references('code')->cascadeOnDelete();
             $table->timestamps();
         });

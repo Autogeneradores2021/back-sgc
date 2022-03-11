@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Security;
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,19 +35,29 @@ class AuthController extends Controller
 
         $payload = Security::login($credentials);
 
+        $user = User::query()->where(['email' => strtolower($credentials['email'])])->first();
+
         if ($payload) {
             $person = $payload->person;
-            $colection = User::query()->where(['email' => strtolower($person->email)])->get();
-            Log::info('CONECCION CON SEGURIDAD TRANSVERSAL CONFIRMADA');
-            if (count($colection) != 0) {
+            Log::info('CONEXION CON SEGURIDAD TRANSVERSAL CONFIRMADA');
+            if ($user) {
                 Log::info('EXISTE REGISTRO DE USUARIO');
-                $user = $colection[0];
                 $user->phone_number = $person->cellphone ? $person->cellphone : $person->telephone;
+                $user->state_code = $person->state == 1 ? 'ACTIVE' : 'DISABLE';
+                $user->password = Hash::make($credentials['password']);
                 $user->save();
                 Log::info('USUARIO ACTUALIZADO');
+                $employee = Employee::query()->where('correo', $person->email)->orderBy('codigo', 'desc')->first();
                 Log::info($user);
             } else {
                 Log::info('NO EXISTE REGISTRO DE USUARIO');
+                $employee = Employee::query()->where('correo', $person->email)->orderBy('codigo', 'desc')->first();
+                $area_code = 'EXTERNO';
+                $position_code = 'EXTERNO';
+                if ($employee) {
+                    $area_code = $employee->estructura;
+                    $position_code = $employee->cargo;
+                }
                 $user = new User([
                     'name' => $person->contractor_company ? $person->contractor_company : $person->first_name.' '.$person->second_name.' '.$person->first_lastname.' '.$person->second_lastname,
                     'email' => strtolower($person->email),
@@ -54,7 +65,10 @@ class AuthController extends Controller
                     'identification_type' => $person->document_type->code,
                     'identification_number' => $person->document_number,
                     'role_code' => 'USER',
+                    'area_code' => $area_code,
+                    'position_code' => $position_code,
                 ]);
+                $user->state_code = $person->state == 1 ? 'ACTIVE' : 'DISABLE';
                 $user->password = Hash::make($credentials['password']);
                 $user->save();
                 Log::info('USUARIO REGISTRADO');
@@ -63,6 +77,10 @@ class AuthController extends Controller
         }
 
         if (! $token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        if ($user && $user->state == 'DISABLE') {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

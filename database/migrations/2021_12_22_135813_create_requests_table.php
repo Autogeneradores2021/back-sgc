@@ -15,21 +15,21 @@ class CreateRequestsTable extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->string('request_type_code', 10);
+            $table->string('request_type_code', 50);
             $table->dateTime('init_date');
             $table->dateTime('detected_date');
-            $table->string('detected_in_code', 10);
+            $table->string('detected_in_code', 50);
             $table->unsignedBigInteger('detected_for_id');
-            $table->string('unfulfilled_requirement_code', 10);
+            $table->string('unfulfilled_requirement_code', 50);
             $table->unsignedBigInteger('process_lead_id');
-            $table->string('affected_process_code', 10);
-            $table->string('how_detected_code', 10);
-            $table->string('action_type_code', 10);
+            $table->string('affected_process_code', 50);
+            $table->string('how_detected_code', 50);
+            $table->string('action_type_code', 50);
             $table->string('request_code', 30)->nullable();
             $table->longText('evidence_description');
             $table->longText('request_description');
             $table->longText('evidence_file')->nullable();
-            $table->string('status_code', 10);
+            $table->string('status_code', 50);
             $table->timestamps();
 
             $table->foreign('request_type_code')->cascadeOnDelete()->references('code')->on('request_types');

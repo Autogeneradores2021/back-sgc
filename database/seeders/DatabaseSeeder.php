@@ -2,12 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Employee;
 use App\Models\Role;
 use App\Models\Selectable;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -70,26 +73,20 @@ class DatabaseSeeder extends Seeder
         ],
         # users
         'areas' => [
-            [ 'code' => 'FAC', 'description' => 'Facturacion', 'own_system' => false ],
-            [ 'code' => 'PER', 'description' => 'Perdidas', 'own_system' => false ],
-            [ 'code' => 'DIS', 'description' => 'Distribucion', 'own_system' => false ],
-            [ 'code' => 'SUS', 'description' => 'Suspension', 'own_system' => false ],
-            [ 'code' => 'SYS', 'description' => 'Sistemas', 'own_system' => false ],
-            [ 'code' => 'SGC', 'description' => 'Sistema de gestion de calidad', 'own_system' => false ],
-            [ 'code' => 'SCI', 'description' => 'Sistema de control interno', 'own_system' => false ],
+            [ 'code' => 'EXTERNO', 'description' => 'Area externa' ],
         ],
         'positions' => [
-            [ 'code' => 'LEAD', 'description' => 'Lider' ],
-            [ 'code' => 'AUD', 'description' => 'Auditor' ],
-            [ 'code' => 'P1', 'description' => 'Profesional 1' ],
-            [ 'code' => 'P2', 'description' => 'Profesional 2' ],
-            [ 'code' => 'P3', 'description' => 'Profesional 3' ],
-            [ 'code' => 'P4', 'description' => 'Profesional 4' ],
-            [ 'code' => 'P5', 'description' => 'Profesional 5' ],
+            [ 'code' => 'EXTERNO', 'description' => 'Persona externa' ],
         ],
         'identification_types' => [
             [ 'code' => 'CC', 'description' => 'Cedula de ciudadania' ],
             [ 'code' => 'CE', 'description' => 'Cedula de extranjeria' ],
+        ],
+        'states' => [
+            [ 'code' => 'ACTIVE', 'description' => 'Activo' ],
+            [ 'code' => 'DISABLE', 'description' => 'Inactivo' ],
+            [ 'code' => 'EXPIRED', 'description' => 'Vencido' ],
+            [ 'code' => 'UNKNOWN', 'description' => 'Desconocido' ],
         ],
         
     ];
@@ -106,19 +103,69 @@ class DatabaseSeeder extends Seeder
                 $model = new Selectable($value, $table);
                 $model->save();
             }
+            print("Seleccionable ".$table." OK\r\n");
         }
         Role::create([
             [ 'code' => 'ADMIN', 'name' => 'Administrador'],
             [ 'code' => 'AUDITOR', 'name' => 'Auditor'],
             [ 'code' => 'USER', 'name' => 'Usuario'],
         ]);
+        print("Roles  OK\r\n");
         User::insert([
-            ['email' => 'alexander.cruz@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Alexander Cruz', 'role_code' => 'ADMIN', 'position_code' => 'LEAD', 'area_code' => 'SGC'],
-            ['email' => 'diego.palacios@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Diego Palacios', 'role_code' => 'ADMIN', 'position_code' => 'LEAD', 'area_code' => 'SYS'],
-            ['email' => 'leidy.bernate@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Leidy Bernate', 'role_code' => 'ADMIN', 'position_code' => 'LEAD', 'area_code' => 'SCI'],
-            ['email' => 'hector.coronado@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Hector Coronado', 'role_code' => 'ADMIN', 'position_code' => 'P3', 'area_code' => 'SYS'],
-            ['email' => 'auditor1@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Auditor 1', 'role_code' => 'AUDITOR', 'position_code' => 'AUD', 'area_code' => 'SGC'],
-            ['email' => 'oscar.ruiz@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Oscar Ruiz', 'role_code' => 'USER', 'position_code' => 'P2', 'area_code' => 'SYS'],
+            ['email' => 'alexander.cruz@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Alexander Cruz', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            ['email' => 'diego.palacios@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Diego Palacios', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            ['email' => 'leidy.bernate@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Leidy Bernate', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            ['email' => 'hector.coronado@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Hector Coronado', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            ['email' => 'auditor1@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Auditor 1', 'role_code' => 'AUDITOR', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            ['email' => 'oscar.ruiz@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Oscar Ruiz', 'role_code' => 'USER', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
         ]);
+        print("Usuarios de prueba  OK\r\n");
+        $employees = Employee::query()->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
+        foreach ($employees as $employee) {
+            $area = DB::table('areas')->where('code', $employee->estructura)->count();
+            if ($area == 0) {
+                $model = new Selectable([
+                    'code' => $employee->estructura,
+                    'description' => $employee->estructura
+                ], 'areas');
+                $model->save();
+            }
+            $position = DB::table('positions')->where('code', $employee->cargo)->count();
+            if ($position == 0) {
+                $model = new Selectable([
+                    'code' => $employee->cargo,
+                    'description' => $employee->cargo
+                ], 'positions');
+                $model->save();
+            }
+            if ($user = User::query()->where('email', strtolower($employee->correo))->first()) {
+                $user->name = $employee->nombre;
+                $user->position_code = $employee->cargo;
+                $user->area_code = $employee->estructura;
+            } else {
+                $user = new User([
+                    'name' => $employee->nombre,
+                    'email' => strtolower($employee->correo),
+                    'role_code' => 'USER',
+                    'area_code' => $employee->estructura,
+                    'position_code' => $employee->cargo,
+                ]); 
+                $user->password = Hash::make($this->generateRandomPassword());
+            }
+            $user->save();
+            print("Usuario ".$employee->nombre." OK\r\n");
+        }
+
+        print("Usuarios de nomina  OK\r\n");
+    }
+
+    function generateRandomPassword($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }

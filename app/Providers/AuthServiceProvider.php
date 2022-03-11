@@ -15,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        'App\Models\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
@@ -26,8 +26,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        // FacadesRateLimiter::for("login", function () {
-        //     Limit::perMinute(60);
-        // });
+        FacadesRateLimiter::for("login", function () {
+            Limit::perMinute(60);
+        });
     }
 }

@@ -28,7 +28,8 @@ class User extends Authenticatable implements JWTSubject
         'area_code',
         'identification_type',
         'identification_number',
-        'phone_number'
+        'phone_number',
+        'state_code',
     ];
 
     /**
@@ -41,7 +42,7 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
         'created_at',
         'updated_at',
-        'email_verified_at'
+        'email_verified_at',
     ];
 
     /**
@@ -87,5 +88,9 @@ class User extends Authenticatable implements JWTSubject
             return DB::table('positions')->where('code', '=', $this->position_code)->first(['description'])->description;
         }
         return null;
+    }
+    
+    public static function getEmailById($id){
+        return User::query()->where('id', $id)->first()->email;
     }
 }

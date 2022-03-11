@@ -1,0 +1,10 @@
+{
+  "name": "swanky",
+  "lockfileVersion": 2,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "swanky"
+    }
+  }
+}

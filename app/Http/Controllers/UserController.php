@@ -30,7 +30,8 @@ class UserController extends Controller
     {
         $search = $request->query('search');
         if (!$search) { $search = ''; }
-        $query = User::query()->where('name', 'like', '%'.$search.'%')->orderBy('name')->get();
+        $search = strtoupper($search);
+        $query = User::query()->where('name', 'like', '%'.$search.'%')->orderBy('name')->limit(10)->get();
         return response()->json([
             'message' => 'ok',
             'data' => $query

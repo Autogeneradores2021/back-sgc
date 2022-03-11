@@ -14,7 +14,7 @@ class AddPhoneAndIdentificationToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('identification_type', 10)->nullable();
+            $table->string('identification_type', 50)->nullable();
             $table->foreign('identification_type')->on('identification_types')->references('code')->cascadeOnDelete();
             $table->string('identification_number', 30)->nullable();
             $table->string('phone_number', 30)->nullable();

@@ -31,8 +31,8 @@ class Tracking extends Model
         $collection = UpgradePlan::query()->where('request_id', '=', $request_id)->where('upgrade_plan_type_code', '=', 'DEF')->get();
         $valid = true;
         foreach ($collection as $value) {
-            $record = Tracking::query()->where('upgrade_plan_id', '=', $value->id)->orderBy('id', 'desc')->get('percentage')->first();
-            if ($record['percentage'] < 100) {
+            $record = Tracking::query()->where('upgrade_plan_id', '=', $id)->orderBy('id', 'desc')->first();
+            if ($record->percentage < 100) {
                 $valid = false;
             }
         }

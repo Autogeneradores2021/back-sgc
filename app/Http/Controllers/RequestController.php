@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\Mailer;
 use App\Models\Issue;
 use Illuminate\Http\Request;
 use App\Models\Request as ModelsRequest;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -19,11 +21,11 @@ class RequestController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request) {
-        $requestData = request(['request'])['request'];
+        $requestData = $request->all();
         $requestData['status_code'] = 'PENDING';
         $requestRecord = new ModelsRequest($requestData);
         $validator = Validator::make($requestData, ModelsRequest::$rules);
-        if (!$requestRecord->code) {
+        if (!$requestRecord->request_code) {
             $lastCode = ModelsRequest::query()->where('request_type_code', '=', $requestRecord->request_type_code)
                         ->whereNotNull('request_code')
                         ->orderByRaw('TO_NUMBER(request_code) desc')
@@ -44,11 +46,27 @@ class RequestController extends Controller
                 406
             );
         }
+        $count = 0;
+        $requestRecord->evidence_file = '';
+        while ($request->hasfile('evidence_file_'.$count)) {
+            $file = $request->file('evidence_file_'.$count);
+            $extention = $file->getClientOriginalExtension();
+            $filename = time().$this->generateRandomString(15).'.'.$extention;
+            $file->move('request/'.$requestRecord->request_code.'/', $filename);
+            $dir = 'request/'.$requestRecord->request_code.'/'.$filename.';';
+            $requestRecord->evidence_file .= $dir;
+            Log::info('SE RECIBIO UN ARCHIVO Y SE GUARDO');
+            Log::info($dir);
+            $count++;
+        }
+        $requestRecord->area_code = $request->user()->area_code;
+        $requestRecord->position_code = $request->user()->position_code;
         $requestRecord->save();
         Issue::createRequest(
             $request->user(),
             ModelsRequest::query()->where('id', $requestRecord->id)->first()
         );
+        Mailer::sendNewRequestNotification($requestRecord, User::getEmailById($requestRecord->process_lead_id));
         return response()->json(
             [
                 "message" => "Solicitud creada con exito",
@@ -95,6 +113,16 @@ class RequestController extends Controller
             );
         }
         return response()->json($query);
+    }
+
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
 }

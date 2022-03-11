@@ -15,7 +15,7 @@ class CreateUpgradePlansTable extends Migration
     {
         Schema::create('upgrade_plans', function (Blueprint $table) {
             $table->id();
-            $table->string('upgrade_plan_type_code', 10);
+            $table->string('upgrade_plan_type_code', 50);
             $table->foreign('upgrade_plan_type_code')->on('upgrade_plan_types')->references('code')->cascadeOnDelete();
             $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
             $table->foreignId('person_assigned_id')->constrained('users')->cascadeOnDelete();;

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property string   $request_type
@@ -44,18 +45,25 @@ class Request extends Model
         "action_type_code" => "required|exists:action_types,code",
         "evidence_description" => "required",
         "request_description" => "required",
-        "evidence_file" => "required",
+        "evidence_file_0" => "required",
         "status_code"=> "required|max:10"
     ];
 
 
-    protected $appends = ['process_lead_name', 'detected_for_name', 'stack', 'affected_process_name', 'action_type_name'];
+    protected $appends = ['process_lead_name', 'detected_for_name', 'stack', 'affected_process_name', 'action_type_name', 'unfulfilled_requirement_name'];
 
     public function getStackAttribute() {
         if ($this->parent_id) {
             return Request::query()->where('id', '=', $this->parent_id)->count() + 1;
         }
         return 0;
+    }
+
+    public function getUnfulfilledRequirementNameAttribute() {
+        if ($this->unfulfilled_requirement_code) {
+            return DB::table('unfulfilled_requirements')->where('code', $this->unfulfilled_requirement_code)->first()->description   ;
+        }
+        return null;
     }
 
     public function getAffectedProcessNameAttribute() {
@@ -87,7 +95,38 @@ class Request extends Model
     }
 
     public static function countByUserAndStatus($type, $user_id, $status) {
-        return Request::query()->where('request_type_code', '=', $type)->where('process_lead_id', '=', $user_id)->where('status_code', '=', $status)->count();
+        $query = DB::select(<<<SQL
+            SELECT COUNT(r.ID) AS count  FROM REQUESTS r 
+            LEFT JOIN TEAM_MEMBERS tm 
+            ON tm.REQUEST_ID = r.ID
+            WHERE
+            r.STATUS_CODE = :status AND
+            r.REQUEST_TYPE_CODE = :type AND
+            (r.PROCESS_LEAD_ID = :user_id OR tm.USER_ID = :user_id)
+        SQL, [
+            'status' => $status,
+            'type' => $type,
+            'user_id' => $user_id,
+        ]);
+        return $query[0]->count;
+    }
+
+    public static function ifGrandAccess($type, $user_id, $status, $request_id) {
+        $query = DB::select(<<<SQL
+            SELECT COUNT(r.ID) AS count FROM REQUESTS r 
+            LEFT JOIN TEAM_MEMBERS tm 
+            ON tm.REQUEST_ID = r.ID
+            WHERE
+            r.id = :request_id AND
+            r.STATUS_CODE = :status AND
+            r.REQUEST_TYPE_CODE = :type AND
+            (r.PROCESS_LEAD_ID = :user_id OR tm.USER_ID = :user_id)
+        SQL, [
+            'status' => $status,
+            'type' => $type,
+            'user_id' => $user_id,
+        ]);
+        return $query[0]->count >= 1;
     }
 
     public static function countByPeriod($type, $days = 7) {
@@ -172,6 +211,8 @@ class Request extends Model
         'status_code',
         'created_at',
         'parent_id',
+        'position_code',
+        'area_code',
     ];
 
     /**

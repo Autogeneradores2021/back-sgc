@@ -19,7 +19,7 @@ class CreateFinishRequestsTable extends Migration
             $table->datetime('tracking_date');
             $table->datetime('tracking_date_period_init')->nullable();
             $table->datetime('tracking_date_period_end')->nullable();
-            $table->string('result_code', 10);
+            $table->string('result_code', 50);
             $table->foreign('result_code')->on('result_types')->references('code')->cascadeOnDelete()->nullable();
             $table->string('result_analysis', 150)->nullable();
             $table->foreignId('user_tracking_id')->constrained('users')->cascadeOnDelete()->nullable();

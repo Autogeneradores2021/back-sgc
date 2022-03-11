@@ -15,9 +15,9 @@ class CreateRoleFormsTable extends Migration
     {
         Schema::create('role_forms', function (Blueprint $table) {
             $table->id();
-            $table->string('role_code', 10)->nullable();
+            $table->string('role_code', 50)->nullable();
             $table->foreign('role_code')->on('roles')->references('code')->cascadeOnDelete();
-            $table->string('form_code', 10)->nullable();
+            $table->string('form_code', 50)->nullable();
             $table->foreign('form_code')->on('forms')->references('code')->cascadeOnDelete();
             $table->timestamps();
         });
