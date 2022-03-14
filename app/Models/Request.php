@@ -50,13 +50,22 @@ class Request extends Model
     ];
 
 
-    protected $appends = ['process_lead_name', 'detected_for_name', 'stack', 'affected_process_name', 'action_type_name', 'unfulfilled_requirement_name'];
+    protected $appends = ['process_lead_name', 'detected_for_name', 'stack', 'affected_process_name', 'action_type_name', 'unfulfilled_requirement_name', 'owner'];
 
     public function getStackAttribute() {
         if ($this->parent_id) {
             return Request::query()->where('id', '=', $this->parent_id)->count() + 1;
         }
         return 0;
+    }
+    
+    public function getOwnerAttribute() {
+        return Request::ifGrandAccess(
+            $this->request_type_code,
+            auth()->user()->id,
+            $this->status_code,
+            $this->id,
+        );
     }
 
     public function getUnfulfilledRequirementNameAttribute() {
@@ -103,7 +112,7 @@ class Request extends Model
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
             (r.PROCESS_LEAD_ID = :user_id OR tm.USER_ID = :user_id)
-        SQL, [
+        SQL,[
             'status' => $status,
             'type' => $type,
             'user_id' => $user_id,
@@ -125,7 +134,15 @@ class Request extends Model
             'status' => $status,
             'type' => $type,
             'user_id' => $user_id,
+            'request_id' => $request_id,
         ]);
+        Log::info([
+            'status' => $status,
+            'type' => $type,
+            'user_id' => $user_id,
+            'request_id' => $request_id,
+        ]);
+        Log::info($query);
         return $query[0]->count >= 1;
     }
 
@@ -171,6 +188,8 @@ class Request extends Model
             "status_code"=> 'PENDING',
             "parent_id" => $old_request->id,
             "request_code" => $old_request->request_code,
+            "position_code" => $old_request->position_code,
+            "area_code" => $old_request->area_code,
         ]);
     }
 

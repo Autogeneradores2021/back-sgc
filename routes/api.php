@@ -29,6 +29,7 @@ Route::group([
     'prefix' => 'user'
 
 ], function ($router) {
+    Route::get('update-role/{id}', [UserController::class, 'updateRole']);
     Route::get('me', [UserController::class, 'retrive']);
     Route::post('create', [UserController::class, 'create']);
     Route::get('', [UserController::class, 'index']);
@@ -55,6 +56,7 @@ Route::group([
 
 ], function ($router) {
     # request
+    Route::get('/is-owner/{id}', [RequestController::class, 'isOwner']);
     Route::post('/create', [RequestController::class, 'create']);
     Route::get('', [RequestController::class, 'index']);
 

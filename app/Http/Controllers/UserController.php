@@ -26,6 +26,23 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function updateRole(Request $request, $id) {
+        $input = $request->all();
+        $currentUser = $request->user();
+        if (!$currentUser->role_code == 'ADMIN') {
+            return response()->json(['message' => 'Este usuario no es administrador'], 400);
+        }
+        $user = User::where('id',$id)->first();
+        if ($input['role_code']) {
+            $user->role_code = $input['role_code'];
+            $user->save();
+        }
+        return response()->json([
+            'message' => 'ok',
+            'data' => $user
+        ]);
+    }
+
     public function index(Request $request)
     {
         $search = $request->query('search');

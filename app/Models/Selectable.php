@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Parent_;
 
 class Selectable extends Model
@@ -81,6 +82,17 @@ class Selectable extends Model
      * @var boolean
      */
     public $timestamps = false;
+
+    public static function createIfNotExist($table, $code, $description) {
+        $count = DB::table($table)->where('code', $code)->count();
+        if ($count == 0) {
+            $model = new Selectable([
+                'code' => $code,
+                'description' => $description
+            ], $table);
+            $model->save();
+        }
+    }
 
     // Scopes...
 

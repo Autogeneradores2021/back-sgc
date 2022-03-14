@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Security;
 use App\Models\Employee;
+use App\Models\Selectable;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -42,19 +43,33 @@ class AuthController extends Controller
             Log::info('CONEXION CON SEGURIDAD TRANSVERSAL CONFIRMADA');
             if ($user) {
                 Log::info('EXISTE REGISTRO DE USUARIO');
+                $area_code = $user->area_code;
+                $position_code = $user->position_code;
+                $employee = null;
+                // $employee = Employee::query()->where('correo', $person->email)->orderBy('codigo', 'desc')->first();
+                if ($employee) {
+                    Selectable::createIfNotExist('areas', $employee->estructura, $employee->estructura);
+                    Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
+                    $area_code= $employee->estructura;
+                    $position_code = $employee->cargo;
+                }
                 $user->phone_number = $person->cellphone ? $person->cellphone : $person->telephone;
                 $user->state_code = $person->state == 1 ? 'ACTIVE' : 'DISABLE';
                 $user->password = Hash::make($credentials['password']);
+                $user->area_code = $area_code;
+                $user->position_code = $position_code;
                 $user->save();
                 Log::info('USUARIO ACTUALIZADO');
-                $employee = Employee::query()->where('correo', $person->email)->orderBy('codigo', 'desc')->first();
                 Log::info($user);
             } else {
                 Log::info('NO EXISTE REGISTRO DE USUARIO');
-                $employee = Employee::query()->where('correo', $person->email)->orderBy('codigo', 'desc')->first();
+                $employee = null;
+                // $employee = Employee::query()->where('correo', $person->email)->orderBy('codigo', 'desc')->first();
                 $area_code = 'EXTERNO';
                 $position_code = 'EXTERNO';
                 if ($employee) {
+                    Selectable::createIfNotExist('areas', $employee->estructura, $employee->estructura);
+                    Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
                     $area_code = $employee->estructura;
                     $position_code = $employee->cargo;
                 }

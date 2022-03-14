@@ -226,8 +226,9 @@ class WizardController extends Controller
         $this->body["status"] = 201;
         $data = $this->request->all();
         $request_id = $data['request_id'];
+        $index = $data['index'];
         DB::beginTransaction();
-        if ($data['index'] == '0') {
+        if ($index == '0') {
             UpgradePlan::query()->where('request_id', '=', $data['request_id'])->where('upgrade_plan_type_code', '=', 'INM    ')->delete();
         }
         $data["upgrade_plan_type_code"] = "INM";
@@ -254,7 +255,7 @@ class WizardController extends Controller
         }
         if ($this->body["status"] == 201) {
             DB::commit();
-            if ($data == 'last') {
+            if ($index == 'last') {
                 Issue::createUPlan(
                     $this->request->user(),
                     ModelsRequest::query()->where('id', $request_id)->first(),
@@ -317,8 +318,9 @@ class WizardController extends Controller
         $this->body["status"] = 201;
         $data = $this->request->all();
         $request_id = $data['request_id'];
+        $index = $data['index'];
         DB::beginTransaction();
-        if ($data['index'] == '0') {
+        if ($index == '0') {
             UpgradePlan::query()->where('request_id', '=', $data['request_id'])->where('upgrade_plan_type_code', '=', 'DEF    ')->delete();
         }
         $data["upgrade_plan_type_code"] = "DEF";
@@ -345,7 +347,10 @@ class WizardController extends Controller
         }
         if ($this->body["status"] == 201) {
             DB::commit();
-            if ($data == 'last') {
+            Log::info('ULTIMO');
+            Log::info($data);
+            if ($index == 'last') {
+                ModelsRequest::updateStatus($data['request_id'], 'OPEN');
                 Issue::createUPlan(
                     $this->request->user(),
                     ModelsRequest::query()->where('id', $request_id)->first(),

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property string $title
@@ -30,13 +31,18 @@ class Tracking extends Model
         $request_id = UpgradePlan::query()->where('id', '=', $id)->get('request_id')->first()->request_id;
         $collection = UpgradePlan::query()->where('request_id', '=', $request_id)->where('upgrade_plan_type_code', '=', 'DEF')->get();
         $valid = true;
+        Log::info('SE VERIFICA');
+        Log::info($collection);
         foreach ($collection as $value) {
-            $record = Tracking::query()->where('upgrade_plan_id', '=', $id)->orderBy('id', 'desc')->first();
-            if ($record->percentage < 100) {
+            Log::info('VERIFICANDO SEGUIMIENTOS');
+            $record = Tracking::query()->where('upgrade_plan_id', '=', $value->id)->orderBy('id', 'desc')->first();
+            Log::info($record);
+            if (!$record || $record->percentage < 100) {
                 $valid = false;
             }
         }
         if ($valid) {
+            Log::info('SE CIERRA');
             Request::updateStatus($request_id, 'R_TO_CLOSE');
         }
         return null;

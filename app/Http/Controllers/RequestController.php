@@ -15,6 +15,21 @@ use function GuzzleHttp\Promise\all;
 class RequestController extends Controller
 {
 
+    public function isOwner(Request $request, $id) {
+        $result = ModelsRequest::query()->where('id',$id)->first();
+        return response()->json(
+            [
+                "message" => "ok",
+                "data" => ModelsRequest::ifGrandAccess(
+                    $result->request_type_code,
+                    auth()->user()->id,
+                    $result->status_code,
+                    $id,
+                )
+            ]
+        );
+    }
+
     /**
      * create new request
      *  
@@ -43,7 +58,7 @@ class RequestController extends Controller
                     "message" => "Error de validacion",
                     "data" => $validator->errors(),
                 ],
-                406
+                400
             );
         }
         $count = 0;

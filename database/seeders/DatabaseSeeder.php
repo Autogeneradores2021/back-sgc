@@ -122,22 +122,8 @@ class DatabaseSeeder extends Seeder
         print("Usuarios de prueba  OK\r\n");
         $employees = Employee::query()->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
         foreach ($employees as $employee) {
-            $area = DB::table('areas')->where('code', $employee->estructura)->count();
-            if ($area == 0) {
-                $model = new Selectable([
-                    'code' => $employee->estructura,
-                    'description' => $employee->estructura
-                ], 'areas');
-                $model->save();
-            }
-            $position = DB::table('positions')->where('code', $employee->cargo)->count();
-            if ($position == 0) {
-                $model = new Selectable([
-                    'code' => $employee->cargo,
-                    'description' => $employee->cargo
-                ], 'positions');
-                $model->save();
-            }
+            Selectable::createIfNotExist('areas', $employee->estructura, $employee->estructura);
+            Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
             if ($user = User::query()->where('email', strtolower($employee->correo))->first()) {
                 $user->name = $employee->nombre;
                 $user->position_code = $employee->cargo;
