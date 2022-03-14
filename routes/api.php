@@ -31,6 +31,7 @@ Route::group([
 ], function ($router) {
     Route::get('update-role/{id}', [UserController::class, 'updateRole']);
     Route::get('me', [UserController::class, 'retrive']);
+    Route::get('members', [UserController::class, 'getMembers']);
     Route::post('create', [UserController::class, 'create']);
     Route::get('', [UserController::class, 'index']);
 

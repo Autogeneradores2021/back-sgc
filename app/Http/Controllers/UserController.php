@@ -43,6 +43,13 @@ class UserController extends Controller
         ]);
     }
 
+    public function getMembers() {
+        return response()->json([
+            'message' => 'ok',
+            'data' => User::query()->whereIn('role_code', ['ADMIN', 'AUDITOR'])->get(),
+        ]);
+    }
+
     public function index(Request $request)
     {
         $search = $request->query('search');

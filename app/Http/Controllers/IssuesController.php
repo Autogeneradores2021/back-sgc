@@ -10,7 +10,13 @@ class IssuesController extends Controller
 {
     public function byRequestId(Request $request, $request_id)
     {
-        $query = Issue::query()->where('request_id', $request_id)->orderBy('created_at', 'desc')->get();
+        $requestModel = ModelsRequest::query()->where('id',$request_id)->first();
+        $ids = [];
+        while ($requestModel) {
+            array_push($ids, $requestModel->id);
+            $requestModel = ModelsRequest::query()->where('id',$requestModel->parent_id)->first();
+        }
+        $query = Issue::query()->whereIn('request_id', $ids)->orderBy('created_at', 'desc')->get();
         if (count($query) == 0) {
             return response()->json([
                 'message' => 'Esta solicitud no ha sido creada todavia',
