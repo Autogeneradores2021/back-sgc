@@ -29,15 +29,15 @@ class ReportController extends Controller
         ];
         $data['general'] = [
             'sgc' => [
-                'last_7_days' => ModelsRequest::countByPeriod('SGC',7),
-                'last_28_days' => ModelsRequest::countByPeriod('SGC',28),
+                'this_week' => ModelsRequest::countByPeriod('SGC',6),
+                'this_month' => ModelsRequest::countByPeriod('SGC',27),
                 'total' => ModelsRequest::countByTypeAndStatus('SGC', ['OPEN', 'PENDING', 'R_TO_CLOSE', 'PENDING', 'CLOSE', 'EXPIRED']),
                 'open' => ModelsRequest::countByTypeAndStatus('SGC', ['OPEN', 'PENDING', 'R_TO_CLOSE', 'PENDING', 'EXPIRED']),
                 'close' => ModelsRequest::countByTypeAndStatus('SGC', ['CLOSE']),
             ],
             'sci' => [
-                'last_7_days' => ModelsRequest::countByPeriod('SCI',7),
-                'last_28_days' => ModelsRequest::countByPeriod('SCI',28),
+                'this_week' => ModelsRequest::countByPeriod('SCI',6),
+                'this_month' => ModelsRequest::countByPeriod('SCI',27),
                 'total' => ModelsRequest::countByTypeAndStatus('SCI', ['OPEN', 'PENDING', 'R_TO_CLOSE', 'PENDING', 'CLOSE', 'EXPIRED']),
                 'open' => ModelsRequest::countByTypeAndStatus('SCI', ['OPEN', 'PENDING', 'R_TO_CLOSE', 'PENDING', 'EXPIRED']),
                 'close' => ModelsRequest::countByTypeAndStatus('SCI', ['CLOSE']),],

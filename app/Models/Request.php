@@ -34,7 +34,7 @@ class Request extends Model
     public static $rules = [
         "request_type_code"=>"required|exists:request_types,code",
         "init_date" => "required|date",
-        "init_date" => "required|date",sgcData
+        "init_date" => "required|date",
         "detected_date" => "required|date", 
         "detected_in_code" => "required|exists:detected_places,code",
         "detected_for_id" => "required|exists:users,id",
@@ -129,7 +129,7 @@ class Request extends Model
             r.id = :request_id AND
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
-            ((r.PROCESS_LEAD_ID = :user_id AND tm.USER_ID <> :user_id) OR (tm.USER_ID = :user_id AND r.PROCESS_LEAD_ID <> :user_id))
+            (tm.USER_ID = :user_id or r.PROCESS_LEAD_ID = :user_id)
         SQL, [
             'status' => $status,
             'type' => $type,
@@ -139,12 +139,23 @@ class Request extends Model
         return $query[0]->count >= 1;
     }
 
-    public static function countByPeriod($type, $days = 7) {
-        return DB::select(
-        'SELECT count(r.DETECTED_DATE) as "count", r.DETECTED_DATE  as "date" '.
-        'FROM REQUESTS r '.
-        'WHERE r.DETECTED_DATE >= sysdate - ? AND r.REQUEST_TYPE_CODE = ? '.
-        'GROUP BY r.DETECTED_DATE', [$days, $type]);
+    public static function countByPeriod($type, $days_back = 6) {
+        return DB::select(<<<SQL
+        SELECT dates,(
+            SELECT count(1)
+            FROM requests rq
+            WHERE rq.request_type_code = :type_code AND TRUNC(rq.CREATED_AT) = dates 
+        ) as total
+        FROM (
+            SELECT TRUNC(SYSDATE-:days_back)+rownum-1 AS dates
+            FROM DUAL
+            CONNECT BY LEVEL <= (SYSDATE - (SYSDATE-:days_back))+1
+        )
+        ORDER BY dates DESC
+        SQL, [
+            'days_back' => $days_back,
+            'type_code' => $type,
+        ]);
     }
 
     public static function countByTypeAndStatus($type, $status) {

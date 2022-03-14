@@ -53,9 +53,11 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $exclude = $request->query('exclude');
         if (!$search) { $search = ''; }
+        if (!$exclude) { $exclude = []; }
         $search = strtoupper($search);
-        $query = User::query()->where('name', 'like', '%'.$search.'%')->orderBy('name')->limit(10)->get();
+        $query = User::query()->where('name', 'like', '%'.$search.'%')->whereNotIn('id', $exclude)->orderBy('name')->limit(10)->get();
         return response()->json([
             'message' => 'ok',
             'data' => $query
