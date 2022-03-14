@@ -34,7 +34,7 @@ class Request extends Model
     public static $rules = [
         "request_type_code"=>"required|exists:request_types,code",
         "init_date" => "required|date",
-        "init_date" => "required|date",
+        "init_date" => "required|date",sgcData
         "detected_date" => "required|date", 
         "detected_in_code" => "required|exists:detected_places,code",
         "detected_for_id" => "required|exists:users,id",
@@ -111,7 +111,7 @@ class Request extends Model
             WHERE
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
-            (r.PROCESS_LEAD_ID = :user_id OR tm.USER_ID = :user_id)
+            ((r.PROCESS_LEAD_ID = :user_id AND tm.USER_ID <> :user_id) OR (tm.USER_ID = :user_id AND r.PROCESS_LEAD_ID <> :user_id))
         SQL,[
             'status' => $status,
             'type' => $type,
@@ -129,20 +129,13 @@ class Request extends Model
             r.id = :request_id AND
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
-            (r.PROCESS_LEAD_ID = :user_id OR tm.USER_ID = :user_id)
+            ((r.PROCESS_LEAD_ID = :user_id AND tm.USER_ID <> :user_id) OR (tm.USER_ID = :user_id AND r.PROCESS_LEAD_ID <> :user_id))
         SQL, [
             'status' => $status,
             'type' => $type,
             'user_id' => $user_id,
             'request_id' => $request_id,
         ]);
-        Log::info([
-            'status' => $status,
-            'type' => $type,
-            'user_id' => $user_id,
-            'request_id' => $request_id,
-        ]);
-        Log::info($query);
         return $query[0]->count >= 1;
     }
 
