@@ -111,11 +111,12 @@ class Request extends Model
             WHERE
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
-            ((r.PROCESS_LEAD_ID = :user_id AND tm.USER_ID <> :user_id) OR (tm.USER_ID = :user_id AND r.PROCESS_LEAD_ID <> :user_id))
+            ((r.PROCESS_LEAD_ID = :user_id AND tm.IS_LEAD = :is_lead) OR (tm.USER_ID = :user_id AND tm.IS_LEAD = :is_lead))
         SQL,[
             'status' => $status,
             'type' => $type,
             'user_id' => $user_id,
+            'is_lead' => 0,
         ]);
         return $query[0]->count;
     }

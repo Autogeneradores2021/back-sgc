@@ -40,17 +40,18 @@ class AuthController extends Controller
 
         if ($payload) {
             $person = $payload->person;
+            $user = User::query()->where(['identification_number' => $person->document_number])->first();
             Log::info('CONEXION CON SEGURIDAD TRANSVERSAL CONFIRMADA');
             if ($user) {
                 Log::info('EXISTE REGISTRO DE USUARIO');
                 $area_code = $user->area_code;
                 $position_code = $user->position_code;
-                $employee = null;
-                // $employee = Employee::query()->where('correo', $person->email)->orderBy('codigo', 'desc')->first();
+                // $employee = null;
+                $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
                 if ($employee) {
-                    Selectable::createIfNotExist('areas', $employee->estructura, $employee->estructura);
+                    Selectable::createIfNotExist('areas', $employee->division, $employee->division);
                     Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
-                    $area_code= $employee->estructura;
+                    $area_code= $employee->division;
                     $position_code = $employee->cargo;
                 }
                 $user->phone_number = $person->cellphone ? $person->cellphone : $person->telephone;
@@ -58,23 +59,24 @@ class AuthController extends Controller
                 $user->password = Hash::make($credentials['password']);
                 $user->area_code = $area_code;
                 $user->position_code = $position_code;
+                $user->email = strtolower($person->email);
                 $user->save();
                 Log::info('USUARIO ACTUALIZADO');
                 Log::info($user);
             } else {
                 Log::info('NO EXISTE REGISTRO DE USUARIO');
-                $employee = null;
-                // $employee = Employee::query()->where('correo', $person->email)->orderBy('codigo', 'desc')->first();
+                // $employee = null;
+                $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
                 $area_code = 'EXTERNO';
                 $position_code = 'EXTERNO';
                 if ($employee) {
-                    Selectable::createIfNotExist('areas', $employee->estructura, $employee->estructura);
+                    Selectable::createIfNotExist('areas', $employee->division, $employee->division);
                     Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
-                    $area_code = $employee->estructura;
+                    $area_code = $employee->division;
                     $position_code = $employee->cargo;
                 }
                 $user = new User([
-                    'name' => $person->contractor_company ? $person->contractor_company : $person->first_name.' '.$person->second_name.' '.$person->first_lastname.' '.$person->second_lastname,
+                    'name' => strtoupper($person->contractor_company ? $person->contractor_company : $person->first_name.' '.$person->second_name.' '.$person->first_lastname.' '.$person->second_lastname),
                     'email' => strtolower($person->email),
                     'phone_number' => $person->cellphone ? $person->cellphone : $person->telephone,
                     'identification_type' => $person->document_type->code,
