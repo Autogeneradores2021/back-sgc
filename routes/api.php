@@ -10,6 +10,7 @@ use App\Http\Controllers\SelectableController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\IssuesController;
+use App\Http\Controllers\EmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,17 @@ Route::group([
     Route::get('', [UserController::class, 'index']);
 
 });
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'employee'
+
+], function ($router) {
+    Route::get('', [EmployeeController::class, 'index']);
+
+});
+
 Route::group([
 
     'middleware' => 'api',
