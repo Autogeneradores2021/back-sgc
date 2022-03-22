@@ -31,6 +31,10 @@ class WizardController extends Controller
         "sgc3" => 'questionary_answers',
         "sgc4" => 'upgrade_plans',
         "sgc5" => 'finish_requests',
+        "sci1" => 'team_members',
+        "sci2" => 'questionary_answers',
+        "sci3" => 'upgrade_plans',
+        "sci4" => 'finish_requests',
     ];
 
     /**
@@ -68,9 +72,9 @@ class WizardController extends Controller
     public function retrive(Request $request, $module, $step) {
         $params = request()->query();
         $data = DB::table($this->dictionary[$module.$step])->where($params)->orderBy('id')->get();
-        if ($module.$step == 'sgc5') { $data = FinishRequest::query()->where($params)->get(); }
-        if ($module.$step == 'sgc2') { $data = UpgradePlan::query()->where($params)->get(); }
-        if ($module.$step == 'sgc4') { $data = UpgradePlan::query()->where($params)->get(); }
+        if (in_array($module.$step, ['sgc5', 'sci5'])) { $data = FinishRequest::query()->where($params)->get(); }
+        if (in_array($module.$step, ['sgc4', 'sci3'])) { $data = UpgradePlan::query()->where($params)->get(); }
+        if (in_array($module.$step, ['sgc2',])) { $data = UpgradePlan::query()->where($params)->get(); }
         $this->body["status"] = 200;
         $this->body["data"] = $data;
         $this->body["message"] = "ok";
@@ -91,7 +95,7 @@ class WizardController extends Controller
         $this->body["data"] = [];
         $this->body["message"] = [];
         $this->body["status"] = 201;
-        $keys = ['analysis', 'tracking_id'];
+        $keys = ['team_memebers'];
         $request = request($keys);
         if (!$request) {
             $this->body["message"] = "Seguimiento vacio";
@@ -99,21 +103,33 @@ class WizardController extends Controller
             return;
         }
         $data = $request[$keys[0]];
-        $tracking_id = (int)$request[$keys[1]];
+        $first = true;
+        $request_id = null;
+        if (count($data) != 0) {  $request_id = $data[0]['request_id']; }
         DB::beginTransaction();
         foreach ($data as $a) {
-            $validator = Validator::make($a, Analysis::$rules);
-            if ($validator->fails()) {  
-                $this->body["message"] = "Error validando el analisis";
+            if ($first) {
+                $a['is_lead'] = true;
+                $first = false;
+                TeamMember::query()->where('request_id', '=', $a['request_id'])->delete();
+            }
+            $validator = Validator::make($a, TeamMember::$rules);
+            if ($validator->fails()) {
+                $this->body["message"] = "Error validando equipo de trabajo";
                 array_push( $this->body["data"], $validator->errors() );
                 $this->body["status"] = 400;
             } else {
-                $record = Analysis::create($a);
+                $record = TeamMember::create($a);
             }
         }
         if ($this->body["status"] == 201) {
             DB::commit();
-            $this->body["message"] = "El analisis se creo correctamente";
+            Issue::createWorkTeam(
+                $this->request->user(),
+                ModelsRequest::query()->where('id', $request_id)->first(),
+                $data
+            );
+            $this->body["message"] = "El equipo se creo correctamente";
         } else {
             DB::rollback();
         }
@@ -123,55 +139,123 @@ class WizardController extends Controller
         $this->body["data"] = [];
         $this->body["message"] = [];
         $this->body["status"] = 201;
-        $keys = ['upgrade_plan', 'tracking_id'];
+        $keys = ['answers'];
         $request = request($keys);
         if (!$request) {
             $this->body["message"] = "Seguimiento vacio";
             $this->body["status"] = 400;
             return;
         }
-        $data = $request[$keys[0]];
-        $tracking_id = (int)$request[$keys[1]];
         DB::beginTransaction();
-        foreach ($data as $a) {
-            $a["upgrade_plan_type"] = "D";
-            $validator = Validator::make($a, UpgradePlan::$rules);
+        $collection = $request[$keys[0]];
+        $request_id = null;
+        if (count($collection) != 0) { $request_id = $collection[0]['request_id']; }
+        $first = true;
+        foreach ($collection as $a) {
+            if ($first) {
+                $first = false;
+                QuestionaryAnswers::query()->where('request_id', '=', $a['request_id'])->delete();
+            }
+            $validator = Validator::make($a, QuestionaryAnswers::$rules);
             if ($validator->fails()) {
                 $this->body["message"] = "Error validando el analisis";
-                array_push( $this->body["data"], $validator->errors() );
+                array_push( $this->body["data"]["answers"], $validator->errors() );
                 $this->body["status"] = 400;
             } else {
-                UpgradePlan::create($a);
+                $a = QuestionaryAnswers::create($a);
             }
         }
         if ($this->body["status"] == 201) {
             DB::commit();
-            $this->body["message"] = "El plan de mejora se creo correctamente";
+            Issue::createAnalysis(
+                $this->request->user(),
+                ModelsRequest::query()->where('id', $request_id)->first(),
+                $collection,
+            );
+            $this->body["message"] = "El paso 3 se completo correctamente";
         } else {
             DB::rollback();
         }
     }
 
     private function sciS3() {
-        $keys = ['finish_request', 'tracking_id'];
+        $this->body["data"] = [];
+        $this->body["message"] = [];
+        $this->body["status"] = 201;
+        $data = $this->request->all();
+        $request_id = $data['request_id'];
+        $index = $data['index'];
+        DB::beginTransaction();
+        if ($index == '0') {
+            UpgradePlan::query()->where('request_id', '=', $data['request_id'])->where('upgrade_plan_type_code', '=', 'DEF    ')->delete();
+        }
+        $data["upgrade_plan_type_code"] = "DEF";
+        $validator = Validator::make($data, UpgradePlan::$rules);
+        if ($validator->fails()) {
+            $this->body["message"] = "Error validando el analisis";
+            array_push( $this->body["data"], $validator->errors() );
+            $this->body["status"] = 400;
+        } else {
+            $count = 0;
+            $data['evidence_file'] = '';
+            while ($this->request->hasfile('evidence_file_'.$count)) {
+                $file = $this->request->file('evidence_file_'.$count);
+                $extention = $file->getClientOriginalExtension();
+                $filename = time().$this->generateRandomString(15).'.'.$extention;
+                $file->move('upland/'.$request_id.'/', $filename);
+                $dir = 'upland/'.$request_id.'/'.$filename.';';
+                $data['evidence_file'] .= $dir;
+                Log::info('SE RECIBIO UN ARCHIVO Y SE GUARDO');
+                Log::info($dir);
+                $count++;
+            }
+            $data = UpgradePlan::create($data);
+        }
+        if ($this->body["status"] == 201) {
+            DB::commit();
+            Log::info('ULTIMO');
+            Log::info($data);
+            if ($index == 'last') {
+                ModelsRequest::updateStatus($data['request_id'], 'OPEN');
+                Issue::createUPlan(
+                    $this->request->user(),
+                    ModelsRequest::query()->where('id', $request_id)->first(),
+                    UpgradePlan::query()->where('request_id', '=', $data['request_id'])->where('upgrade_plan_type_code', '=', 'DEF    ')->get(),
+                    'acciones de correccion inmediatas'
+                );
+            }
+            $this->body["message"] = "El plan de mejora se creo correctamente";
+        } else {
+            DB::rollback();
+        }
+    }
+
+    private function sciS4() {
+        $keys = ['finish_request'];
         $request = request($keys);
         if (!$request) {
             $this->body["message"] = "Seguimiento vacio";
             $this->body["status"] = 400;
             return;
         }
-        $tracking_id = (int)$request[$keys[1]];
         $data = $request[$keys[0]];
         $validator = Validator::make($data, FinishRequest::$rules);
+        FinishRequest::query()->where('request_id', '=', $data['request_id'])->delete();
         if ($validator->fails()) {
             $this->body["message"] = "Error de validacion";
             $this->body["data"] = $validator->errors();
             $this->body["status"] = 400;
         } else {
             $record = FinishRequest::create($data);
+            ModelsRequest::updateStatus($data['request_id'], $record->result_code);
+            Issue::createFinishRequest(
+                $this->request->user(),
+                ModelsRequest::query()->where('id', $data['request_id'])->first(),
+                $record,
+            );
             $this->body["status"] = 201;
             $this->body["data"] = $record;
-            $this->body["message"] = "El plan de mejora se creo correctamente";
+            $this->body["message"] = "La solicitud se cerro correctamente";
         }
     }
 
@@ -217,7 +301,6 @@ class WizardController extends Controller
         } else {
             DB::rollback();
         }
-
     }
 
     private function sgcS2() {
