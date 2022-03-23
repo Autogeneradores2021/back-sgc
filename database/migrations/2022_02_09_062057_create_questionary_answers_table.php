@@ -15,7 +15,7 @@ class CreateQuestionaryAnswersTable extends Migration
     {
         Schema::create('questionary_answers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('request_id')->constrained('requests');
             $table->string('question');
             $table->string('answer');
             $table->boolean('is_root')->default(false);

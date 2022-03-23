@@ -15,7 +15,7 @@ class AddStatusCodeToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('state_code', 50)->nullable();
-            $table->foreign('state_code')->on('states')->references('code')->cascadeOnDelete();
+            $table->foreign('state_code')->on('states')->references('code');
             $table->datetime('expiration_date')->nullable();
 
         });

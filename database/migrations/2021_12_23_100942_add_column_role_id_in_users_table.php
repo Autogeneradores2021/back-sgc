@@ -15,7 +15,7 @@ class AddColumnRoleIdInUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('role_code', 50)->nullable();
-            $table->foreign('role_code')->on('roles')->references('code')->cascadeOnDelete();
+            $table->foreign('role_code')->on('roles')->references('code');
         });
     }
 

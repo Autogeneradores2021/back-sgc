@@ -4,8 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRequestsTable extends Migration
-{
+class CreateRequestsTable extends Migration {
+
     /**
      * Run the migrations.
      *
@@ -32,15 +32,15 @@ class CreateRequestsTable extends Migration
             $table->string('status_code', 50);
             $table->timestamps();
 
-            $table->foreign('request_type_code')->cascadeOnDelete()->references('code')->on('request_types');
-            $table->foreign('action_type_code')->cascadeOnDelete()->references('code')->on('action_types');
-            $table->foreign('how_detected_code')->cascadeOnDelete()->references('code')->on('detection_types');
-            $table->foreign('status_code')->cascadeOnDelete()->references('code')->on('status');
-            $table->foreign('process_lead_id')->cascadeOnDelete()->references('id')->on('users');
-            $table->foreign('detected_for_id')->cascadeOnDelete()->references('id')->on('users');
-            $table->foreign('detected_in_code')->cascadeOnDelete()->references('code')->on('detected_places');
-            $table->foreign('unfulfilled_requirement_code')->cascadeOnDelete()->references('code')->on('unfulfilled_requirements');
-            $table->foreign('affected_process_code')->cascadeOnDelete()->references('code')->on('affected_processes');
+            $table->foreign('request_type_code')->references('code')->on('request_types');
+            $table->foreign('action_type_code')->references('code')->on('action_types');
+            $table->foreign('how_detected_code')->references('code')->on('detection_types');
+            $table->foreign('status_code')->references('code')->on('status');
+            $table->foreign('process_lead_id')->references('id')->on('users');
+            $table->foreign('detected_for_id')->references('id')->on('users');
+            $table->foreign('detected_in_code')->references('code')->on('detected_places');
+            $table->foreign('unfulfilled_requirement_code')->references('code')->on('unfulfilled_requirements');
+            $table->foreign('affected_process_code')->references('code')->on('affected_processes');
 
         });
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Selectable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SelectableController extends Controller
@@ -12,8 +13,14 @@ class SelectableController extends Controller
     public function index(Request $request, $table) {
         try {
             $search = $request->query('search');
+            $all = $request->query('all');
             if (!$search) { $search = ''; }
-            $query = DB::table($table)->where('description', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%')->limit(10)->get();
+            Log::info(!$all);
+            if ($all) {
+                $query = DB::table($table)->where('description', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%')->limit(10)->get();
+            } else {
+                $query = DB::table($table)->orderBy('description', 'desc')->get();
+            }
             return response()->json([
                 'message' => 'ok',
                 'data' => $query
@@ -51,7 +58,7 @@ class SelectableController extends Controller
             }
         }
         return response()->json([
-            'data' => $model
+            'data' => $data
         ]);
     }
 

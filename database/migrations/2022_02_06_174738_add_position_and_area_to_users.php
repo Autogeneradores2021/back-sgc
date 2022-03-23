@@ -15,9 +15,9 @@ class AddPositionAndAreaToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('position_code', 50)->nullable();
-            $table->foreign('position_code')->on('positions')->references('code')->cascadeOnDelete();
+            $table->foreign('position_code')->on('positions')->references('code');
             $table->string('area_code', 50)->nullable();
-            $table->foreign('area_code')->on('areas')->references('code')->cascadeOnDelete();
+            $table->foreign('area_code')->on('areas')->references('code');
         });
     }
 

@@ -15,7 +15,7 @@ class AddParentIdToRequest extends Migration
     {
         Schema::table('requests', function (Blueprint $table) {
             $table->bigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->on('requests')->references('id')->cascadeOnDelete();
+            $table->foreign('parent_id')->on('requests')->references('id');
         });
     }
 

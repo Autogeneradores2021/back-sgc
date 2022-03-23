@@ -15,15 +15,15 @@ class CreateFinishRequestsTable extends Migration
     {
         Schema::create('finish_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('request_id')->constrained('requests');
             $table->datetime('tracking_date');
             $table->datetime('tracking_date_period_init')->nullable();
             $table->datetime('tracking_date_period_end')->nullable();
             $table->string('result_code', 50);
-            $table->foreign('result_code')->on('result_types')->references('code')->cascadeOnDelete()->nullable();
+            $table->foreign('result_code')->on('result_types')->references('code')->nullable();
             $table->string('result_analysis', 150)->nullable();
-            $table->foreignId('user_tracking_id')->constrained('users')->cascadeOnDelete()->nullable();
-            $table->foreignId('user_granted_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_tracking_id')->constrained('users')->nullable();
+            $table->foreignId('user_granted_id')->nullable()->constrained('users');
             $table->string('descriptions')->nullable();
             $table->string('objective')->nullable();
             $table->integer('total_review')->nullable();

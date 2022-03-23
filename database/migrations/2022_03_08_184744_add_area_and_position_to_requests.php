@@ -15,9 +15,9 @@ class AddAreaAndPositionToRequests extends Migration
     {
         Schema::table('requests', function (Blueprint $table) {
             $table->string('position_code', 50)->nullable();
-            $table->foreign('position_code')->on('positions')->references('code')->cascadeOnDelete();
+            $table->foreign('position_code')->on('positions')->references('code');
             $table->string('area_code', 50)->nullable();
-            $table->foreign('area_code')->on('areas')->references('code')->cascadeOnDelete();
+            $table->foreign('area_code')->on('areas')->references('code');
         });
     }
 
@@ -30,9 +30,9 @@ class AddAreaAndPositionToRequests extends Migration
     {
         Schema::table('requests', function (Blueprint $table) {
             $table->string('position_code', 10)->nullable();
-            $table->foreign('position_code')->on('positions')->references('code')->cascadeOnDelete();
+            $table->foreign('position_code')->on('positions')->references('code');
             $table->string('area_code', 10)->nullable();
-            $table->foreign('area_code')->on('areas')->references('code')->cascadeOnDelete();
+            $table->foreign('area_code')->on('areas')->references('code');
         });
     }
 }

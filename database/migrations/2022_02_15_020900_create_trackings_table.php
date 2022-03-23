@@ -15,7 +15,7 @@ class CreateTrackingsTable extends Migration
     {
         Schema::create('trackings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('upgrade_plan_id')->constrained('upgrade_plans')->cascadeOnDelete();
+            $table->foreignId('upgrade_plan_id')->constrained('upgrade_plans');
             $table->integer('percentage');
             $table->longText('follow_process_description');
             $table->timestamps();

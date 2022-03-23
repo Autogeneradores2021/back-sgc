@@ -88,6 +88,21 @@ class DatabaseSeeder extends Seeder
             [ 'code' => 'EXPIRED', 'description' => 'Vencido' ],
             [ 'code' => 'UNKNOWN', 'description' => 'Desconocido' ],
         ],
+        'designation_codes' => [
+            [ 'code' => 'DZN', 'description' => 'Division zona norte' ],
+            [ 'code' => 'DZC', 'description' => 'Division zona centro' ],
+        ],
+        'designation_groups' => [
+            [ 'code' => 'H', 'description' => 'Hallazgo' ],
+            [ 'code' => 'M', 'description' => 'Mejora' ],
+        ],
+        'designation_components' => [
+            [ 'code' => 'AC', 'description' => 'Ambiental' ],
+            [ 'code' => 'ER', 'description' => 'Evaluación del Riesgo' ],
+            [ 'code' => 'CT', 'description' => 'Actividades de Control' ],
+            [ 'code' => 'IC', 'description' => 'Información y Comunicación' ],
+            [ 'code' => 'SM', 'description' => 'Supervisión y Monitoreo' ],
+        ],
         
     ];
 
@@ -120,7 +135,8 @@ class DatabaseSeeder extends Seeder
             ['email' => 'oscar.ruiz@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Oscar Ruiz', 'role_code' => 'USER', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
         ]);
         print("Usuarios de prueba  OK\r\n");
-        $employees = Employee::query()->where('estado', 'ACTIVO')->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
+        $employees = [];
+        // $employees = Employee::query()->where('estado', 'ACTIVO')->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
         foreach ($employees as $employee) {
             Selectable::createIfNotExist('areas', $employee->division, $employee->division);
             Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);

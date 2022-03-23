@@ -26,7 +26,12 @@ class CreateAllSelectableTables extends Migration
         'areas',
         'positions',
         'identification_types',
-        'states'
+        'states',
+        # SCI
+        'designation_codes',
+        'designation_groups',
+        'designation_components',
+
     ];
 
     /**

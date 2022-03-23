@@ -15,11 +15,11 @@ class CreateIssuesTable extends Migration
     {
         Schema::create('issues', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
+            $table->foreignId('request_id')->constrained('requests');
             $table->string('title', 100);
             $table->longText('description')->nullable();
             $table->string('icon_code', 50);
-            $table->foreign('icon_code')->on('icons')->references('code')->cascadeOnDelete();
+            $table->foreign('icon_code')->on('icons')->references('code');
             $table->timestamps();
         });
     }
