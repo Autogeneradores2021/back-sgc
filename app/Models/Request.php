@@ -50,7 +50,7 @@ class Request extends Model
     ];
 
 
-    protected $appends = ['process_lead_name', 'detected_for_name', 'stack', 'affected_process_name', 'action_type_name', 'unfulfilled_requirement_name', 'owner'];
+    protected $appends = ['process_lead_name', 'detected_for_name', 'stack', 'affected_process_name', 'action_type_name', 'unfulfilled_requirement_name', 'detected_in_name', 'how_detected_name', 'owner'];
 
     public function getStackAttribute() {
         if ($this->parent_id) {
@@ -66,6 +66,20 @@ class Request extends Model
             $this->status_code,
             $this->id,
         );
+    }
+
+    public function getDetectedInNameAttribute() {
+        if ($this->detected_in_code) {
+            return DB::table('detected_places')->where('code', $this->detected_in_code)->first()->description   ;
+        }
+        return null;
+    }
+
+    public function getHowDetectedNameAttribute() {
+        if ($this->how_detected_code) {
+            return DB::table('detection_types')->where('code', $this->how_detected_code)->first()->description   ;
+        }
+        return null;
     }
 
     public function getUnfulfilledRequirementNameAttribute() {

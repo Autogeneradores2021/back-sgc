@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Request as ModelsRequest;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -46,5 +47,12 @@ class ReportController extends Controller
             'message' => 'ok',
             'data' => $data,
         ]);
+    }
+
+    public function overview($id) {
+
+        $pdf = PDF::loadView('report.overview', ['id' => $id]);
+
+        return $pdf->download('invoice.pdf');
     }
 }
