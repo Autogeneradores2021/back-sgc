@@ -104,6 +104,14 @@ class RequestController extends Controller
             "request_type" => 'SGC',
             "status_code" => ['OPEN', 'CLOSE', 'R_TO_CLOSE', 'PENDING'],
             "search" => "",
+            "order_by" => 'request_code desc',
+            "advance_search" => false,
+            "process_lead_id" => null,
+            "detected_for_id" => null,
+            "affected_process_code" => null,
+            "detected_in_code" => null,
+            "from_date" => null,
+            "until_date" => null,
             "id" => null
         ];
         $queryParams = $request->query();
@@ -112,15 +120,33 @@ class RequestController extends Controller
             else if ($key == 'status_code') { $params[$key] = [$value]; }
             else { $params[$key] = $value; }
         }
+        if ($params['order_by'] == 'request_code') { str_replace('request_code', 'TO_NUMBER(request_code)', $params['order_by']); }
         if ($params['id']) {
             $query = [];
             $query['data'] = ModelsRequest::query()->where('id', '=', $params['id'])->get();
         } else {
-            $query = ModelsRequest::query()->where('request_type_code', '=', $params['request_type'])
+            $query = ModelsRequest::query()
+            ->where('request_type_code', '=', $params['request_type'])
             ->where('request_code', 'like', '%' . $params['search'] . '%')
+            ->whereIn('status_code', $params['status_code'])
+            ->orderByRaw($params['order_by']);
+            if ($params['advance_search']) {
+                $query = ModelsRequest::query()
                 ->whereIn('status_code', $params['status_code'])
-            ->orderByRaw('TO_NUMBER(request_code) desc')
-            ->paginate(
+                ->where('request_type_code', '=', $params['request_type']);
+                if ($params['process_lead_id']) { $query = $query->where(['process_lead_id' => $params['process_lead_id']]); }
+                if ($params['detected_for_id']) { $query = $query->where(['detected_for_id' => $params['detected_for_id']]); }
+                if ($params['affected_process_code']) { $query = $query->where(['affected_process_code' => $params['affected_process_code']]); }
+                if ($params['detected_in_code']) { $query = $query->where(['detected_in_code' => $params['detected_in_code']]); }
+                if ($params['from_date'] && $params['until_date']) {
+                    $query = $query->whereBetween('detected_date', [date('Y-m-d', strtotime($params['from_date'])), date('Y-m-d', strtotime($params['until_date']))]);
+                } else if ($params['from_date']) {
+                    $query = $query->whereDate('detected_date', '>', date('Y-m-d', strtotime($params['from_date'])));
+                } else if ($params['until_date']) {
+                    $query = $query->whereDate('detected_date', '<', date('Y-m-d', strtotime($params['until_date'])));
+                }
+            }
+            $query = $query->paginate(
                 $params["per_page"],
                 $params["columns"],
                 $params["pageName"],

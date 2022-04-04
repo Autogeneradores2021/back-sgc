@@ -34,7 +34,6 @@ class Request extends Model
     public static $rules = [
         "request_type_code"=>"required|exists:request_types,code",
         "init_date" => "required|date",
-        "init_date" => "required|date",
         "detected_date" => "required|date", 
         "detected_in_code" => "required|exists:detected_places,code",
         "detected_for_id" => "required|exists:users,id",
@@ -60,9 +59,14 @@ class Request extends Model
     }
     
     public function getOwnerAttribute() {
+        try {
+            $user_id = auth()->user()->id;
+        } catch (\Throwable $th) {
+            return  0;
+        }
         return Request::ifGrandAccess(
             $this->request_type_code,
-            auth()->user()->id,
+            $user_id,
             $this->status_code,
             $this->id,
         );
@@ -267,7 +271,7 @@ class Request extends Model
      * @var array
      */
     protected $casts = [
-        'request_type' => 'string', 'init_date' => 'datetime', 'detected_date' => 'datetime', 'detected_in' => 'string', 'unfulfilled_requirement' => 'string', 'process_affected' => 'string', 'how_detected' => 'string', 'action_type' => 'string', 'request_code' => 'string', 'evidence_description' => 'string', 'request_description' => 'string', 'evidence_file' => 'string', 'status' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'request_type' => 'string', 'init_date' => 'datetime', 'detected_date' => 'datetime', 'detected_in' => 'string', 'unfulfilled_requirement' => 'string', 'process_affected' => 'string', 'how_detected' => 'string', 'action_type' => 'string', 'request_code' => 'string', 'evidence_description' => 'string', 'request_description' => 'string', 'evidence_file' => 'string', 'status' => 'string', 'created_at' => 'datetime', 'updated_at' => 'datetime'
     ];
 
     /**

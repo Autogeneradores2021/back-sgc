@@ -6,6 +6,11 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="{!! asset('css/bootstrap.min.css') !!}" >
+    <style>
+      img {
+        width: 100%;
+      }
+    </style>
     
   </head>
   <body>

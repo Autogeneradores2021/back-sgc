@@ -15,9 +15,9 @@ class SelectableController extends Controller
             $search = $request->query('search');
             $all = $request->query('all');
             if (!$search) { $search = ''; }
-            Log::info(!$all);
-            if ($all) {
-                $query = DB::table($table)->where('description', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%')->limit(10)->get();
+            Log::info($all);
+            if (!$all) {
+                $query = DB::table($table)->where('code', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%')->limit(10)->get();
             } else {
                 $query = DB::table($table)->orderBy('description', 'desc')->get();
             }
