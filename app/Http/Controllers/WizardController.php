@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Analysis;
-use App\Models\AnalysisDefinition;
 use App\Models\UpgradePlan;
 use App\Models\FinishRequest;
 use App\Models\Issue;
 use App\Models\QuestionaryAnswers;
 use App\Models\Request as ModelsRequest;
-use App\Models\Tracking;
 use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

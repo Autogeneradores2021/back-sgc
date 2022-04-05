@@ -127,16 +127,16 @@ class DatabaseSeeder extends Seeder
         ]);
         print("Roles  OK\r\n");
         User::insert([
-            ['email' => 'alexander.cruz@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Alexander Cruz', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
-            ['email' => 'diego.palacios@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Diego Palacios', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
-            ['email' => 'leidy.bernate@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Leidy Bernate', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
-            ['email' => 'hector.coronado@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Hector Coronado', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
-            ['email' => 'auditor1@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Auditor 1', 'role_code' => 'AUDITOR', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
-            ['email' => 'oscar.ruiz@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Oscar Ruiz', 'role_code' => 'USER', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            ['email' => 'admin@admin.com', 'password' => Hash::make('12345679'), 'name' => 'ADMINISTRADOR', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            // ['email' => 'diego.palacios@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Diego Palacios', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            // ['email' => 'leidy.bernate@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Leidy Bernate', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            // ['email' => 'hector.coronado@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Hector Coronado', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            // ['email' => 'auditor1@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Auditor 1', 'role_code' => 'AUDITOR', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+            // ['email' => 'oscar.ruiz@pruebas.com', 'password' => Hash::make('12345678'), 'name' => 'Oscar Ruiz', 'role_code' => 'USER', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
         ]);
         print("Usuarios de prueba  OK\r\n");
-        $employees = [];
-        // $employees = Employee::query()->where('estado', 'ACTIVO')->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
+        // $employees = [];
+        $employees = Employee::query()->where('estado', 'ACTIVO')->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
         foreach ($employees as $employee) {
             Selectable::createIfNotExist('areas', $employee->division, $employee->division);
             Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
