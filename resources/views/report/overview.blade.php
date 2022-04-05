@@ -317,8 +317,8 @@
 
     <script type="text/javascript">
         var element = document.getElementById('exportable');
-        element.style.width = '700px';
-        element.style.height = '900px';
+        element.style.width = '100%';
+        element.style.height = '100%';
         var opt = {
             margin:       0.5,
             filename:     'Resumen.pdf',

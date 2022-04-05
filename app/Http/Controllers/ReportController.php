@@ -10,6 +10,7 @@ use App\Models\Tracking;
 use App\Models\UpgradePlan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
@@ -67,7 +68,7 @@ class ReportController extends Controller
             $work_team_collection = TeamMember::query()->where(['request_id' => $request->id])->get();
             $immediately_upgrade_plan_collection = UpgradePlan::query()->where(['request_id' => $request->id, 'upgrade_plan_type_code' => 'INM'])->get();
             $definitive_upgrade_plan_collection = UpgradePlan::query()->where(['request_id' => $request->id, 'upgrade_plan_type_code' => 'DEF'])->get();
-            $tracking_collection = Tracking::query()->whereIn('upgrade_plan_id', UpgradePlan::query()->where(['request_id' => $request->id, 'upgrade_plan_type_code' => 'DEF'])->get('id'))->get();
+            $tracking_collection = Tracking::query()->whereIn('upgrade_plan_id', Arr::pluck($definitive_upgrade_plan_collection, 'id'))->get();
             $questionary_answers_collection = QuestionaryAnswers::query()->where(['request_id' => $request->id])->get();
             $finish_request_collection = FinishRequest::query()->where(['request_id' => $request->id])->first();
             $result = $request->toArray();
