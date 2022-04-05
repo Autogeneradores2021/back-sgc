@@ -2,6 +2,8 @@
 
 @section('content')
 
+    <div id="exportable">
+
     @foreach ($collection as $r )
         <div class="container">
         <div class="text-center"><h1>Nueva Solicitud</h1></div>
@@ -78,11 +80,11 @@
                 </div>
                 <div class="col col-4">
                     <label class="form-label">Area</label>
-                    <input type="text" disabled class="form-control" value="{{$r['work_team_lead']->area_description}}">
+                    <input type="text" disabled class="form-control" value="{{$r['work_team_lead']->area}}">
                 </div>
                 <div class="col col-4">
                     <label class="form-label">Cargo</label>
-                    <input type="text" disabled class="form-control" value="{{$r['work_team_lead']->position_description}}">
+                    <input type="text" disabled class="form-control" value="{{$r['work_team_lead']->position}}">
                 </div>
                 </div>
                 @foreach ( $r['work_team'] as $member)
@@ -92,15 +94,15 @@
                     <div class="row">
                         <div class="col col-4">
                             <label class="form-label">Nombre</label>
-                            <input type="text" disabled class="form-control" value="{{$member->name}}">
+                            <input type="text" disabled class="form-control" value="{{$member['name']}}">
                         </div>
                         <div class="col col-4">
                             <label class="form-label">Area</label>
-                            <input type="text" disabled class="form-control" value="{{$member->area_description}}">
+                            <input type="text" disabled class="form-control" value="{{$member['area']}}">
                         </div>
                         <div class="col col-4">
                             <label class="form-label">Cargo</label>
-                            <input type="text" disabled class="form-control" value="{{$member->position_description}}">
+                            <input type="text" disabled class="form-control" value="{{$member['position']}}">
                         </div>
                     </div>
                 @endforeach
@@ -307,9 +309,27 @@
     <div class="container">
         <div class="row justify-content-end p-4">
             <div class="col-1">
-                <button type="button" class="btn btn-primary" onclick="print()">Imprimir</button>
+                {{-- <button type="button" class="btn btn-primary" onclick="generatePDF()">Imprimir</button> --}}
             </div>
         </div>
     </div>
+    </div>
+
+    <script type="text/javascript">
+        var element = document.getElementById('exportable');
+        element.style.width = '700px';
+        element.style.height = '900px';
+        var opt = {
+            margin:       0.5,
+            filename:     'Resumen.pdf',
+            image:        { type: 'jpeg', quality: 1 },
+            html2canvas:  { scale: 1 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait',precision: '12' }
+        };
+        
+        // choose the element and pass it to html2pdf() function and call the save() on it to save as pdf.
+        html2pdf().set(opt).from(element).save().then((_) => {
+        });
+      </script>
 
 @endsection

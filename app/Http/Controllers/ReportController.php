@@ -78,7 +78,7 @@ class ReportController extends Controller
             $result['questionary_answers'] = $questionary_answers_collection;
             $result['tracking'] = $tracking_collection;
             $result['finish_request'] = $finish_request_collection;
-            Log::info($request);
+            Log::info($result['work_team']);
             array_push($data, $result);
         }
 
