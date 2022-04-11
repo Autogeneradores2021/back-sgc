@@ -68,7 +68,7 @@ class Tracking extends Model
      * @var array
      */
     protected $fillable = [
-        'upgrade_plan_id', 'follow_process_description', 'percentage', 'goal_description', 'created_at', 'updated_at'
+        'upgrade_plan_id', 'follow_process_description', 'percentage', 'goal_description', 'evidence_file', 'created_at', 'updated_at'
     ];
 
     /**

@@ -17,7 +17,9 @@ class SelectableController extends Controller
             if (!$search) { $search = ''; }
             Log::info($all);
             if (!$all) {
-                $query = DB::table($table)->where('code', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%')->limit(10)->get();
+                $query = DB::table($table)->where('enabled', '1')->where(function($query) use ($search){
+                    $query->where('code', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%');
+                })->orderBy('description', 'desc')->limit(10)->get();
             } else {
                 $query = DB::table($table)->orderBy('description', 'desc')->get();
             }
@@ -65,12 +67,25 @@ class SelectableController extends Controller
     public function delete(Request $request, $table, $code) {
         $query = DB::table($table)->where('code', '=', $code);
         if (!$query->get()->isEmpty()) {
-            $query->delete();
+            try {
+                $query->delete();
+            } catch (\Illuminate\Database\QueryException $e) {
+                if (strpos($e->getMessage(), '2292')) {
+                    return response()->json([
+                        'message' => 'Ya existen solicitudes que utilizan este seleccionable. Si desea eliminarlo porfavor elimine los registros necesarios y vuelva a intentarlo.',
+                        'data' => $e->getMessage()
+                    ], 400);
+                }
+                return response()->json([
+                    'message' => 'Error en la consulta',
+                    'data' => $e->getMessage()
+                ], 500);
+            }
         } else {
             return response()->json([
                 'message' => 'No encontrado',
                 'data' => [ 'code' => 'El codigo no existe']
-            ], 404);
+            ], 400);
         }
         return response()->json([
             'message' => 'Registro eliminado'

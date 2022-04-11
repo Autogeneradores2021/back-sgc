@@ -39,25 +39,26 @@ class TrackingController extends Controller
      */
     public function create(Request $request) 
     {
-        $keys = ['tracking'];
-        $requestKey = request($keys);
-        if (!$requestKey) {
-            return response()->json([
-                "message" => "No hay informacion disponible",
-                "data" => []
-            ],
-            400);
-        }
-        $data = $requestKey[$keys[0]];
-        $data['status_code'] = "OPEN";
+        $data = $request->all();
         $validator = Validator::make($data, Tracking::$rules);
         if ($validator->fails()) {
             return response()->json([
                 "message" => "Error de validacion",
                 "data" => $validator->errors()
             ],
-            406);
+            400);
         } else {
+            $count = 0;
+            $data['evidence_file'] = '';
+            while ($request->hasfile('evidence_file_'.$count)) {
+                $file = $request->file('evidence_file_'.$count);
+                $extention = $file->getClientOriginalExtension();
+                $filename = time().$this->generateRandomString(15).'.'.$extention;
+                $file->move('request/', $filename);
+                $dir = 'request/'.$filename.';';
+                $data['evidence_file'] .= $dir;
+                $count++;
+            }
             $record = Tracking::create($data);
             Tracking::verify($record->upgrade_plan_id);
             Issue::createTracking(
@@ -81,6 +82,17 @@ class TrackingController extends Controller
     public function query_validate($query) 
     {
         return array_key_exists("upgrade_plan_id", $query);
+    }
+
+
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
 

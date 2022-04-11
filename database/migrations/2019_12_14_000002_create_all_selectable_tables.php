@@ -45,6 +45,8 @@ class CreateAllSelectableTables extends Migration
             Schema::create($tableName, function (Blueprint $table) {
                 $table->string('code', 50)->primary();
                 $table->string('description', 80);
+                $table->boolean('own_system')->default(true);
+                $table->boolean('enabled')->default(true);
             });
         }
     }

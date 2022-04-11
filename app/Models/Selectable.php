@@ -17,6 +17,7 @@ class Selectable extends Model
     public static $rules = [
         "code" => "required|max:10",
         "description" => "required|max:80",
+        "enabled" => "required",
     ];
 
     public function __construct(array $attributes = [], $table){
@@ -46,7 +47,7 @@ class Selectable extends Model
      * @var array
      */
     protected $fillable = [
-        'code', 'description', 'own_system'
+        'code', 'description', 'own_system', 'enabled'
     ];
 
     /**
@@ -64,7 +65,7 @@ class Selectable extends Model
      * @var array
      */
     protected $casts = [
-        'description' => 'string', 'code' => 'string'
+        'description' => 'string', 'code' => 'string', 'enabled' => 'bool', 
     ];
 
     /**
