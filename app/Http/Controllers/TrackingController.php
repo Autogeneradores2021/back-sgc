@@ -8,7 +8,6 @@ use App\Models\Tracking;
 use App\Models\UpgradePlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class TrackingController extends Controller
 {
@@ -28,7 +27,7 @@ class TrackingController extends Controller
                 ]
             ], 400);
         }
-        $collection = Tracking::query()->where($query)->get();
+        $collection = Tracking::query()->where($query)->orderBy('percentage', 'asc')->get();
         return response()->json(["message" => "ok", "data" => $collection]);
     }
 

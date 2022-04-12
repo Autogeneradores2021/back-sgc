@@ -120,7 +120,9 @@ class RequestController extends Controller
             else if ($key == 'status_code') { $params[$key] = [$value]; }
             else { $params[$key] = $value; }
         }
-        if ($params['order_by'] == 'request_code') { str_replace('request_code', 'TO_NUMBER(request_code)', $params['order_by']); }
+        if (str_contains($params['order_by'], 'request_code')) { $params['order_by'] = str_replace('request_code', 'TO_NUMBER(request_code)', $params['order_by']); }
+        if (str_contains($params['order_by'], 'process_lead_name')) { $params['order_by'] = str_replace('process_lead_name', 'process_lead_id', $params['order_by']); }
+        
         if ($params['id']) {
             $query = [];
             $query['data'] = ModelsRequest::query()->where('id', '=', $params['id'])->get();
