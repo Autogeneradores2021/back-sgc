@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Security;
 use App\Models\Employee;
+use App\Models\SecurityUser;
 use App\Models\Selectable;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +31,9 @@ class AuthController extends Controller
      */
     public function login()
     {
+
+        // return response()->json(SecurityUser::getUsers());
+
         $credentials = request(['email', 'password']);
 
         $credentials['email'] = strtolower($credentials['email']);
@@ -39,7 +43,8 @@ class AuthController extends Controller
         $user = User::query()->where(['email' => strtolower($credentials['email'])])->first();
 
         if ($payload) {
-            $person = $payload->person;
+            $person = $payload->user_data->person;
+            $actions = $payload->actions;
             $user = User::query()->where(['identification_number' => $person->document_number])->first();
             Log::info('CONEXION CON SEGURIDAD TRANSVERSAL CONFIRMADA');
             if ($user) {
@@ -91,13 +96,15 @@ class AuthController extends Controller
                 Log::info('USUARIO REGISTRADO');
                 Log::info($user);
             }
+            $user->actions = json_encode($actions);
+            $user->save();
         }
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        if ($user && $user->state == 'DISABLE') {
+        if ($user && $user->state_code == 'DISABLE') {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

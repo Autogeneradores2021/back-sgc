@@ -31,9 +31,12 @@ Route::group([
 
 ], function ($router) {
     Route::get('update-role/{id}', [UserController::class, 'updateRole']);
+    Route::put('/{id}', [UserController::class, 'updateState']);
     Route::get('me', [UserController::class, 'retrive']);
     Route::get('members', [UserController::class, 'getMembers']);
+    Route::get('external', [UserController::class, 'getExternal']);
     Route::post('create', [UserController::class, 'create']);
+    Route::get('permission/{name}', [UserController::class, 'permission']);
     Route::get('', [UserController::class, 'index']);
 
 });
