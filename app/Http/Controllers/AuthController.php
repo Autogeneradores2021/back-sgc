@@ -32,8 +32,6 @@ class AuthController extends Controller
     public function login()
     {
 
-        // return response()->json(SecurityUser::getUsers());
-
         $credentials = request(['email', 'password']);
 
         $credentials['email'] = strtolower($credentials['email']);
