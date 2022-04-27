@@ -85,6 +85,9 @@ class Selectable extends Model
     public $timestamps = false;
 
     public static function createIfNotExist($table, $code, $description) {
+        if (strlen($code) > 50) {
+            $code = substr($code, 50);
+        }
         $count = DB::table($table)->where('code', $code)->count();
         if ($count == 0) {
             $model = new Selectable([
@@ -93,6 +96,7 @@ class Selectable extends Model
             ], $table);
             $model->save();
         }
+        return $code;
     }
 
     // Scopes...
