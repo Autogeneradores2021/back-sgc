@@ -12,7 +12,7 @@ class SecurityQuote extends Command
      *
      * @var string
      */
-    protected $signature = 'security';
+    protected $signature = 'task:security';
 
     /**
      * The console command description.

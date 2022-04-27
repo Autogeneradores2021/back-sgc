@@ -20,8 +20,7 @@ class SecurityUser extends Model
         $query = SecurityUser::query()->where('created_at', $lastUserCreated)->get();
         if ($query->count() != 0) {
             foreach ($query as $user) {
-                $person = null;
-                // $person = SecurityPerson::query()->where()->;
+                $person = SecurityPerson::query()->where('id', $user->person_id)->first();
                 $actions = [];
                 $user = User::query()->where(['identification_number' => $person->document_number])->first();
                 Log::info('CONEXION CON SEGURIDAD TRANSVERSAL CONFIRMADA');
@@ -35,6 +34,9 @@ class SecurityUser extends Model
                         Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
                         $area_code = $employee->division;
                         $position_code = $employee->cargo;
+                    }
+                    if ($area_code == 'EXTERNO' && $person->contractor_company) {
+                        $area_code = Selectable::createIfNotExist('areas', $person->contractor_company, $person->contractor_company);
                     }
                     $user->phone_number = $person->cellphone ? $person->cellphone : $person->telephone;
                     $user->state_code = $person->state == 1 ? 'ACTIVE' : 'DISABLE';
@@ -56,11 +58,14 @@ class SecurityUser extends Model
                         $area_code = $employee->division;
                         $position_code = $employee->cargo;
                     }
+                    if ($area_code == 'EXTERNO' && $person->contractor_company) {
+                        $area_code = Selectable::createIfNotExist('areas', $person->contractor_company, $person->contractor_company);
+                    }
                     $user = new User([
-                        'name' => strtoupper($person->contractor_company ? $person->contractor_company : $person->first_name . ' ' . $person->second_name . ' ' . $person->first_lastname . ' ' . $person->second_lastname),
+                        'name' => strtoupper($person->first_name . ' ' . $person->second_name . ' ' . $person->first_lastname . ' ' . $person->second_lastname),
                         'email' => strtolower($person->email),
                         'phone_number' => $person->cellphone ? $person->cellphone : $person->telephone,
-                        'identification_type' => $person->document_type->code,
+                        'identification_type' => $person->document_type_id == 1 ? 'CC' : 'NIT',
                         'identification_number' => $person->document_number,
                         'role_code' => 'USER',
                         'area_code' => $area_code,
