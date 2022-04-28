@@ -12,7 +12,7 @@ class EmployeesQuote extends Command
      *
      * @var string
      */
-    protected $signature = 'employees';
+    protected $signature = 'task:employees';
 
     /**
      * The console command description.

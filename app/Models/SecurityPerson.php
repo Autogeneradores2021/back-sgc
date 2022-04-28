@@ -9,5 +9,5 @@ class SecurityPerson extends Model
 
     protected $connection = 'security';
 
-    protected $table = 'person';
+    protected $table = 'persons';
 }
