@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        'App\Console\Commands\EmployeesQuote',
+        'App\Console\Commands\SecurityQuote',
     ];
 
     /**
@@ -24,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('employees')->everyFiveMinutes();
+        $schedule->command('task:employees')->dailyAt('11:00');
         $schedule->command('task:security')->everyFiveMinutes();
     }
 

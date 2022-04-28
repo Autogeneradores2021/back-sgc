@@ -15,7 +15,7 @@ class SecurityUser extends Model
 
     static public function getUsers()
     {
-        $lastUserCreated = User::query()->where('role_code', '<>', 'EXTERNO')->orderBy('created_at', 'ASC')->first();
+        $lastUserCreated = User::query()->where('role_code', '<>', 'EXTERNO')->orderBy('created_at', 'DESC')->first();
         $lastUserCreated = $lastUserCreated->created_at;
         $lastUserCreated = date('Y-m-d', strtotime($lastUserCreated));
         $query = SecurityUser::query()->whereDate('created_at', '>', $lastUserCreated)->get();
