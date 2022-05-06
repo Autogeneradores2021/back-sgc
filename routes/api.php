@@ -11,6 +11,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\FilterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ use App\Http\Controllers\EmployeeController;
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'user'
 
 ], function ($router) {
@@ -43,11 +44,23 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'employee'
 
 ], function ($router) {
     Route::get('', [EmployeeController::class, 'index']);
+
+});
+
+Route::group([
+
+    'middleware' => 'auth:api',
+    'prefix' => 'filter'
+
+], function ($router) {
+    Route::get('', [FilterController::class, 'index']);
+    Route::post('', [FilterController::class, 'create']);
+    Route::delete('/{id}', [FilterController::class, 'delete']);
 
 });
 
@@ -67,7 +80,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'request'
 
 ], function ($router) {
@@ -80,7 +93,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'selectable'
 
 ], function ($router) {
@@ -94,7 +107,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'tracking'
 
 ], function ($router) {
@@ -105,7 +118,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'wizard'
 
 ], function ($router) {
@@ -119,7 +132,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'report'
 
 ], function ($router) {
@@ -130,7 +143,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'issue'
 
 ], function ($router) {

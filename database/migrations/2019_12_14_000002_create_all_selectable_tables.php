@@ -18,7 +18,7 @@ class CreateAllSelectableTables extends Migration
         'action_types',
         # Upgrade plans
         'upgrade_plan_types',
-        # Tracking Isuss
+        # Tracking Issus
         'icons',
         # Finish request
         'result_types',
@@ -31,7 +31,6 @@ class CreateAllSelectableTables extends Migration
         'designation_codes',
         'designation_groups',
         'designation_components',
-
     ];
 
     /**
@@ -47,6 +46,7 @@ class CreateAllSelectableTables extends Migration
                 $table->string('description', 80);
                 $table->boolean('own_system')->default(true);
                 $table->boolean('enabled')->default(true);
+                $table->timestamps();
             });
         }
     }

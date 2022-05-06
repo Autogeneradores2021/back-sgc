@@ -41,7 +41,9 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
-// $app->register(\Barryvdh\DomPDF\ServiceProvider::class); 
+// Uncomment this line
+$app->register(App\Providers\AuthServiceProvider::class);
+
 
 /*
 |--------------------------------------------------------------------------

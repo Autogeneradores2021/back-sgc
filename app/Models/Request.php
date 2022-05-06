@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -214,6 +216,12 @@ class Request extends Model
             "position_code" => $old_request->position_code,
             "area_code" => $old_request->area_code,
         ]);
+    }
+
+    public static function local($value) {
+        $dt = new DateTime($value, new DateTimeZone('America/New_York'));
+
+        return $dt->format('d-m-Y');
     }
 
     /**

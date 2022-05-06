@@ -3,75 +3,83 @@
 @section('content')
 
     <div id="exportable">
-
+    <div class="text-center pt-5"><h1>Solicitud # {{$collection[0]['request_code']}}  </h1></div>
     @foreach ($collection as $r )
-        <div class="container">
-        <div class="text-center"><h1>Nueva Solicitud</h1></div>
-        <div class="row">
-            <div class="col col-3">
-                <label class="form-label">Fecha de inicio</label>
-                <input type="text" disabled class="form-control" value="{{date('d-m-Y', strtotime($r['init_date']))}}">
-            </div>
-            <div class="col col-3">
-                <label class="form-label">Fecha detecta *</label>
-                <input type="text" disabled class="form-control" value="{{date('d-m-Y', strtotime($r['detected_date']))}}">
-            </div>
-            <div class="col col-6">
-                <label class="form-label">Detectado en *</label>
-                <input type="text" disabled class="form-control" value="{{$r['detected_in_name']}}">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-9">
-                <label class="form-label">Detectado por *</label>
-                <input type="text" disabled class="form-control" value="{{$r['detected_for_name']}}">
-            </div>
-            <div class="col col-3">
-                <label class="form-label">Requisito aplicable *</label>
-                <input type="text" disabled class="form-control" value="{{$r['action_type_name']}}">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-9">
-                <label class="form-label">Lider del proceso *</label>
-                <input type="text" disabled class="form-control" value="{{$r['process_lead_name']}}">
-            </div>
-            <div class="col col-3">
-                <label class="form-label">Proceso en que se detecta *</label>
-                <input type="text" disabled class="form-control" value="{{$r['affected_process_name']}}">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-9">
-                <label class="form-label">Como se detecta *</label>
-                <input type="text" disabled class="form-control" value="{{$r['how_detected_name']}}">
-            </div>
-            <div class="col col-3">
-                <label class="form-label">Tipo de accion *</label>
-                <input type="text" disabled class="form-control" value="{{$r['action_type_name']}}">
-            </div>
-        </div>
-            <div class="row">
-                <div class="col">
-                <label class="form-label">Evidencia *</label>
-                <input type="text" disabled class="form-control" value="{{$r['evidence_file']}}">
+        @if ($loop->index == 0)
+            <div class="container">
+                <div class="text-center pt-5"><h1>Documento de creacion  </h1></div>
+                <div class="row">
+                    <div class="col col-3">
+                        <label class="form-label">Fecha de inicio</label>
+                        <input type="text" disabled class="form-control" value="{{date('d-m-Y', strtotime($r['init_date']))}}">
+                    </div>
+                    <div class="col col-3">
+                        <label class="form-label">Fecha detecta *</label>
+                        <input type="text" disabled class="form-control" value="{{date('d-m-Y', strtotime($r['detected_date']))}}">
+                    </div>
+                    <div class="col col-6">
+                        <label class="form-label">Detectado en *</label>
+                        <input type="text" disabled class="form-control" value="{{$r['detected_in_name']}}">
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
+                <div class="row">
+                    <div class="col col-9">
+                        <label class="form-label">Detectado por *</label>
+                        <input type="text" disabled class="form-control" value="{{$r['detected_for_name']}}">
+                    </div>
+                    <div class="col col-3">
+                        <label class="form-label">Requisito aplicable *</label>
+                        <input type="text" disabled class="form-control" value="{{$r['unfulfilled_requirement_name']}}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-9">
+                        <label class="form-label">Lider del proceso *</label>
+                        <input type="text" disabled class="form-control" value="{{$r['process_lead_name']}}">
+                    </div>
+                    <div class="col col-3">
+                        <label class="form-label">Proceso en que se detecta *</label>
+                        <input type="text" disabled class="form-control" value="{{$r['affected_process_name']}}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-9">
+                        <label class="form-label">Como se detecta *</label>
+                        <input type="text" disabled class="form-control" value="{{$r['how_detected_name']}}">
+                    </div>
+                    <div class="col col-3">
+                        <label class="form-label">Tipo de accion *</label>
+                        <input type="text" disabled class="form-control" value="{{$r['action_type_name']}}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
                     <label class="form-label">Evidencia *</label>
-                    <div class="container form-control">
-                        {!!$r['request_description']!!}
+                        <div>
+                            @foreach (explode(';', $r['evidence_file']) as $link)
+                                @if ($link)
+                                    <a class="form-control"  href="/{{$link}}" target="_blank">Documento {{array_slice(explode('/', $link), -1)[0]}}</a>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Evidencia *</label>
+                        <div class="container form-control">
+                            {!!$r['request_description']!!}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
 
         
         <div class="container">
             @if ($r['work_team_lead'])
-            <div class="text-center"><h1>ATENDER SOLICITUD</h1></div>
-            <div class="text-center"><h3>Equipo de Trabajo<h3></div>
+            <div class="text-center pt-5"><h1>ATENCION A LA SOLICITUD</h1></div>
+            <div class="text-center pt-5"><h3>Equipo de Trabajo<h3></div>
                 <h5 class="text-center">Lider</h5>
                 <div class="row">
                 <div class="col col-4">
@@ -109,7 +117,7 @@
             @endif
             @if ($r['immediately_upgrade_plan'])
                 @foreach ($r['immediately_upgrade_plan'] as $inm_uplan)
-                    <h3 class="text-center">Accion de Correccion Inmediata</h3>
+                    <h3 class="text-center pt-5">Accion de Correccion Inmediata</h3>
                     <div class="row">
                         <div class="col col-6">
                             <label class="form-label">Descripcion breve de la
@@ -146,14 +154,20 @@
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Evidencia</label>
-                            <input type="text" disabled class="form-control" value="{{$inm_uplan->evidence_file}}">
+                            <div>
+                                @foreach (explode(';', $inm_uplan->evidence_file) as $link)
+                                    @if ($link)
+                                        <a class="form-control" href="{{$link}}">Documento {{array_slice(explode('/', $link), -1)[0]}}</a>
+                                    @endif
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 @endforeach
             @endif
             @if ($r['questionary_answers'])
                 @foreach ($r['questionary_answers'] as $ans)
-                    <h3 class="text-center">Analisis de causas<h3>
+                    <h3 class="text-center pt-5">Analisis de causas</h3>
                     <div class="row">
                         <div class="col">
                             <label class="form-label">{{$ans->question}}</label>
@@ -164,7 +178,7 @@
             @endif
             @if ($r['definitive_upgrade_plan'])
                 @foreach ($r['definitive_upgrade_plan'] as $def_uplan)
-                    <h3 class="text-center">Accion Correctiva</h3>
+                    <h3 class="text-center pt-5">Accion Correctiva</h3>
                     <div class="row">
                         <div class="col col-6">
                             <label class="form-label">Descripcion breve de la
@@ -192,7 +206,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <label class="form-label">Evidencia *</label>
+                            <label class="form-label">Seguimiento *</label>
                             <div class="container form-control">
                                 {!!$def_uplan->follow_process_description!!}
                             </div>
@@ -201,7 +215,13 @@
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Evidencia</label>
-                            <input type="text" disabled class="form-control" value="{{$def_uplan->evidence_file}}">
+                            <div>
+                                @foreach (explode(';', $def_uplan->evidence_file) as $link)
+                                    @if ($link)
+                                        <a class="form-control" href="{{$link}}">Documento {{array_slice(explode('/', $link), -1)[0]}}</a>
+                                    @endif
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -211,7 +231,7 @@
         
         <div class="container">
             @foreach ( $r['tracking'] as $tracking )
-                <h1 class="text-center">Seguimiento</h1>
+                <h1 class="text-center pt-5">Seguimiento</h1>
                 <div class="row">
                     <div class="col col-9">
                         <label class="form-label">Breve descripcion del
@@ -221,6 +241,18 @@
                     <div class="col col-3">
                         <label class="form-label">Avance *</label>
                         <input type="text" disabled class="form-control" value="{{$tracking->percentage}}">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="form-label">Evidencia *</label>
+                            <div>
+                                @foreach (explode(';', $tracking->evidence_file) as $link)
+                                    @if ($link)
+                                        <a class="form-control"  href="/{{$link}}" target="_blank">Documento {{array_slice(explode('/', $link), -1)[0]}}</a>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col">
@@ -236,7 +268,7 @@
 
         <div class="container">
             @if ($r['finish_request'])
-                <div class="text-center"><h1>Evaluacion</h1></div>
+                <div class="text-center pt-5"><h1>Evaluacion</h1></div>
                 <div class="row">
                     <div class="col col-4">
                         <label class="form-label">Fecha de Evaluacion *</label>
@@ -330,6 +362,6 @@
         // choose the element and pass it to html2pdf() function and call the save() on it to save as pdf.
         html2pdf().set(opt).from(element).save().then((_) => {
         });
-      </script>
+    </script>
 
 @endsection

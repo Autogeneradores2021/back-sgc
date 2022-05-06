@@ -52,7 +52,7 @@ class TrackingController extends Controller
             while ($request->hasfile('evidence_file_'.$count)) {
                 $file = $request->file('evidence_file_'.$count);
                 $extention = $file->getClientOriginalExtension();
-                $filename = time().$this->generateRandomString(15).'.'.$extention;
+                $filename = time().'-'.$file->getFilename().'.'.$extention;
                 $file->move('request/', $filename);
                 $dir = 'request/'.$filename.';';
                 $data['evidence_file'] .= $dir;

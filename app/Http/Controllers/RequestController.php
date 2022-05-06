@@ -66,7 +66,7 @@ class RequestController extends Controller
         while ($request->hasfile('evidence_file_'.$count)) {
             $file = $request->file('evidence_file_'.$count);
             $extention = $file->getClientOriginalExtension();
-            $filename = time().$this->generateRandomString(15).'.'.$extention;
+            $filename = time().'-'.$file->getFilename().'.'.$extention;
             $file->move('request/'.$requestRecord->request_code.'/', $filename);
             $dir = 'request/'.$requestRecord->request_code.'/'.$filename.';';
             $requestRecord->evidence_file .= $dir;

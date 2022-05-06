@@ -198,7 +198,7 @@ class WizardController extends Controller
             while ($this->request->hasfile('evidence_file_'.$count)) {
                 $file = $this->request->file('evidence_file_'.$count);
                 $extention = $file->getClientOriginalExtension();
-                $filename = time().$this->generateRandomString(15).'.'.$extention;
+                $filename = time().'-'.$file->getFilename().'.'.$extention;
                 $file->move('upland/'.$request_id.'/', $filename);
                 $dir = 'upland/'.$request_id.'/'.$filename.';';
                 $data['evidence_file'] .= $dir;
@@ -323,7 +323,7 @@ class WizardController extends Controller
             while ($this->request->hasfile('evidence_file_'.$count)) {
                 $file = $this->request->file('evidence_file_'.$count);
                 $extention = $file->getClientOriginalExtension();
-                $filename = time().$this->generateRandomString(15).'.'.$extention;
+                $filename = time().'-'.$file->getFilename().'.'.$extention;
                 $file->move('uplani/'.$request_id.'/', $filename);
                 $dir = 'uplani/'.$request_id.'/'.$filename.';';
                 $data['evidence_file'] .= $dir;
@@ -415,7 +415,7 @@ class WizardController extends Controller
             while ($this->request->hasfile('evidence_file_'.$count)) {
                 $file = $this->request->file('evidence_file_'.$count);
                 $extention = $file->getClientOriginalExtension();
-                $filename = time().$this->generateRandomString(15).'.'.$extention;
+                $filename = time().'-'.$file->getFilename().'.'.$extention;
                 $file->move('upland/'.$request_id.'/', $filename);
                 $dir = 'upland/'.$request_id.'/'.$filename.';';
                 $data['evidence_file'] .= $dir;
