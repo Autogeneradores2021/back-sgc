@@ -44,13 +44,13 @@ class AuthController extends Controller
             $person = $payload->user_data->person;
             $actions = $payload->actions;
             $user = User::query()->where(['identification_number' => $person->document_number])->first();
-            Log::info('CONEXION CON SEGURIDAD TRANSVERSAL CONFIRMADA');
+            Log::info('CONEXIÓN CON SEGURIDAD TRANSVERSAL CONFIRMADA');
             if ($user) {
                 Log::info('EXISTE REGISTRO DE USUARIO');
                 $area_code = $user->area_code;
                 $position_code = $user->position_code;
-                $employee = null;
-                // $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
+                // $employee = null;
+                $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
                 if ($employee) {
                     Selectable::createIfNotExist('areas', $employee->division, $employee->division);
                     Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
@@ -68,15 +68,17 @@ class AuthController extends Controller
                 Log::info($user);
             } else {
                 Log::info('NO EXISTE REGISTRO DE USUARIO');
-                $employee = null;
-                // $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
+                // $employee = null;
+                $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
                 $area_code = 'EXTERNO';
-                $position_code = 'EXTERNO';
+                $position_code = 'EN_MISION';
+                $role = 'BOLSA';
                 if ($employee) {
                     Selectable::createIfNotExist('areas', $employee->division, $employee->division);
                     Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
                     $area_code = $employee->division;
                     $position_code = $employee->cargo;
+                    $role = 'NOMINA';
                 }
                 $user = new User([
                     'name' => strtoupper($person->contractor_company ? $person->contractor_company : $person->first_name.' '.$person->second_name.' '.$person->first_lastname.' '.$person->second_lastname),
@@ -84,7 +86,7 @@ class AuthController extends Controller
                     'phone_number' => $person->cellphone ? $person->cellphone : $person->telephone,
                     'identification_type' => $person->document_type->code,
                     'identification_number' => $person->document_number,
-                    'role_code' => 'USER',
+                    'role_code' => $role,
                     'area_code' => $area_code,
                     'position_code' => $position_code,
                 ]);

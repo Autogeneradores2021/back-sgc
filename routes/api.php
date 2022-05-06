@@ -11,6 +11,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\IssuesController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\FilterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,18 @@ Route::group([
 
 ], function ($router) {
     Route::get('', [EmployeeController::class, 'index']);
+
+});
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'filter'
+
+], function ($router) {
+    Route::get('', [FilterController::class, 'index']);
+    Route::post('', [FilterController::class, 'create']);
+    Route::delete('/{id}', [FilterController::class, 'delete']);
 
 });
 

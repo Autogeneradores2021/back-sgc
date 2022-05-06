@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Filter;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -101,13 +102,22 @@ class UserController extends Controller
     {
         $search = $request->query('search');
         $exclude = $request->query('exclude');
+        $filter = $request->query('filter');
         if (!$search) { $search = ''; }
         if (!$exclude) { $exclude = []; }
         $search = strtoupper($search);
-        $query = User::query()->where('name', 'like', '%'.$search.'%')->whereNotIn('id', $exclude)->orderBy('name')->limit(10)->get();
+        $query = User::query()->where('name', 'like', '%'.$search.'%')->whereNotIn('id', $exclude)->orderBy('name')->limit(10);
+        if ($filter) {
+            $query = $query->where(function($q) use ($filter) {
+                $filters = Filter::query()->where('type', $filter)->get();
+                foreach ($filters as $value) {
+                    $q->orWhereRaw($value->query);
+                }
+            });
+        }
         return response()->json([
             'message' => 'ok',
-            'data' => $query
+            'data' => $query->get()
         ]);
     }
 

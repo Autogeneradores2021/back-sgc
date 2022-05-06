@@ -28,7 +28,7 @@ class Employee extends OracleEloquent
                 $user = new User([
                     'name' => $employee->nombre,
                     'email' => strtolower($employee->correo),
-                    'role_code' => 'USER',
+                    'role_code' => 'NOMINA',
                     'area_code' => $employee->division,
                     'position_code' => $employee->cargo,
                     'identification_type' => 'CC',
@@ -37,7 +37,7 @@ class Employee extends OracleEloquent
                 $user->password = Hash::make(User::generateRandomPassword());
             }
             $user->save();
-            print("Usuario ".$employee->nombre." OK\r\n");
+            print("Nuevo usuario ".$employee->nombre." OK\r\n");
         }
     }
 }

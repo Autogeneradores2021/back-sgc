@@ -19,9 +19,9 @@ class SelectableController extends Controller
             if (!$all) {
                 $query = DB::table($table)->where('enabled', '1')->where(function($query) use ($search){
                     $query->where('code', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%');
-                })->orderBy('description', 'desc')->limit(10)->get();
+                })->orderBy('description', 'asc')->limit(10)->get();
             } else {
-                $query = DB::table($table)->orderBy('description', 'desc')->get();
+                $query = DB::table($table)->orderBy('description', 'asc')->get();
             }
             return response()->json([
                 'message' => 'ok',
@@ -46,7 +46,7 @@ class SelectableController extends Controller
         $validator = Validator::make($data, Selectable::$rules);
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Error de validacion',
+                'message' => 'Error de validación',
                 'data' => $validator->errors()
             ], 400);
         } else {
@@ -60,6 +60,7 @@ class SelectableController extends Controller
             }
         }
         return response()->json([
+            'message' => 'ok',
             'data' => $data
         ]);
     }
