@@ -27,7 +27,7 @@ use App\Http\Controllers\FilterController;
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'user'
 
 ], function ($router) {
@@ -44,7 +44,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'employee'
 
 ], function ($router) {
@@ -54,7 +54,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'filter'
 
 ], function ($router) {
@@ -80,7 +80,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'request'
 
 ], function ($router) {
@@ -93,7 +93,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'selectable'
 
 ], function ($router) {
@@ -107,7 +107,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'tracking'
 
 ], function ($router) {
@@ -118,7 +118,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'wizard'
 
 ], function ($router) {
@@ -132,7 +132,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'report'
 
 ], function ($router) {
@@ -143,7 +143,7 @@ Route::group([
 
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
     'prefix' => 'issue'
 
 ], function ($router) {

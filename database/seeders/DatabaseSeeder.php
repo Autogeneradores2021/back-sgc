@@ -453,43 +453,43 @@ class DatabaseSeeder extends Seeder
                     "CODE" => $type->code."_JEFE",
                     "NAME" => "Jefes",
                     "DESCRIPTION" => "Jefes de oficina o division",
-                    "QUERY" => "position like '%JEFE%'"
+                    "QUERY" => "position_code like '%JEFE%'"
                 ),
                 array(
                     "CODE" => $type->code."_PROFESIONALES",
                     "NAME" => "Profesionales",
                     "DESCRIPTION" => "Profesionales I, II o II",
-                    "QUERY" => "position like '%PROFESIONAL%'"
+                    "QUERY" => "position_code like '%PROFESIONAL%'"
                 ),
                 array(
                     "CODE" => $type->code."_AUXILIARES",
                     "NAME" => "Auxiliares",
                     "DESCRIPTION" => "Auxiliares ",
-                    "QUERY" => "position like '%AUXILIAR%'"
+                    "QUERY" => "position_code like '%AUXILIAR%'"
                 ),
                 array(
                     "CODE" => $type->code."_TECNOLOGO",
                     "NAME" => "Tecnologos",
                     "DESCRIPTION" => "Tecnologos",
-                    "QUERY" => "position like '%TECNOLOGO%'"
+                    "QUERY" => "position_code like '%TECNOLOGO%'"
                 ),
                 array(
                     "CODE" => $type->code."_PRACTICANTE",
                     "NAME" => "Practicantes",
                     "DESCRIPTION" => "Practicantes universitarios",
-                    "QUERY" => "position like '%PRACTICANTE%'"
+                    "QUERY" => "position_code like '%PRACTICANTE%'"
                 ),
                 array(
                     "CODE" => $type->code."_APRENDIZ",
                     "NAME" => "Aprendiz",
                     "DESCRIPTION" => "Aprendiz SENA",
-                    "QUERY" => "position like '%APRENDIZ%'"
+                    "QUERY" => "position_code like '%APRENDIZ%'"
                 ),
                 array(
                     "CODE" => $type->code."_ASESOR",
                     "NAME" => "Asesor",
                     "DESCRIPTION" => "Asesor",
-                    "QUERY" => "position like '%ASESOR%'"
+                    "QUERY" => "position_code like '%ASESOR%'"
                 )
             ]);
         }

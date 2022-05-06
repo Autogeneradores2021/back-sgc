@@ -19,7 +19,7 @@ class Mailer {
                 $message->priority(1);
             });
         } catch (\Throwable $th) {
-            Log::info('Ocurrio un error enviando el correo electornico');
+            Log::info('Ocurrió un error enviando el correo electronica');
         }
     }
 
