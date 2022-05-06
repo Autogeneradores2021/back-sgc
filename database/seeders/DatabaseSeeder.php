@@ -498,7 +498,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@admin.com', 'password' => Hash::make('12345679'), 'name' => 'ADMINISTRADOR', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
         ]);
         print("Usuarios de prueba  OK\r\n");
-        Employee::getUsers();
+        Employee::getAllUsers();
         print("Usuarios de nomina  OK\r\n");
         SecurityUser::getAllUsers();
         print("Usuarios de bolsa  OK\r\n");
