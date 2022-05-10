@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\Mailer;
+use App\Mail\RequestCreated;
 use App\Models\Issue;
 use Illuminate\Http\Request;
 use App\Models\Request as ModelsRequest;
@@ -77,14 +78,17 @@ class RequestController extends Controller
         $requestRecord->area_code = $request->user()->area_code;
         $requestRecord->position_code = $request->user()->position_code;
         $requestRecord->save();
+        $record = ModelsRequest::query()->where('id', $requestRecord->id)->first();
         Issue::createRequest(
             $request->user(),
-            ModelsRequest::query()->where('id', $requestRecord->id)->first()
+            $record
         );
-        Mailer::sendNewRequestNotification($requestRecord, User::getEmailById($requestRecord->process_lead_id));
+        Log::info($record);
+        $mailer = new RequestCreated($record);
+        Mailer::sendNotification($mailer, ModelsRequest::toNotification($requestRecord->id));
         return response()->json(
             [
-                "message" => "Solicitud creada con exito",
+                "message" => "Solicitud creada con éxito",
                 "data" => $requestRecord
             ]
         );
