@@ -30,9 +30,9 @@ class AssignationAction extends Mailable
      */
     public function build()
     {
-        return $this->view('mail.add-uplan')->with([
+        return $this->view('mail.add-action')->with([
             'title' => 'Nueva acción',
-            'msg' => 'Eres el nuevo responsable de una acción correctiva',
+            'msg' => 'Se ha asignado un nuevo responsable de una acción correctiva',
             'linkUrl' => `/acciones-mejoramiento/`,
             'uplan' => $this->uplan
         ])->subject('Nuevo responsable de una acción correctiva')->priority(1);

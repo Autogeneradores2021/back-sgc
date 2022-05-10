@@ -13,7 +13,7 @@
             </div>
             <h1 style="color: rgb(63, 63, 63)"><strong>Sistema de Gestion de Calidad</strong></h1 style="color: gray">
             <div style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;">
-                <img style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;" src="https://raw.githubusercontent.com/YUND4/images/main/Screenshot_from_2022-03-11_14-00-30-removebg-preview.png" alt="SGC">
+                <img style="width: 300px; max-width: 600px; height: auto; margin: auto; display: block;" src="https://raw.githubusercontent.com/YUND4/images/main/Screenshot%20from%202022-05-10%2010-58-13.png" alt="SGC">
             </div>
             <div class="text" style="padding: 0 2.5em; text-align: center;">
                 <h2><strong>{!! $title !!}</strong></h2>
