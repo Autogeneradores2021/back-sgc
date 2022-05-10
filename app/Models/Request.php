@@ -238,6 +238,26 @@ class Request extends Model
      */
     protected $primaryKey = 'id';
 
+    public static function toNotification($id) {
+        $request = Request::query()->where('id', $id)->first();
+        $to = [
+            User::getEmailById($request->process_lead_id),
+            User::getEmailById($request->detected_for_id),
+        ];
+        foreach (TeamMember::query()->where('request_id', $id)->get() as $member) {
+            array_push($to, User::getEmailById($member->user_id));
+        }
+        foreach (UpgradePlan::query()->where('request_id', $id)->get() as $uplan) {
+            array_push($to, User::getEmailById($uplan->person_assigned_id));
+        }
+        $finish_request = FinishRequest::query()->where('request_id', $id)->first();
+        if ($finish_request) {
+            User::getEmailById($finish_request->user_tracking_id);
+            User::getEmailById($finish_request->user_granted_id);
+        }
+        return $to;
+    }
+
     /**
      * Attributes that should be mass-assignable.
      *

@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\Mailer;
+use App\Mail\AdditionalMember;
+use App\Mail\AssignationAction;
+use App\Mail\ExamRequest;
 use App\Models\UpgradePlan;
 use App\Models\FinishRequest;
 use App\Models\Issue;
 use App\Models\QuestionaryAnswers;
 use App\Models\Request as ModelsRequest;
 use App\Models\TeamMember;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -285,6 +290,8 @@ class WizardController extends Controller
                 $this->body["status"] = 400;
             } else {
                 $record = TeamMember::create($a);
+                Mailer::sendNotification(new AdditionalMember($record), ModelsRequest::toNotification($a['request_id']));
+
             }
         }
         if ($this->body["status"] == 201) {
@@ -343,6 +350,7 @@ class WizardController extends Controller
                     'acciones de correccion inmediatas'
                 );
             }
+            Mailer::sendNotification(new AssignationAction($data), ModelsRequest::toNotification($data['request_id']));
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
             DB::rollback();
@@ -438,6 +446,7 @@ class WizardController extends Controller
                     'acciones de correccion inmediatas'
                 );
             }
+            Mailer::sendNotification(new AssignationAction($data), ModelsRequest::toNotification($data['request_id']));
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
             DB::rollback();
@@ -467,6 +476,7 @@ class WizardController extends Controller
                 ModelsRequest::query()->where('id', $data['request_id'])->first(),
                 $record,
             );
+            Mailer::sendNotification(new ExamRequest($record), ModelsRequest::toNotification($data['request_id']));
             $this->body["status"] = 201;
             $this->body["data"] = $record;
             $this->body["message"] = "La solicitud se cerro correctamente";
