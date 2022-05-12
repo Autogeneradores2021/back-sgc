@@ -18,8 +18,8 @@ class SelectableController extends Controller
             Log::info($all);
             if (!$all) {
                 $query = DB::table($table)->where('enabled', '1')->where(function($query) use ($search){
-                    $query->where('code', 'like', '%'.$search.'%')->orwhere('description', 'like', '%'.$search.'%');
-                })->orderBy('description', 'asc')->limit(10)->get();
+                    $query->where('code', 'like', '%'.$search.'%')->orWhereRaw("UPPER(description) like '%".strtoupper($search)."%'");
+                })->orderBy('description', 'asc')->limit(50)->get();
             } else {
                 $query = DB::table($table)->orderBy('description', 'asc')->get();
             }

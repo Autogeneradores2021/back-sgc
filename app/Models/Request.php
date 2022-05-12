@@ -125,18 +125,17 @@ class Request extends Model
 
     public static function countByUserAndStatus($type, $user_id, $status) {
         $query = DB::select(<<<SQL
-            SELECT COUNT(r.ID) AS count  FROM REQUESTS r 
+            SELECT COUNT(r.ID) AS count  FROM REQUESTS r
             LEFT JOIN TEAM_MEMBERS tm 
             ON tm.REQUEST_ID = r.ID
             WHERE
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
-            ((r.PROCESS_LEAD_ID = :user_id AND tm.IS_LEAD = :is_lead) OR (tm.USER_ID = :user_id AND tm.IS_LEAD = :is_lead))
+            ((r.PROCESS_LEAD_ID = :user_id) OR (tm.USER_ID = :user_id AND r.PROCESS_LEAD_ID <> :user_id))
         SQL,[
             'status' => $status,
             'type' => $type,
-            'user_id' => $user_id,
-            'is_lead' => 0,
+            'user_id' => $user_id
         ]);
         return $query[0]->count;
     }
