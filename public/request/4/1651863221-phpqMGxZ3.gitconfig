@@ -1,7 +1,0 @@
-[credential]
-	helper = store
-[user]
-	name = Swanky
-	email = santiago.yunda@puntored.co
-[pull]
-	rebase = true
