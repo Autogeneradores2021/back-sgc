@@ -34,9 +34,9 @@ class Request extends Model
      * @var string
      */
     public static $rules = [
-        "request_type_code"=>"required|exists:request_types,code",
+        "request_type_code" => "required|exists:request_types,code",
         "init_date" => "required|date",
-        "detected_date" => "required|date", 
+        "detected_date" => "required|date",
         "detected_in_code" => "required|exists:detected_places,code",
         "detected_for_id" => "required|exists:users,id",
         "unfulfilled_requirement_code" => "required|exists:unfulfilled_requirements,code",
@@ -47,20 +47,22 @@ class Request extends Model
         "evidence_description" => "required",
         "request_description" => "required",
         "evidence_file_0" => "required",
-        "status_code"=> "required|max:10"
+        "status_code" => "required|max:10"
     ];
 
 
     protected $appends = ['process_lead_name', 'detected_for_name', 'stack', 'affected_process_name', 'action_type_name', 'unfulfilled_requirement_name', 'detected_in_name', 'how_detected_name', 'owner'];
 
-    public function getStackAttribute() {
+    public function getStackAttribute()
+    {
         if ($this->parent_id) {
             return Request::query()->where('id', '=', $this->parent_id)->count() + 1;
         }
         return 0;
     }
-    
-    public function getOwnerAttribute() {
+
+    public function getOwnerAttribute()
+    {
         try {
             $user_id = auth()->user()->id;
         } catch (\Throwable $th) {
@@ -74,56 +76,64 @@ class Request extends Model
         );
     }
 
-    public function getDetectedInNameAttribute() {
+    public function getDetectedInNameAttribute()
+    {
         if ($this->detected_in_code) {
-            return DB::table('detected_places')->where('code', $this->detected_in_code)->first()->description   ;
+            return DB::table('detected_places')->where('code', $this->detected_in_code)->first()->description;
         }
         return null;
     }
 
-    public function getHowDetectedNameAttribute() {
+    public function getHowDetectedNameAttribute()
+    {
         if ($this->how_detected_code) {
-            return DB::table('detection_types')->where('code', $this->how_detected_code)->first()->description   ;
+            return DB::table('detection_types')->where('code', $this->how_detected_code)->first()->description;
         }
         return null;
     }
 
-    public function getUnfulfilledRequirementNameAttribute() {
+    public function getUnfulfilledRequirementNameAttribute()
+    {
         if ($this->unfulfilled_requirement_code) {
-            return DB::table('unfulfilled_requirements')->where('code', $this->unfulfilled_requirement_code)->first()->description   ;
+            return DB::table('unfulfilled_requirements')->where('code', $this->unfulfilled_requirement_code)->first()->description;
         }
         return null;
     }
 
-    public function getAffectedProcessNameAttribute() {
+    public function getAffectedProcessNameAttribute()
+    {
         if ($this->affected_process_code) {
-            return DB::table('affected_processes')->where('code', $this->affected_process_code)->first()->description   ;
+            return DB::table('affected_processes')->where('code', $this->affected_process_code)->first()->description;
         }
         return null;
     }
 
-    public function getActionTypeNameAttribute() {
+    public function getActionTypeNameAttribute()
+    {
         if ($this->action_type_code) {
-            return DB::table('action_types')->where('code', $this->action_type_code)->first()->description   ;
+            return DB::table('action_types')->where('code', $this->action_type_code)->first()->description;
         }
         return null;
     }
-    
-    public function getProcessLeadNameAttribute() {
+
+    public function getProcessLeadNameAttribute()
+    {
         if ($this->process_lead_id) {
             return User::query()->where('id', '=', $this->process_lead_id)->get('name')->first()->name;
         }
         return null;
     }
 
-    public function getDetectedForNameAttribute() {
+    public function getDetectedForNameAttribute()
+    {
         if ($this->detected_for_id) {
             return User::query()->where('id', '=', $this->detected_for_id)->get('name')->first()->name;
         }
         return null;
     }
 
-    public static function countByUserAndStatus($type, $user_id, $status) {
+    public static function countByUserAndStatus($type, $user_id, $status)
+    {
         $query = DB::select(<<<SQL
             SELECT COUNT(r.ID) AS count  FROM REQUESTS r
             LEFT JOIN TEAM_MEMBERS tm 
@@ -132,7 +142,7 @@ class Request extends Model
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
             ((r.PROCESS_LEAD_ID = :user_id) OR (tm.USER_ID = :user_id AND r.PROCESS_LEAD_ID <> :user_id))
-        SQL,[
+        SQL, [
             'status' => $status,
             'type' => $type,
             'user_id' => $user_id
@@ -140,7 +150,8 @@ class Request extends Model
         return $query[0]->count;
     }
 
-    public static function ifGrandAccess($type, $user_id, $status, $request_id) {
+    public static function ifGrandAccess($type, $user_id, $status, $request_id)
+    {
         $query = DB::select(<<<SQL
             SELECT COUNT(r.ID) AS count FROM REQUESTS r 
             LEFT JOIN TEAM_MEMBERS tm 
@@ -149,7 +160,7 @@ class Request extends Model
             r.id = :request_id AND
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
-            (tm.USER_ID = :user_id or r.PROCESS_LEAD_ID = :user_id)
+            (tm.USER_ID = :user_id or r.PROCESS_LEAD_ID = :user_id or r.DETECTED_FOR_ID = :user_id)
         SQL, [
             'status' => $status,
             'type' => $type,
@@ -159,7 +170,8 @@ class Request extends Model
         return $query[0]->count >= 1;
     }
 
-    public static function countByPeriod($type, $days_back = 6) {
+    public static function countByPeriod($type, $days_back = 6)
+    {
         return DB::select(<<<SQL
         SELECT dates,(
             SELECT count(1)
@@ -178,7 +190,8 @@ class Request extends Model
         ]);
     }
 
-    public static function countByTypeAndStatus($type, $status) {
+    public static function countByTypeAndStatus($type, $status)
+    {
         if ($status) {
             return Request::query()->where('request_type_code', '=', $type)->whereIn('status_code', $status)->count();
         } else {
@@ -186,19 +199,21 @@ class Request extends Model
         }
     }
 
-    public static function updateStatus($id, $status) {
+    public static function updateStatus($id, $status)
+    {
         if ($status == 'TO_FIX') {
             Request::createChild($id);
         }
         return Request::query()->where('id', '=', $id)->update(['status_code' => $status]);
     }
 
-    public static function createChild($id) {
+    public static function createChild($id)
+    {
         $old_request = Request::query()->where('id', '=', $id)->get()->first();
         return Request::create([
             "request_type_code" => $old_request->request_type_code,
             "init_date" => $old_request->init_date,
-            "detected_date" => $old_request->detected_date, 
+            "detected_date" => $old_request->detected_date,
             "detected_in_code" => $old_request->detected_in_code,
             "detected_for_id" => $old_request->detected_for_id,
             "unfulfilled_requirement_code" => $old_request->unfulfilled_requirement_code,
@@ -209,7 +224,7 @@ class Request extends Model
             "evidence_description" => $old_request->evidence_description,
             "request_description" => $old_request->request_description,
             "evidence_file" => $old_request->evidence_file,
-            "status_code"=> 'PENDING',
+            "status_code" => 'PENDING',
             "parent_id" => $old_request->id,
             "request_code" => $old_request->request_code,
             "position_code" => $old_request->position_code,
@@ -217,7 +232,8 @@ class Request extends Model
         ]);
     }
 
-    public static function local($value) {
+    public static function local($value)
+    {
         $dt = new DateTime($value, new DateTimeZone('America/New_York'));
 
         return $dt->format('d-m-Y');
@@ -237,7 +253,8 @@ class Request extends Model
      */
     protected $primaryKey = 'id';
 
-    public static function toNotification($id) {
+    public static function toNotification($id)
+    {
         $request = Request::query()->where('id', $id)->first();
         $to = [
             User::getEmailById($request->process_lead_id),
@@ -289,8 +306,7 @@ class Request extends Model
      *
      * @var array
      */
-    protected $hidden = [
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be casted to native types.
