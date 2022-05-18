@@ -46,7 +46,6 @@ class Request extends Model
         "action_type_code" => "required|exists:action_types,code",
         "evidence_description" => "required",
         "request_description" => "required",
-        "evidence_file_0" => "required",
         "status_code" => "required|max:10"
     ];
 
@@ -135,13 +134,13 @@ class Request extends Model
     public static function countByUserAndStatus($type, $user_id, $status)
     {
         $query = DB::select(<<<SQL
-            SELECT COUNT(r.ID) AS count  FROM REQUESTS r
-            LEFT JOIN TEAM_MEMBERS tm 
+            SELECT * FROM DEV.TEAM_MEMBERS tm
+            LEFT JOIN DEV.REQUESTS r
             ON tm.REQUEST_ID = r.ID
             WHERE
             r.STATUS_CODE = :status AND
             r.REQUEST_TYPE_CODE = :type AND
-            ((r.PROCESS_LEAD_ID = :user_id) OR (tm.USER_ID = :user_id AND r.PROCESS_LEAD_ID <> :user_id))
+            ((r.PROCESS_LEAD_ID = :user_id AND tm.USER_ID <> :user_id) OR (tm.USER_ID = :user_id AND r.PROCESS_LEAD_ID <> :user_id))
         SQL, [
             'status' => $status,
             'type' => $type,
