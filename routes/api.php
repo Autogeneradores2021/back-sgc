@@ -138,7 +138,7 @@ Route::group([
 ], function ($router) {
     Route::get('dashboard', [ReportController::class, 'dashboard']);
     Route::get('overview/{id}', [ReportController::class, 'overview']);
-
+    Route::get('by-range', [ReportController::class, 'byRange']);
 });
 
 Route::group([
