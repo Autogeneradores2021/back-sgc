@@ -58,6 +58,9 @@ class TrackingController extends Controller
                 $data['evidence_file'] .= $dir;
                 $count++;
             }
+            if ($data['goal_description'] == 'Nuevo seguimiento') {
+                $data['goal_description'] = 'Seguimiento '.(Tracking::query()->where('upgrade_plan_id', '=', $data['upgrade_plan_id'])->count() + 1);
+            }
             $record = Tracking::create($data);
             Tracking::verify($record->upgrade_plan_id);
             Issue::createTracking(

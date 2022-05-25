@@ -86,14 +86,15 @@ class ReportController extends Controller
         }
 
         return view('report.overview', ['collection' => $data, ]);
-
-        // $pdf = PDF::loadView('report.overview', ['collection' => $data, ]);
-
-        // return $pdf->download('invoice.pdf');
     }
 
     public function byRange()
     {
+        $high = date('Y-m-d');
+        $low = date('Y-m-d', strtotime("00:00am January 01 1990"));
+        $range = request(['init_date', 'end_date',]);
+        if ($range['init_date']) { $low = date('Y-m-d', strtotime($range['init_date'])); }
+        if ($range['end_date']) { $high = date('Y-m-d', strtotime($range['end_date'])); }
         $query = DB::select(
         <<<SQL
             SELECT 
@@ -108,8 +109,11 @@ class ReportController extends Controller
             (SELECT NAME FROM USERS u WHERE id = r.DETECTED_FOR_ID  ) AS "Detectado por",
             (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado"
             FROM REQUESTS r
+            WHERE r.DETECTED_DATE BETWEEN :low and :high
         SQL,
         [
+            'low' => $low,
+            'high' => $high
         ]);
 
         $path = Excel::generate($query);
