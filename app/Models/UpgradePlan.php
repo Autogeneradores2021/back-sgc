@@ -40,13 +40,18 @@ class UpgradePlan extends Model
 
     ];
 
-    protected $appends = ['person_assigned_name'];
+    protected $appends = ['person_assigned_name', 'editable'];
 
     public function getPersonAssignedNameAttribute() {
         if ($this->person_assigned_id) {
             return User::query()->where('id', '=', $this->person_assigned_id)->get('name')->first()->name;
         }
         return null;
+    }
+
+    public function getEditableAttribute() {
+        $count = Tracking::query()->where('upgrade_plan_id', $this->id)->count();
+        return $count == 0;
     }
 
 

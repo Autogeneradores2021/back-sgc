@@ -268,7 +268,6 @@ class Request extends Model
         $finish_request = FinishRequest::query()->where('request_id', $id)->first();
         if ($finish_request) {
             User::getEmailById($finish_request->user_tracking_id);
-            User::getEmailById($finish_request->user_granted_id);
         }
         return $to;
     }
