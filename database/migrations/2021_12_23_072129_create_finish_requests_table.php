@@ -23,7 +23,6 @@ class CreateFinishRequestsTable extends Migration
             $table->foreign('result_code')->on('result_types')->references('code')->nullable();
             $table->string('result_analysis', 150)->nullable();
             $table->foreignId('user_tracking_id')->constrained('users')->nullable();
-            $table->foreignId('user_granted_id')->nullable()->constrained('users');
             $table->string('descriptions')->nullable();
             $table->string('objective')->nullable();
             $table->integer('total_review')->nullable();

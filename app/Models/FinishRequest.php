@@ -32,7 +32,6 @@ class FinishRequest extends Model
     public static $rules = [
         "request_id" => "required|exists:requests,id",
         "user_tracking_id" => "required|exists:users,id",
-        "user_granted_id" => "required",
         "tracking_date" => "required|date",
         "tracking_date_period_init" => "required|date",
         "tracking_date_period_end" => "required|date",
@@ -67,7 +66,6 @@ class FinishRequest extends Model
         
         "request_id",
         "user_tracking_id",
-        "user_granted_id",
         "tracking_date",
         "tracking_date_period_init",
         "tracking_date_period_end",
@@ -115,18 +113,11 @@ class FinishRequest extends Model
      */
     public $timestamps = true;
 
-    protected $appends = ['user_tracking_name', 'user_granted_name', 'result_description'];
+    protected $appends = ['user_tracking_name', 'result_description'];
 
     public function getUserTrackingNameAttribute($_) {
         if ($this->user_tracking_id) {
             return User::query()->where('id', '=', $this->user_tracking_id)->first(['name'])->name;
-        }
-        return null;
-    }
-
-    public function getUserGrantedNameAttribute($_) {
-        if ($this->user_granted_id) {
-            return User::query()->where('id', '=', $this->user_granted_id)->first(['name'])->name;
         }
         return null;
     }

@@ -15,6 +15,7 @@ use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -321,7 +322,7 @@ class WizardController extends Controller
         $data["upgrade_plan_type_code"] = "INM";
         $validator = Validator::make($data, UpgradePlan::$rules);
         if ($validator->fails()) {
-            $this->body["message"] = "Error validando el analisis";
+            $this->body["message"] = "Error validando el análisis";
             array_push( $this->body["data"], $validator->errors() );
             $this->body["status"] = 400;
         } else {
@@ -431,7 +432,17 @@ class WizardController extends Controller
                 Log::info($dir);
                 $count++;
             }
-            $data = UpgradePlan::create($data);
+            if (array_key_exists('id', $data)) {
+                $model = UpgradePlan::query()->where('id', $data['id'])->first();
+                foreach (explode(';', $model->evidence_file) as $path) {
+                    if ($path) {
+                        File::delete($path);
+                    }
+                }
+                $model->update($data);
+            } else {
+                $data = UpgradePlan::create($data);
+            }
         }
         if ($this->body["status"] == 201) {
             DB::commit();
