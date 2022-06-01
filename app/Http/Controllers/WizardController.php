@@ -76,7 +76,7 @@ class WizardController extends Controller
         $params = request()->query();
         $data = DB::table($this->dictionary[$module.$step])->where($params)->orderBy('id')->get();
         if (in_array($module.$step, ['sgc5', 'sci5'])) { $data = FinishRequest::query()->where($params)->get(); }
-        if (in_array($module.$step, ['sgc4', 'sci3'])) { $data = UpgradePlan::query()->where($params)->get(); }
+        if (in_array($module.$step, ['sgc4', 'sci3'])) { $data = UpgradePlan::query()->where($params)->orderBy('index')->get(); }
         if (in_array($module.$step, ['sgc2',])) { $data = UpgradePlan::query()->where($params)->get(); }
         $this->body["status"] = 200;
         $this->body["data"] = $data;

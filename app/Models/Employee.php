@@ -15,9 +15,13 @@ class Employee extends OracleEloquent
     static public function getUsers() {
         $dayAgo = 1;
         $dayToCheck = Carbon::now()->subDays($dayAgo);
-        $employees = Employee::query()->where('estado', 'ACTIVO')->whereDate('fecha_inicial', '>', $dayToCheck)->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
+        $employees = Employee::query()->where('estado', 'ACTIVO')->whereDate('fecha_inicial', '>', $dayToCheck)->orderBy('codigo', 'asc')->get();
         Log::info('LA CONSULTA ARROJO '.count($employees).' REUSLTADOS BASADO EN LA FECHA DE BUSQUEDA '.$dayToCheck);
         foreach ($employees as $employee) {
+            $email = $employee->correo;
+            if (!$email) {
+                $email = User::generateRandomPassword().'@no-email.com';
+            }
             Selectable::createIfNotExist('areas', $employee->division, $employee->division);
             Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
             if ($user = User::query()->where('identification_number', strtolower($employee->codigo))->first()) {
@@ -27,7 +31,7 @@ class Employee extends OracleEloquent
             } else {
                 $user = new User([
                     'name' => $employee->nombre,
-                    'email' => strtolower($employee->correo),
+                    'email' => strtolower($email),
                     'role_code' => 'NOMINA',
                     'area_code' => $employee->division,
                     'position_code' => $employee->cargo,
@@ -45,6 +49,10 @@ class Employee extends OracleEloquent
         $employees = Employee::query()->where('estado', 'ACTIVO')->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
         Log::info('LA CONSULTA ARROJO '.count($employees).' REUSLTADOS BASADO EN LA FECHA DE BUSQUEDA ');
         foreach ($employees as $employee) {
+            $email = $employee->correo;
+            if (!$email) {
+                $email = User::generateRandomPassword().'@no-email.com';
+            }
             Selectable::createIfNotExist('areas', $employee->division, $employee->division);
             Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
             if ($user = User::query()->where('identification_number', strtolower($employee->codigo))->first()) {
@@ -54,7 +62,7 @@ class Employee extends OracleEloquent
             } else {
                 $user = new User([
                     'name' => $employee->nombre,
-                    'email' => strtolower($employee->correo),
+                    'email' => strtolower($email),
                     'role_code' => 'NOMINA',
                     'area_code' => $employee->division,
                     'position_code' => $employee->cargo,

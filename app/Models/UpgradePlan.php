@@ -37,7 +37,7 @@ class UpgradePlan extends Model
         "unit_measurement" => "required",
         "goal_description" => "required",
         "follow_process_description" => "required",
-
+        "index" => "required",
     ];
 
     protected $appends = ['person_assigned_name', 'editable'];
@@ -75,7 +75,7 @@ class UpgradePlan extends Model
      * @var array 
      */
     protected $fillable = [
-        'upgrade_plan_type_code', 'request_id', 'title', 'person_assigned_id', 'init_date', 'end_date', 'unit_measurement', 'goal_description', 'follow_process_description', 'finish_date', 'evidence_file', 'status', 'created_at', 'updated_at'
+        'index','upgrade_plan_type_code', 'request_id', 'title', 'person_assigned_id', 'init_date', 'end_date', 'unit_measurement', 'goal_description', 'follow_process_description', 'finish_date', 'evidence_file', 'status', 'created_at', 'updated_at'
     ];
 
     /**
