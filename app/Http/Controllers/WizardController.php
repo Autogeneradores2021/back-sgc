@@ -123,6 +123,8 @@ class WizardController extends Controller
                 $this->body["status"] = 400;
             } else {
                 $record = TeamMember::create($a);
+                Mailer::sendNotification(new AdditionalMember($record), ModelsRequest::toNotification($a['request_id']));
+
             }
         }
         if ($this->body["status"] == 201) {
@@ -212,7 +214,17 @@ class WizardController extends Controller
                 Log::info($dir);
                 $count++;
             }
-            $data = UpgradePlan::create($data);
+            if (array_key_exists('id', $data)) {
+                $model = UpgradePlan::query()->where('id', $data['id'])->first();
+                foreach (explode(';', $model->evidence_file) as $path) {
+                    if ($path) {
+                        File::delete($path);
+                    }
+                }
+                $model->update($data);
+            } else {
+                $data = UpgradePlan::create($data);
+            }
         }
         if ($this->body["status"] == 201) {
             DB::commit();
@@ -227,6 +239,7 @@ class WizardController extends Controller
                     'acciones de correccion inmediatas'
                 );
             }
+            Mailer::sendNotification(new AssignationAction($data), ModelsRequest::toNotification($data['request_id']));
             $this->body["message"] = "El plan de mejora se creo correctamente";
         } else {
             DB::rollback();
@@ -256,6 +269,7 @@ class WizardController extends Controller
                 ModelsRequest::query()->where('id', $data['request_id'])->first(),
                 $record,
             );
+            Mailer::sendNotification(new ExamRequest($record), ModelsRequest::toNotification($data['request_id']));
             $this->body["status"] = 201;
             $this->body["data"] = $record;
             $this->body["message"] = "La solicitud se cerro correctamente";
