@@ -86,7 +86,7 @@ class Tracking extends Model
      * @var array
      */
     protected $casts = [
-        'follow_process_description' => 'string', 'goal_description' => 'string', 'created_at' => 'timestamp', 'updated_at' => 'timestamp'
+        'follow_process_description' => 'string', 'goal_description' => 'string'
     ];
 
     /**
