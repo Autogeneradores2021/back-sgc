@@ -92,9 +92,9 @@ class ReportController extends Controller
     {
         $high = date('Y-m-d');
         $low = date('Y-m-d', strtotime("00:00am January 01 1990"));
-        $range = request(['init_date', 'end_date',]);
-        if ($range['init_date']) { $low = date('Y-m-d', strtotime($range['init_date'])); }
-        if ($range['end_date']) { $high = date('Y-m-d', strtotime($range['end_date'])); }
+        $data = request(['init_date', 'end_date', 'request_type_code']);
+        if ($data['init_date']) { $low = date('Y-m-d', strtotime($data['init_date'])); }
+        if ($data['end_date']) { $high = date('Y-m-d', strtotime($data['end_date'])); }
         $query = DB::select(
         <<<SQL
             SELECT 
@@ -109,11 +109,75 @@ class ReportController extends Controller
             (SELECT NAME FROM USERS u WHERE id = r.DETECTED_FOR_ID  ) AS "Detectado por",
             (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado"
             FROM REQUESTS r
-            WHERE r.DETECTED_DATE BETWEEN :low and :high
+            WHERE r.REQUESt_TYPE_CODE = :type_code and r.DETECTED_DATE BETWEEN :low and :high
         SQL,
         [
             'low' => $low,
-            'high' => $high
+            'high' => $high,
+            'type_code' => $data['request_type_code']
+        ]);
+
+        $path = Excel::generate($query);
+
+        return response()->download($path)->deleteFileAfterSend();
+    }
+
+    public function byProcess()
+    {
+        $high = date('Y-m-d');
+        $low = date('Y-m-d', strtotime("00:00am January 01 1990"));
+        $data = request(['process']);
+        $query = DB::select(
+        <<<SQL
+            SELECT 
+            r.REQUEST_CODE  AS "Código de solicitud", 
+            r.INIT_DATE AS "Fecha de inicio",
+            r.DETECTED_DATE AS "Fecha de detección",
+            (SELECT DESCRIPTION FROM DETECTED_PLACES dp WHERE code = r.DETECTED_IN_CODE) AS "Lugar de detección",
+            (SELECT DESCRIPTION FROM UNFULFILLED_REQUIREMENTS ur WHERE code = r.UNFULFILLED_REQUIREMENT_CODE) AS "Requerimiento incumplido",
+            (SELECT DESCRIPTION FROM DETECTION_TYPES dt WHERE code = r.HOW_DETECTED_CODE ) AS "Tipo de detección",
+            (SELECT DESCRIPTION FROM AFFECTED_PROCESSES ap WHERE code = r.AFFECTED_PROCESS_CODE  ) AS "Proceso afectado",
+            (SELECT NAME FROM USERS u WHERE id = r.PROCESS_LEAD_ID  ) AS "Líder del proceso",
+            (SELECT NAME FROM USERS u WHERE id = r.DETECTED_FOR_ID  ) AS "Detectado por",
+            (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado"
+            FROM REQUESTS r
+            WHERE r.AFFECTED_PROCESS_CODE = :process
+        SQL,
+        [
+            'process' => $data['process'],
+        ]);
+
+        $path = Excel::generate($query);
+
+        return response()->download($path)->deleteFileAfterSend();
+    }
+
+    public function byUser()
+    {
+        $high = date('Y-m-d');
+        $low = date('Y-m-d', strtotime("00:00am January 01 1990"));
+        $data = request(['lead', 'auditor']);
+        if (!$data['auditor']) { $data['auditor'] = 0; }
+        if (!$data['lead']) { $data['lead'] = 0; }
+        $query = DB::select(
+        <<<SQL
+            SELECT 
+            r.REQUEST_CODE  AS "Código de solicitud", 
+            r.INIT_DATE AS "Fecha de inicio",
+            r.DETECTED_DATE AS "Fecha de detección",
+            (SELECT DESCRIPTION FROM DETECTED_PLACES dp WHERE code = r.DETECTED_IN_CODE) AS "Lugar de detección",
+            (SELECT DESCRIPTION FROM UNFULFILLED_REQUIREMENTS ur WHERE code = r.UNFULFILLED_REQUIREMENT_CODE) AS "Requerimiento incumplido",
+            (SELECT DESCRIPTION FROM DETECTION_TYPES dt WHERE code = r.HOW_DETECTED_CODE ) AS "Tipo de detección",
+            (SELECT DESCRIPTION FROM AFFECTED_PROCESSES ap WHERE code = r.AFFECTED_PROCESS_CODE  ) AS "Proceso afectado",
+            (SELECT NAME FROM USERS u WHERE id = r.PROCESS_LEAD_ID  ) AS "Líder del proceso",
+            (SELECT NAME FROM USERS u WHERE id = r.DETECTED_FOR_ID  ) AS "Detectado por",
+            (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado"
+            FROM REQUESTS r
+            WHERE r.PROCESS_LEAD_ID = :lead or r.DETECTED_FOR_ID = :auditor
+        SQL,
+        [
+            'lead' => $data['lead'],
+            'auditor' => $data['auditor'],
         ]);
 
         $path = Excel::generate($query);
