@@ -134,7 +134,7 @@ class Request extends Model
     public static function countByUserAndStatus($type, $user_id, $status)
     {
         $query = DB::select(<<<SQL
-            SELECT * FROM TEAM_MEMBERS tm
+            SELECT COUNT(r.ID) AS count FROM TEAM_MEMBERS tm
             LEFT JOIN REQUESTS r
             ON tm.REQUEST_ID = r.ID
             WHERE

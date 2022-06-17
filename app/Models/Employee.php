@@ -46,7 +46,7 @@ class Employee extends OracleEloquent
     }
 
     static public function getAllUsers() {
-        $employees = Employee::query()->where('estado', 'ACTIVO')->whereNotNull('correo')->orderBy('codigo', 'asc')->get();
+        $employees = Employee::query()->where('estado', 'ACTIVO')->orderBy('codigo', 'asc')->get();
         Log::info('LA CONSULTA ARROJO '.count($employees).' REUSLTADOS BASADO EN LA FECHA DE BUSQUEDA ');
         foreach ($employees as $employee) {
             $email = $employee->correo;
