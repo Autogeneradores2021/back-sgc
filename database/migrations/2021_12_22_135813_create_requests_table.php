@@ -26,6 +26,7 @@ class CreateRequestsTable extends Migration {
             $table->string('how_detected_code', 50);
             $table->string('action_type_code', 50);
             $table->string('request_code', 30)->nullable();
+            $table->string('control_code', 30)->nullable();
             $table->longText('evidence_description');
             $table->longText('request_description');
             $table->longText('evidence_file')->nullable();

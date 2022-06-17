@@ -16,8 +16,8 @@ class CreateQuestionaryAnswersTable extends Migration
         Schema::create('questionary_answers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('request_id')->constrained('requests');
-            $table->string('question');
-            $table->string('answer');
+            $table->longText('question');
+            $table->longText('answer');
             $table->boolean('is_root')->default(false);
             $table->timestamps();
         });

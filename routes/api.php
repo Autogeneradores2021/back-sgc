@@ -139,6 +139,8 @@ Route::group([
     Route::get('dashboard', [ReportController::class, 'dashboard']);
     Route::get('overview/{id}', [ReportController::class, 'overview']);
     Route::post('by-range', [ReportController::class, 'byRange']);
+    Route::post('by-process', [ReportController::class, 'byProcess']);
+    Route::post('by-user', [ReportController::class, 'byUser']);
 });
 
 Route::group([

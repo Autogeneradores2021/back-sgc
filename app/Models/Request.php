@@ -46,7 +46,7 @@ class Request extends Model
         "action_type_code" => "required|exists:action_types,code",
         "evidence_description" => "required",
         "request_description" => "required",
-        "status_code" => "required|max:10"
+        "status_code" => "required|max:10",
     ];
 
 
@@ -226,6 +226,7 @@ class Request extends Model
             "status_code" => 'PENDING',
             "parent_id" => $old_request->id,
             "request_code" => $old_request->request_code,
+            "control_code" => $old_request->control_code,
             "position_code" => $old_request->position_code,
             "area_code" => $old_request->area_code,
         ]);
@@ -289,6 +290,7 @@ class Request extends Model
         'how_detected_code',
         'action_type_code',
         'request_code',
+        'control_code',
         'evidence_description',
         'request_description',
         'evidence_file',
