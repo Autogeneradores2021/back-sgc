@@ -22,7 +22,7 @@ class ReportController extends Controller
         $user_id = $request->user()->id;
         $data = [];
         $data['user'] = [
-            'sgc' => [
+            'sig' => [
                 'open' => ModelsRequest::countByUserAndStatus('SGC',$user_id, 'OPEN'),
                 'close' => ModelsRequest::countByUserAndStatus('SGC',$user_id, 'CLOSE'),
                 'r_to_close' => ModelsRequest::countByUserAndStatus('SGC',$user_id, 'R_TO_CLOSE'),
@@ -38,7 +38,7 @@ class ReportController extends Controller
             ]
         ];
         $data['general'] = [
-            'sgc' => [
+            'sig' => [
                 'this_week' => ModelsRequest::countByPeriod('SGC',6),
                 'this_month' => ModelsRequest::countByPeriod('SGC',27),
                 'total' => ModelsRequest::countByTypeAndStatus('SGC', ['OPEN', 'PENDING', 'R_TO_CLOSE', 'PENDING', 'CLOSE', 'EXPIRED']),
