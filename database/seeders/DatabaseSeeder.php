@@ -370,134 +370,134 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // foreach ($this->selectables as $table => $list) {
-        //     foreach ($list as $value) {
-        //         $model = new Selectable($value, $table);
-        //         $model->save();
-        //     }
-        //     print("Seleccionable ".$table." OK\r\n");
-        // }
-        // Role::create([
-        //     [ 'code' => 'ADMIN', 'name' => 'Administrador'],
-        //     [ 'code' => 'AUDITOR', 'name' => 'Auditor'],
-        //     [ 'code' => 'USER', 'name' => 'Usuario'],
-        //     [ 'code' => 'EXTERNO', 'name' => 'Usuario externo'],
-        //     [ 'code' => 'BOLSA', 'name' => 'Usuario de bolsa'],
-        //     [ 'code' => 'NOMINA', 'name' => 'Usuario de nomina'],
-        // ]);
-        // print("Roles  OK\r\n");
-        // FilterType::insert([
-        //     [
-        //         "CODE" => "LP",
-        //         "NAME" => "Líder del proceso",
-        //         "DESCRIPTION" => "Formulario de creación de solicitudes",
-        //     ],
-        //     [
-        //         "CODE" => "DP",
-        //         "NAME" => "Detectado por",
-        //         "DESCRIPTION" => "Formulario de creación de solicitudes",
-        //     ],
-        //     [
-        //         "CODE" => "MET",
-        //         "NAME" => "Miembro de equipo de trabajo",
-        //         "DESCRIPTION" => "Formulario de atención a la solicitud paso 1",
-        //     ],
-        //     [
-        //         "CODE" => "LET",
-        //         "NAME" => "Lider de equipo de trabajo",
-        //         "DESCRIPTION" => "Formulario de atención a la solicitud paso 1",
-        //     ],
-        //     [
-        //         "CODE" => "ACI",
-        //         "NAME" => "Responsable de la acción de corrección inmediata",
-        //         "DESCRIPTION" => "Formulario de atención a la solicitud Paso 2",
-        //     ],
-        //     [
-        //         "CODE" => "AC",
-        //         "NAME" => "Responsable de la acción correctiva",
-        //         "DESCRIPTION" => "Formulario de atención a la solicitud Paso 4",
-        //     ],
-        //     [
-        //         "CODE" => "QHES",
-        //         "NAME" => "Quien hace el seguimiento",
-        //         "DESCRIPTION" => "Formulario de evaluación a la solicitud",
-        //     ],
-        //     [
-        //         "CODE" => "QHLE",
-        //         "NAME" => "Quien hace la evaluación",
-        //         "DESCRIPTION" => "Formulario de evaluación a la solicitud",
-        //     ]
-        // ]);
-        // print("Tipos de filtro  OK\r\n");
-        // foreach (FilterType::query()->get() as $type) {
-        //     FilterValue::insert([
-        //         array(
-        //             "CODE" => $type->code."_BOLSA",
-        //             "NAME" => "En misión",
-        //             "DESCRIPTION" => "Funcionarios de bolsa ",
-        //             "QUERY" => "role_code = 'BOLSA'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_NOMINA",
-        //             "NAME" => "Nomina",
-        //             "DESCRIPTION" => "Funcionarios de nomina",
-        //             "QUERY" => "role_code = 'NOMINA'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_EXTERNO",
-        //             "NAME" => "Entidades externas",
-        //             "DESCRIPTION" => "Entidades interventoras o entidades externas",
-        //             "QUERY" => "role_code = 'EXTERNO'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_JEFE",
-        //             "NAME" => "Jefes",
-        //             "DESCRIPTION" => "Jefes de oficina o division",
-        //             "QUERY" => "position_code like '%JEFE%'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_PROFESIONALES",
-        //             "NAME" => "Profesionales",
-        //             "DESCRIPTION" => "Profesionales I, II o II",
-        //             "QUERY" => "position_code like '%PROFESIONAL%'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_AUXILIARES",
-        //             "NAME" => "Auxiliares",
-        //             "DESCRIPTION" => "Auxiliares ",
-        //             "QUERY" => "position_code like '%AUXILIAR%'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_TECNOLOGO",
-        //             "NAME" => "Tecnologos",
-        //             "DESCRIPTION" => "Tecnologos",
-        //             "QUERY" => "position_code like '%TECNOLOGO%'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_PRACTICANTE",
-        //             "NAME" => "Practicantes",
-        //             "DESCRIPTION" => "Practicantes universitarios",
-        //             "QUERY" => "position_code like '%PRACTICANTE%'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_APRENDIZ",
-        //             "NAME" => "Aprendiz",
-        //             "DESCRIPTION" => "Aprendiz SENA",
-        //             "QUERY" => "position_code like '%APRENDIZ%'"
-        //         ),
-        //         array(
-        //             "CODE" => $type->code."_ASESOR",
-        //             "NAME" => "Asesor",
-        //             "DESCRIPTION" => "Asesor",
-        //             "QUERY" => "position_code like '%ASESOR%'"
-        //         )
-        //     ]);
-        // }
-        // print("Valores de filtros  OK\r\n");
-        // User::insert([
-        //     ['email' => 'admin@admin.com', 'password' => Hash::make('12345679'), 'name' => 'ADMINISTRADOR', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
-        // ]);
-        // print("Usuarios de prueba  OK\r\n");
+        foreach ($this->selectables as $table => $list) {
+            foreach ($list as $value) {
+                $model = new Selectable($value, $table);
+                $model->save();
+            }
+            print("Seleccionable ".$table." OK\r\n");
+        }
+        Role::create([
+            [ 'code' => 'ADMIN', 'name' => 'Administrador'],
+            [ 'code' => 'AUDITOR', 'name' => 'Auditor'],
+            [ 'code' => 'USER', 'name' => 'Usuario'],
+            [ 'code' => 'EXTERNO', 'name' => 'Usuario externo'],
+            [ 'code' => 'BOLSA', 'name' => 'Usuario de bolsa'],
+            [ 'code' => 'NOMINA', 'name' => 'Usuario de nomina'],
+        ]);
+        print("Roles  OK\r\n");
+        FilterType::insert([
+            [
+                "CODE" => "LP",
+                "NAME" => "Líder del proceso",
+                "DESCRIPTION" => "Formulario de creación de solicitudes",
+            ],
+            [
+                "CODE" => "DP",
+                "NAME" => "Detectado por",
+                "DESCRIPTION" => "Formulario de creación de solicitudes",
+            ],
+            [
+                "CODE" => "MET",
+                "NAME" => "Miembro de equipo de trabajo",
+                "DESCRIPTION" => "Formulario de atención a la solicitud paso 1",
+            ],
+            [
+                "CODE" => "LET",
+                "NAME" => "Lider de equipo de trabajo",
+                "DESCRIPTION" => "Formulario de atención a la solicitud paso 1",
+            ],
+            [
+                "CODE" => "ACI",
+                "NAME" => "Responsable de la acción de corrección inmediata",
+                "DESCRIPTION" => "Formulario de atención a la solicitud Paso 2",
+            ],
+            [
+                "CODE" => "AC",
+                "NAME" => "Responsable de la acción correctiva",
+                "DESCRIPTION" => "Formulario de atención a la solicitud Paso 4",
+            ],
+            [
+                "CODE" => "QHES",
+                "NAME" => "Quien hace el seguimiento",
+                "DESCRIPTION" => "Formulario de evaluación a la solicitud",
+            ],
+            [
+                "CODE" => "QHLE",
+                "NAME" => "Quien hace la evaluación",
+                "DESCRIPTION" => "Formulario de evaluación a la solicitud",
+            ]
+        ]);
+        print("Tipos de filtro  OK\r\n");
+        foreach (FilterType::query()->get() as $type) {
+            FilterValue::insert([
+                array(
+                    "CODE" => $type->code."_BOLSA",
+                    "NAME" => "En misión",
+                    "DESCRIPTION" => "Funcionarios de bolsa ",
+                    "QUERY" => "role_code = 'BOLSA'"
+                ),
+                array(
+                    "CODE" => $type->code."_NOMINA",
+                    "NAME" => "Nomina",
+                    "DESCRIPTION" => "Funcionarios de nomina",
+                    "QUERY" => "role_code = 'NOMINA'"
+                ),
+                array(
+                    "CODE" => $type->code."_EXTERNO",
+                    "NAME" => "Entidades externas",
+                    "DESCRIPTION" => "Entidades interventoras o entidades externas",
+                    "QUERY" => "role_code = 'EXTERNO'"
+                ),
+                array(
+                    "CODE" => $type->code."_JEFE",
+                    "NAME" => "Jefes",
+                    "DESCRIPTION" => "Jefes de oficina o division",
+                    "QUERY" => "position_code like '%JEFE%'"
+                ),
+                array(
+                    "CODE" => $type->code."_PROFESIONALES",
+                    "NAME" => "Profesionales",
+                    "DESCRIPTION" => "Profesionales I, II o II",
+                    "QUERY" => "position_code like '%PROFESIONAL%'"
+                ),
+                array(
+                    "CODE" => $type->code."_AUXILIARES",
+                    "NAME" => "Auxiliares",
+                    "DESCRIPTION" => "Auxiliares ",
+                    "QUERY" => "position_code like '%AUXILIAR%'"
+                ),
+                array(
+                    "CODE" => $type->code."_TECNOLOGO",
+                    "NAME" => "Tecnologos",
+                    "DESCRIPTION" => "Tecnologos",
+                    "QUERY" => "position_code like '%TECNOLOGO%'"
+                ),
+                array(
+                    "CODE" => $type->code."_PRACTICANTE",
+                    "NAME" => "Practicantes",
+                    "DESCRIPTION" => "Practicantes universitarios",
+                    "QUERY" => "position_code like '%PRACTICANTE%'"
+                ),
+                array(
+                    "CODE" => $type->code."_APRENDIZ",
+                    "NAME" => "Aprendiz",
+                    "DESCRIPTION" => "Aprendiz SENA",
+                    "QUERY" => "position_code like '%APRENDIZ%'"
+                ),
+                array(
+                    "CODE" => $type->code."_ASESOR",
+                    "NAME" => "Asesor",
+                    "DESCRIPTION" => "Asesor",
+                    "QUERY" => "position_code like '%ASESOR%'"
+                )
+            ]);
+        }
+        print("Valores de filtros  OK\r\n");
+        User::insert([
+            ['email' => 'admin@admin.com', 'password' => Hash::make('12345679'), 'name' => 'ADMINISTRADOR', 'role_code' => 'ADMIN', 'position_code' => 'EXTERNO', 'area_code' => 'EXTERNO'],
+        ]);
+        print("Usuarios de prueba  OK\r\n");
         Employee::getAllUsers();
         print("Usuarios de nomina  OK\r\n");
         SecurityUser::getAllUsers();
