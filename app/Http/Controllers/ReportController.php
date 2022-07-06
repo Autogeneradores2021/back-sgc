@@ -98,24 +98,24 @@ class ReportController extends Controller
         $query = DB::select(
         <<<SQL
             SELECT 
-            (SELECT DESCRIPTION FROM AFFECTED_PROCESSES ap WHERE code = r.AFFECTED_PROCESS_CODE  ) AS "Proceso afectado",
-            r.REQUEST_CODE  AS "Código de solicitud", 
+            (SELECT DESCRIPTION FROM AFFECTED_PROCESSES ap WHERE code = r.AFFECTED_PROCESS_CODE  ) AS "Proceso en el que se detecta",
+            r.REQUEST_CODE  AS "Consecutivo", 
             r.DETECTED_DATE AS "Fecha de detección",
-            r.INIT_DATE AS "Fecha de inicio",
-            (SELECT DESCRIPTION FROM DETECTION_TYPES dt WHERE code = r.HOW_DETECTED_CODE ) AS "Tipo de detección",
-            (SELECT DESCRIPTION FROM DETECTED_PLACES dp WHERE code = r.DETECTED_IN_CODE) AS "Lugar de detección",
+            r.INIT_DATE AS "Fecha de ingreso solicitud",
+            (SELECT DESCRIPTION FROM DETECTION_TYPES dt WHERE code = r.HOW_DETECTED_CODE ) AS "Como se detecta",
+            (SELECT DESCRIPTION FROM DETECTED_PLACES dp WHERE code = r.DETECTED_IN_CODE) AS "Detectado en",
+            (SELECT DESCRIPTION FROM ACTION_TYPES dp WHERE code = r.ACTION_TYPE_CODE) AS "Tipo de acción",
             (SELECT NAME FROM USERS u WHERE id = r.PROCESS_LEAD_ID  ) AS "Líder del proceso",
             (SELECT NAME FROM USERS u WHERE id = r.DETECTED_FOR_ID  ) AS "Detectado por",
-            (SELECT DESCRIPTION FROM UNFULFILLED_REQUIREMENTS ur WHERE code = r.UNFULFILLED_REQUIREMENT_CODE) AS "Requerimiento incumplido",
-            (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado",
-            r.REQUEST_DESCRIPTION  AS "Descripcion de la solicitud",
-            r.EVIDENCE_DESCRIPTION  AS "Descripcion de la evidencia",
-            up.GOAL_DESCRIPTION  AS "Nombre de la accion",
-            (SELECT DESCRIPTION FROM UPGRADE_PLAN_TYPES upt WHERE code = up.UPGRADE_PLAN_TYPE_CODE  )  AS "Tipo de accion",
+            (SELECT DESCRIPTION FROM UNFULFILLED_REQUIREMENTS ur WHERE code = r.UNFULFILLED_REQUIREMENT_CODE) AS "Requisito aplicable",
+            r.REQUEST_DESCRIPTION  AS "Descripción de la solicitud",
+            r.EVIDENCE_DESCRIPTION  AS "Descripción de la evidencia",
+            up.GOAL_DESCRIPTION  AS "Nombre de la acción",
             (SELECT NAME FROM USERS u WHERE id = up.PERSON_ASSIGNED_ID )  AS "Responsable de la accion",
             up.FOLLOW_PROCESS_DESCRIPTION  AS "Descripcion de la accion",
             up.INIT_DATE  AS "Fecha inicio de la accion",
-            up.FINISH_DATE  AS "Fecha fin de la accion"
+            up.FINISH_DATE  AS "Fecha fin de la accion",
+            (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado"
             FROM REQUESTS r
             LEFT JOIN UPGRADE_PLANS up
             ON up.REQUEST_ID = r.ID
@@ -140,25 +140,24 @@ class ReportController extends Controller
         $query = DB::select(
         <<<SQL
             SELECT 
-            (SELECT DESCRIPTION FROM AFFECTED_PROCESSES ap WHERE code = r.AFFECTED_PROCESS_CODE  ) AS "Proceso afectado",
-            r.REQUEST_CODE  AS "Código de solicitud", 
+            (SELECT DESCRIPTION FROM AFFECTED_PROCESSES ap WHERE code = r.AFFECTED_PROCESS_CODE  ) AS "Proceso en el que se detecta",
+            r.REQUEST_CODE  AS "Consecutivo", 
             r.DETECTED_DATE AS "Fecha de detección",
-            r.INIT_DATE AS "Fecha de inicio",
-            (SELECT DESCRIPTION FROM DETECTION_TYPES dt WHERE code = r.HOW_DETECTED_CODE ) AS "Tipo de detección",
-            (SELECT DESCRIPTION FROM DETECTED_PLACES dp WHERE code = r.DETECTED_IN_CODE) AS "Lugar de detección",
+            r.INIT_DATE AS "Fecha de ingreso solicitud",
+            (SELECT DESCRIPTION FROM DETECTION_TYPES dt WHERE code = r.HOW_DETECTED_CODE ) AS "Como se detecta",
+            (SELECT DESCRIPTION FROM DETECTED_PLACES dp WHERE code = r.DETECTED_IN_CODE) AS "Detectado en",
+            (SELECT DESCRIPTION FROM ACTION_TYPES dp WHERE code = r.ACTION_TYPE_CODE) AS "Tipo de acción",
             (SELECT NAME FROM USERS u WHERE id = r.PROCESS_LEAD_ID  ) AS "Líder del proceso",
             (SELECT NAME FROM USERS u WHERE id = r.DETECTED_FOR_ID  ) AS "Detectado por",
-            (SELECT DESCRIPTION FROM UNFULFILLED_REQUIREMENTS ur WHERE code = r.UNFULFILLED_REQUIREMENT_CODE) AS "Requerimiento incumplido",
-            (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado",
-            r.REQUEST_DESCRIPTION  AS "Descripcion de la solicitud",
-            r.EVIDENCE_DESCRIPTION  AS "Descripcion de la evidencia",
-            up.GOAL_DESCRIPTION  AS "Nombre de la accion",
-            (SELECT DESCRIPTION FROM UPGRADE_PLAN_TYPES upt WHERE code = up.UPGRADE_PLAN_TYPE_CODE  )  AS "Tipo de accion",
+            (SELECT DESCRIPTION FROM UNFULFILLED_REQUIREMENTS ur WHERE code = r.UNFULFILLED_REQUIREMENT_CODE) AS "Requisito aplicable",
+            r.REQUEST_DESCRIPTION  AS "Descripción de la solicitud",
+            r.EVIDENCE_DESCRIPTION  AS "Descripción de la evidencia",
+            up.GOAL_DESCRIPTION  AS "Nombre de la acción",
             (SELECT NAME FROM USERS u WHERE id = up.PERSON_ASSIGNED_ID )  AS "Responsable de la accion",
             up.FOLLOW_PROCESS_DESCRIPTION  AS "Descripcion de la accion",
             up.INIT_DATE  AS "Fecha inicio de la accion",
-            up.FINISH_DATE  AS "Fecha fin de la accion"
-            FROM REQUESTS r
+            up.FINISH_DATE  AS "Fecha fin de la accion",
+            (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado"
             LEFT JOIN UPGRADE_PLANS up
             ON up.REQUEST_ID = r.ID
             WHERE r.AFFECTED_PROCESS_CODE = :process
@@ -182,25 +181,24 @@ class ReportController extends Controller
         $query = DB::select(
         <<<SQL
             SELECT 
-            (SELECT DESCRIPTION FROM AFFECTED_PROCESSES ap WHERE code = r.AFFECTED_PROCESS_CODE  ) AS "Proceso afectado",
-            r.REQUEST_CODE  AS "Código de solicitud", 
+            (SELECT DESCRIPTION FROM AFFECTED_PROCESSES ap WHERE code = r.AFFECTED_PROCESS_CODE  ) AS "Proceso en el que se detecta",
+            r.REQUEST_CODE  AS "Consecutivo", 
             r.DETECTED_DATE AS "Fecha de detección",
-            r.INIT_DATE AS "Fecha de inicio",
-            (SELECT DESCRIPTION FROM DETECTION_TYPES dt WHERE code = r.HOW_DETECTED_CODE ) AS "Tipo de detección",
-            (SELECT DESCRIPTION FROM DETECTED_PLACES dp WHERE code = r.DETECTED_IN_CODE) AS "Lugar de detección",
+            r.INIT_DATE AS "Fecha de ingreso solicitud",
+            (SELECT DESCRIPTION FROM DETECTION_TYPES dt WHERE code = r.HOW_DETECTED_CODE ) AS "Como se detecta",
+            (SELECT DESCRIPTION FROM DETECTED_PLACES dp WHERE code = r.DETECTED_IN_CODE) AS "Detectado en",
+            (SELECT DESCRIPTION FROM ACTION_TYPES dp WHERE code = r.ACTION_TYPE_CODE) AS "Tipo de acción",
             (SELECT NAME FROM USERS u WHERE id = r.PROCESS_LEAD_ID  ) AS "Líder del proceso",
             (SELECT NAME FROM USERS u WHERE id = r.DETECTED_FOR_ID  ) AS "Detectado por",
-            (SELECT DESCRIPTION FROM UNFULFILLED_REQUIREMENTS ur WHERE code = r.UNFULFILLED_REQUIREMENT_CODE) AS "Requerimiento incumplido",
-            (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado",
-            r.REQUEST_DESCRIPTION  AS "Descripcion de la solicitud",
-            r.EVIDENCE_DESCRIPTION  AS "Descripcion de la evidencia",
-            up.GOAL_DESCRIPTION  AS "Nombre de la accion",
-            (SELECT DESCRIPTION FROM UPGRADE_PLAN_TYPES upt WHERE code = up.UPGRADE_PLAN_TYPE_CODE  )  AS "Tipo de accion",
+            (SELECT DESCRIPTION FROM UNFULFILLED_REQUIREMENTS ur WHERE code = r.UNFULFILLED_REQUIREMENT_CODE) AS "Requisito aplicable",
+            r.REQUEST_DESCRIPTION  AS "Descripción de la solicitud",
+            r.EVIDENCE_DESCRIPTION  AS "Descripción de la evidencia",
+            up.GOAL_DESCRIPTION  AS "Nombre de la acción",
             (SELECT NAME FROM USERS u WHERE id = up.PERSON_ASSIGNED_ID )  AS "Responsable de la accion",
             up.FOLLOW_PROCESS_DESCRIPTION  AS "Descripcion de la accion",
             up.INIT_DATE  AS "Fecha inicio de la accion",
-            up.FINISH_DATE  AS "Fecha fin de la accion"
-            FROM REQUESTS r
+            up.FINISH_DATE  AS "Fecha fin de la accion",
+            (SELECT DESCRIPTION FROM STATUS s WHERE code = r.STATUS_CODE  ) AS "Estado"
             LEFT JOIN UPGRADE_PLANS up
             ON up.REQUEST_ID = r.ID
             WHERE r.PROCESS_LEAD_ID = :lead or r.DETECTED_FOR_ID = :auditor
