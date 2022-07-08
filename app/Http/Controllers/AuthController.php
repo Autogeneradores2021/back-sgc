@@ -49,8 +49,8 @@ class AuthController extends Controller
                 Log::info('EXISTE REGISTRO DE USUARIO');
                 $area_code = $user->area_code;
                 $position_code = $user->position_code;
-                $employee = null;
-                // $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
+                // $employee = null;
+                $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
                 if ($employee) {
                     Selectable::createIfNotExist('areas', $employee->division, $employee->division);
                     Selectable::createIfNotExist('positions', $employee->cargo, $employee->cargo);
@@ -68,8 +68,8 @@ class AuthController extends Controller
                 Log::info($user);
             } else {
                 Log::info('NO EXISTE REGISTRO DE USUARIO');
-                $employee = null;
-                // $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
+                // $employee = null;
+                $employee = Employee::query()->where('estado', 'ACTIVO')->where('codigo', $person->document_number)->orderBy('codigo', 'desc')->first();
                 $area_code = 'EXTERNO';
                 $position_code = 'EN_MISION';
                 $role = 'BOLSA';
